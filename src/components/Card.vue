@@ -33,6 +33,9 @@
 import lib from "@/scripts/lib.js";
 import axios from "axios";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
+import { useAlert } from "@/utils/alert.js";
+
+const { vAlert } = useAlert();
 
 const props = defineProps({
   item: Object,
@@ -41,7 +44,7 @@ const props = defineProps({
 const accountStore = useAccountStore();
 const addToCart = (itemId) => {
   if (!accountStore.account.id) {
-    alert("로그인 후 가능합니다");
+    vAlert("로그인 후 가능합니다");
     return;
   }
   axios.post(`/api/cart/items/${itemId}`).then(() => {

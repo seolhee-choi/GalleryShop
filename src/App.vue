@@ -1,30 +1,30 @@
 <template>
-  <Header/>
-  <RouterView/>
-  <Footer/>
+  <Header />
+  <RouterView />
+  <Alert />
+  <Footer />
 </template>
 
 <script setup>
-import Header from '@/components/Header.vue';
+import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import axios from "axios";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
-import {watch} from "vue";
-import {useRoute} from "vue-router";
+import { watch } from "vue";
+import { useRoute } from "vue-router";
 
 const accountStore = useAccountStore();
 const check = () => {
-  axios.get("/api/account/check")
-      .then(({data}) => {
-        accountStore.setAccount(data || 0);
-      })
-}
+  axios.get("/api/account/check").then(({ data }) => {
+    accountStore.setAccount(data || 0);
+  });
+};
 
 const route = useRoute();
 
 watch(route, () => {
   check();
-})
+});
 </script>
 
 <style>
@@ -45,10 +45,12 @@ watch(route, () => {
 .b-example-divider {
   width: 100%;
   height: 3rem;
-  background-color: rgba(0, 0, 0, .1);
-  border: solid rgba(0, 0, 0, .15);
+  background-color: rgba(0, 0, 0, 0.1);
+  border: solid rgba(0, 0, 0, 0.15);
   border-width: 1px 0;
-  box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+  box-shadow:
+    inset 0 0.5em 1.5em rgba(0, 0, 0, 0.1),
+    inset 0 0.125em 0.5em rgba(0, 0, 0, 0.15);
 }
 
 .b-example-vr {
@@ -58,7 +60,7 @@ watch(route, () => {
 }
 
 .bi {
-  vertical-align: -.125em;
+  vertical-align: -0.125em;
   fill: currentColor;
 }
 
