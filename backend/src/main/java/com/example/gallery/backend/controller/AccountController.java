@@ -1,18 +1,10 @@
 package com.example.gallery.backend.controller;
 
-import com.example.gallery.backend.entity.Member;
-import com.example.gallery.backend.repository.MemberRepository;
 import com.example.gallery.backend.service.AccountService;
-import com.example.gallery.backend.service.JwtService;
-import com.example.gallery.backend.service.JwtServiceImpl;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
@@ -93,10 +85,10 @@ public class AccountController {
     @Autowired
     AccountService accountService;
 
-    @PostMapping("/api/account/login")
-    public ResponseEntity login(@RequestBody Map<String, String> params, HttpServletResponse res) {
-        return accountService.login(params, res);
-    }
+//    @PostMapping("/api/account/login")
+//    public ResponseEntity login(@RequestBody Map<String, String> params, HttpServletResponse res) {
+//        return accountService.login(params, res);
+//    }
 
     @PostMapping("/api/account/logout")
     public ResponseEntity logout(HttpServletResponse res) {

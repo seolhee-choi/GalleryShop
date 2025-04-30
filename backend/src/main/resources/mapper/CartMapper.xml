@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.gallery.backend.mapper.CartMapper">
+
+    <select id="findByMemberId" resultType="com.example.gallery.backend.dto.Cart">
+        SELECT * FROM carts
+        WHERE member_id = #{memberId}
+    </select>
+
+    <select id="findByMemberIdAndItemId" resultType="com.example.gallery.backend.dto.Cart">
+        SELECT * FROM carts
+        WHERE member_id = #{memberId}
+          AND item_id = #{itemId}
+    </select>
+
+    <delete id="deleteByMemberId">
+        DELETE FROM carts
+        WHERE member_id = #{memberId}
+    </delete>
+
+    <delete id="deleteByMemberIdAndItemId">
+        DELETE FROM carts
+        WHERE member_id = #{memberId} AND item_id = #{itemId}
+
+    </delete>
+    <insert id="insertCart" parameterType="com.example.gallery.backend.dto.Cart">
+        INSERT INTO carts (member_id, item_id, quantity)
+        VALUES (#{memberId}, #{itemId}, #{quantity})
+    </insert>
+
+</mapper>

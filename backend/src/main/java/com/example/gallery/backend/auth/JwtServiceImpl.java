@@ -1,6 +1,7 @@
 package com.example.gallery.backend.auth;
 
 import io.jsonwebtoken.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -13,7 +14,8 @@ import java.util.Map;
 @Service("jwtService")
 public class JwtServiceImpl implements JwtService {
 
-    private String secretKey = "abad!!!sfsfsdbsdbsdb@@3ssdvsfsdfsfaweta2352345";
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     @Override
     public String getToken(String key, Object value) {

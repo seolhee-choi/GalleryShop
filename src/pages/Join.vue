@@ -92,7 +92,7 @@ watch(
     axios.get(`/api/account/checkEmail?email=${newEmail}`).then((res) => {
       // emailError.value = res.data.exists ? "이미 등록된 이메일입니다." : "";
       emailError.value = res.data.exists
-        ? vAlert(" 이미 등록된 이메일입니다.")
+        ? vAlert("이미 등록된 이메일입니다.")
         : "";
     });
   }, 500),
@@ -112,12 +112,18 @@ const join = async () => {
   } else {
     await axios
       .post("/api/account/join", state.form)
-      .then((res) => {
+      .then(async (res) => {
         vSuccess("회원가입이 완료되었습니다.");
+
+        // 회원가입 성공 후 로그인 요청
+        await axios.post("/api/account/login", {
+          email: state.form.email,
+          password: state.form.password,
+        });
+
         router.push("/");
       })
       .catch((err) => {
-        console.log(err);
         vAlert(" 이미 등록된 이메일입니다.");
       });
   }

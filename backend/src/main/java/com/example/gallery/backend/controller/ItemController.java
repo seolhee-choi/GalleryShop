@@ -1,7 +1,7 @@
 package com.example.gallery.backend.controller;
 
-import com.example.gallery.backend.entity.Item;
-import com.example.gallery.backend.repository.ItemRepository;
+import com.example.gallery.backend.dto.Item;
+import com.example.gallery.backend.mapper.ItemMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,18 +13,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class ItemController {
 
     @Autowired
-    ItemRepository itemRepository;
+    ItemMapper itemMapper;
 
     @GetMapping("/api/items")
     public List<Item> getItems() {
-        List<Item> items = itemRepository.findAll();
+        List<Item> items = itemMapper.findAll();
 
         return items;
     }
@@ -36,7 +35,7 @@ public class ItemController {
             List<Item> items = objectMapper.readValue(file.getInputStream(),
                     new TypeReference<List<Item>>() {});
 
-            itemRepository.saveAll(items);
+            itemMapper.saveAll(items);
 
             return ResponseEntity.ok("아이템 저장 완료");
 

@@ -47,9 +47,7 @@ const addToCart = (itemId) => {
     vAlert("로그인 후 가능합니다");
     return;
   }
-  axios.post(`/api/cart/items/${itemId}`).then(() => {
-    console.log("success");
-  });
+  axios.post(`/api/cart/items/${itemId}`).then(() => {});
 };
 </script>
 

@@ -6,8 +6,6 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface MemberMapper {
-    Member findByEmailAndPassword(@Param("email") String email, @Param("password") String password);
-
     Member findByEmail(@Param("email") String email);
 
     boolean existsMemberByEmail(@Param("email") String email);

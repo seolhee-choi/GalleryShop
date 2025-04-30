@@ -51,42 +51,55 @@ import { reactive } from "vue";
 import { useAlert } from "@/utils/alert.js";
 import { validate } from "@/utils/validation.js";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
+const { vAlert, vSuccess } = useAlert();
 import axios from "axios";
 import router from "@/scripts/router.js";
 
-const { vAlert, vSuccess } = useAlert();
-
+const accountStore = useAccountStore();
 const state = reactive({
   form: {
     email: "",
     password: "",
   },
 });
-const accountStore = useAccountStore();
 
-const submit = () => {
-  //유효성 검사 실행
+//유효성 검사 함수
+const validateForm = () => {
   const errors = validate({
     email: state.form.email,
     password: state.form.password,
   });
+  return errors;
+};
 
-  if (errors.email) {
-    vAlert(errors.email);
-  } else if (errors.password) {
-    vAlert(errors.password);
+//에러 메세지 처리 함수
+const errorResponse = (err) => {
+  const status = err.response?.status;
+  const errMsg = err.response?.data?.error;
+
+  if (status === 401 || status === 404) {
+    vAlert(errMsg);
   } else {
-    axios
-      .post("/api/account/login", state.form)
-      .then((res) => {
-        accountStore.setAccount(res.data);
-        router.push("/");
-        vSuccess("로그인하였습니다.");
-      })
-      .catch(() => {
-        vAlert("일치하는 회원 정보가 존재하지 않습니다.");
-      });
+    vAlert("로그인 중 알 수 없는 오류가 발생했습니다.");
   }
+};
+const submit = () => {
+  const errors = validateForm();
+
+  // 유효성 검사에서 오류 있으면 return
+  if (errors.email || errors.password) {
+    vAlert(errors.email || errors.password);
+    return;
+  }
+
+  axios
+    .post("/api/account/login", state.form)
+    .then((res) => {
+      accountStore.setAccount(res.data);
+      router.push("/");
+      vSuccess("로그인하였습니다.");
+    })
+    .catch(errorResponse);
 };
 </script>
 

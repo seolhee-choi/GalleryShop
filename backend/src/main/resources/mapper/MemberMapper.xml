@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.gallery.backend.mapper.MemberMapper">
+
+    <!-- 이메일로 회원 찾기 -->
+    <select id="findByEmail" resultType="com.example.gallery.backend.dto.Member">
+        SELECT *
+        FROM members
+        WHERE email = #{email}
+    </select>
+
+    <!-- 이메일 존재 여부 확인 -->
+    <select id="existsMemberByEmail" resultType="boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END
+        FROM members
+        WHERE email = #{email}
+    </select>
+
+    <!-- 회원 가입 -->
+    <insert id="insert" parameterType="com.example.gallery.backend.dto.Member">
+        INSERT INTO members (email, password)
+        VALUES (#{email}, #{password})
+    </insert>
+
+</mapper>

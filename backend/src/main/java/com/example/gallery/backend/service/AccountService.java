@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Map;
 
 public interface AccountService {
-    ResponseEntity<?> login(Map<String, String> params, HttpServletResponse res);
+//    ResponseEntity<?> login(Map<String, String> params, HttpServletResponse res);
     ResponseEntity<?> logout(HttpServletResponse res);
     ResponseEntity<?> check(String token);
     ResponseEntity<?> join(Map<String, String> params, HttpServletResponse res);
