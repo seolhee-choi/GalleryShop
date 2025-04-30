@@ -1,4 +1,4 @@
-package com.example.gallery.backend.service;
+package com.example.gallery.backend.auth;
 
 import io.jsonwebtoken.Claims;
 

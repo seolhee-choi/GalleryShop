@@ -1,4 +1,4 @@
-package com.example.gallery.backend.service;
+package com.example.gallery.backend.auth;
 
 import io.jsonwebtoken.*;
 import org.springframework.stereotype.Service;
@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
