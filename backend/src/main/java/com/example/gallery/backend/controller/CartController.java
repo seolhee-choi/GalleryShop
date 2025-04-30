@@ -35,7 +35,7 @@ public class CartController {
         int memberId = jwtService.getId(token);
         List<Cart> carts = cartMapper.findByMemberId(memberId);
         List<Integer> itemIds = carts.stream().map(Cart::getItemId).toList();
-        List<Item> items = itemMapper.findByIdIn(itemIds);
+        List<Item> items = itemMapper.findByIdIn(itemIds, memberId);
 
         return new ResponseEntity<>(items, HttpStatus.OK);
 
@@ -56,6 +56,7 @@ public class CartController {
             Cart newCart = new Cart();
             newCart.setMemberId(memberId);
             newCart.setItemId(itemId);
+            newCart.setQuantity(1);
             cartMapper.insertCart(newCart);
         }
 

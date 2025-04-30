@@ -10,7 +10,7 @@ import java.util.List;
 public interface ItemMapper {
 
     // 여러 개의 itemId로 조회 (이미 존재하는 메서드)
-    List<Item> findByIdIn(@Param("ids") List<Integer> ids);
+    List<Item> findByIdIn(@Param("ids") List<Integer> ids, @Param("memberId") int memberId);
 
     // 모든 아이템 조회
     List<Item> findAll();

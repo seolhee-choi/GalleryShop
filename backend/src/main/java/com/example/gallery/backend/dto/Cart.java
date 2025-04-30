@@ -13,4 +13,6 @@ public class Cart {
 
     private int itemId;
 
+    private int quantity;
+
 }

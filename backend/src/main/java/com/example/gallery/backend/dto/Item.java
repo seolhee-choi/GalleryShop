@@ -1,8 +1,10 @@
 package com.example.gallery.backend.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class Item {
 
     private int id;
@@ -15,4 +17,5 @@ public class Item {
 
     private int discountPer;
 
+    private int quantity;
 }

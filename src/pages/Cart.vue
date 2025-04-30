@@ -2,10 +2,28 @@
   <div class="cart">
     <div class="container">
       <ul>
-        <li v-for="(i, idx) in state.items" :key="idx">
-          <img :src="i.imgPath"/>
+        <!--        <li v-for="(i, idx) in state.items" :key="idx">-->
+        <li v-for="(i, idx) in cartStore.items" :key="idx">
+          <img :src="i.imgPath" />
           <span class="name">{{ i.name }}</span>
-          <span class="price">{{ lib.getNumberFormatted(i.price - i.price * i.discountPer / 100) }}원</span>
+          <span class="price"
+            >{{
+              lib.getNumberFormatted(i.price - (i.price * i.discountPer) / 100)
+            }}원</span
+          >
+
+          <div>
+            <i
+              class="fa fa-arrow-down"
+              :class="{ disabled: i.quantity <= 1 }"
+              @click="cartStore.updateQuantity(i.id, i.quantity - 1)"
+            ></i>
+            <input class="number" :value="i.quantity" />
+            <i
+              class="fa fa-arrow-up"
+              @click="cartStore.updateQuantity(i.id, i.quantity + 1)"
+            ></i>
+          </div>
           <i class="fa fa-trash" @click="remove(i.id)"></i>
         </li>
       </ul>
@@ -15,27 +33,32 @@
 </template>
 
 <script setup>
-import {reactive} from "vue";
+import { useCartStore } from "@/scripts/useCartStore.js";
 import axios from "axios";
-import lib from '@/scripts/lib.js'
+import lib from "@/scripts/lib.js";
 
-const state = reactive({
-  items: []
-})
-const load = () => {
-  axios.get("/api/cart/items")
-      .then(({data}) => {
-        state.items = data;
-      })
-}
+const cartStore = useCartStore();
 
+const checkCartItems = (data) => {
+  data.map((item) => {
+    const existing = cartStore.items.find((i) => i.id === item.id);
+    return {
+      ...item,
+      // existing.quantity가 있으면 그걸쓰고, 없으면 item.quantity 그것도 없으면 1
+      quantity: existing?.quantity ?? item.quantity ?? 1,
+    };
+  });
+};
+const load = async () => {
+  const { data } = await axios.get("/api/cart/items");
+  cartStore.setItems(checkCartItems(data));
+  console.log("data", data);
+};
 
-const remove = (itemId) => {
-  axios.delete(`api/cart/items/${itemId}`)
-      .then(() => {
-        load();
-      })
-}
+const remove = async (itemId) => {
+  await axios.delete(`api/cart/items/${itemId}`);
+  cartStore.items = cartStore.items.filter((item) => item.id !== itemId);
+};
 
 load();
 </script>
@@ -48,26 +71,55 @@ load();
 }
 
 .cart ul li {
+  display: flex;
+  align-items: center;
+  position: relative;
   border: 1px solid #eee;
-  margin-top: 25px;
-  margin-bottom: 25px;
+  margin: 25px 0;
+  padding: 15px 20px;
 }
 
 .cart ul li img {
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
 }
 
 .cart ul li .name,
 .cart ul li .price {
-  margin-left: 25px;
+  margin-left: 20px;
+  font-size: 16px;
 }
 
-.cart ul li i {
-  float: right;
-  font-size: 20px;
-  margin-top: 65px;
+.cart ul li .price {
+  color: #888;
+}
+
+.cart ul li > div {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
   margin-right: 50px;
+  gap: 10px;
+  font-size: 18px;
+}
+
+.cart ul li .fa {
+  cursor: pointer;
+}
+
+.cart ul li .fa-trash {
+  position: absolute;
+  right: 20px;
+  font-size: 20px;
+  color: #888;
+  //cursor: pointer;
+}
+
+.cart ul li .fa.disabled {
+  color: #ccc;
+  pointer-events: none;
+  cursor: none;
 }
 
 .cart .btn {

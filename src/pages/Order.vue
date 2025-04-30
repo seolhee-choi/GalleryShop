@@ -10,9 +10,7 @@
             주문하기
           </h1>
           <p class="lead" data-v-inspector="src/pages/Order.vue:7:11">
-            Below is an example form built entirely with Bootstrap’s form
-            controls. Each required form group has a validation state that can
-            be triggered by attempting to submit the form without completing it.
+            아래 정보를 정확히 기입해라
           </p>
         </div>
         <div class="row g-5" data-v-inspector="src/pages/Order.vue:12:9">
@@ -31,7 +29,7 @@
               ><span
                 class="badge bg-primary rounded-pill"
                 data-v-inspector="src/pages/Order.vue:16:15"
-                >{{ state.items.length }}</span
+                >{{ totalQuantity }}</span
               >
             </h4>
             <ul
@@ -40,7 +38,7 @@
             >
               <li
                 class="list-group-item d-flex justify-content-between lh-sm"
-                v-for="(i, idx) in state.items"
+                v-for="(i, idx) in cartStore.items"
                 :key="idx"
               >
                 <div data-v-inspector="src/pages/Order.vue:20:17">
@@ -54,14 +52,14 @@
                 >
                   {{
                     lib.getNumberFormatted(
-                      i.price - (i.price * i.discountPer) / 100,
+                      (i.price - (i.price * i.discountPer) / 100) * i.quantity,
                     )
                   }}원
                 </span>
               </li>
             </ul>
             <h3 class="text-center total-price">
-              {{ lib.getNumberFormatted(computedPrice) }}원
+              총 {{ lib.getNumberFormatted(computedPrice) }}원
             </h3>
           </div>
           <div
@@ -199,13 +197,15 @@
 </template>
 
 <script setup>
-import { computed, reactive } from "vue";
+import { computed, reactive, onMounted } from "vue";
+import { useCartStore } from "@/scripts/useCartStore.js";
 import axios from "axios";
 import lib from "@/scripts/lib.js";
 import router from "@/scripts/router.js";
 
+const cartStore = useCartStore();
+const items = cartStore.items;
 const state = reactive({
-  items: [],
   form: {
     name: "",
     address: "",
@@ -214,17 +214,18 @@ const state = reactive({
     items: "",
   },
 });
-const load = () => {
-  axios.get("/api/cart/items").then(({ data }) => {
-    state.items = data;
-  });
-};
 
+// 최종 수량 함수
+const totalQuantity = computed(() => {
+  return cartStore.items.reduce((acc, item) => acc + item.quantity, 0);
+});
+
+// 최종 금액 함수
 const computedPrice = computed(() => {
   let result = 0;
 
-  for (let i of state.items) {
-    result += i.price - (i.price * i.discountPer) / 100;
+  for (let i of cartStore.items) {
+    result += (i.price - (i.price * i.discountPer) / 100) * i.quantity;
   }
 
   return result;
@@ -232,17 +233,12 @@ const computedPrice = computed(() => {
 
 const submit = () => {
   const args = JSON.parse(JSON.stringify(state.form));
-  args.items = JSON.stringify(state.items);
+  args.items = JSON.stringify(cartStore.items);
 
-  axios
-    .post("/api/orders", args)
-
-    .then(() => {
-      router.push("/orders");
-    });
+  axios.post("/api/orders", args).then(() => {
+    router.push("/orders");
+  });
 };
-
-load();
 </script>
 
 <style scoped></style>
