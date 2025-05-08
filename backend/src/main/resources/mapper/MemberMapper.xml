@@ -25,4 +25,11 @@
         VALUES (#{email}, #{password})
     </insert>
 
+
+    <!-- 비밀번호 변경 -->
+    <update id="changePassword" parameterType="com.example.gallery.backend.dto.Member">
+        UPDATE members
+        SET password = #{password}
+        WHERE id = #{id}
+    </update>
 </mapper>

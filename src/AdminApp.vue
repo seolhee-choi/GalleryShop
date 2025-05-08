@@ -1,17 +1,16 @@
 <template>
-  <!--  <Header />-->
+  <AdminHeader />
+  <AdminSvg />
   <RouterView />
-  <Alert />
-  <!--  <Footer />-->
 </template>
 
 <script setup>
-import Header from "@/components/user/Header.vue";
-import Footer from "@/components/user/Footer.vue";
 import axios from "axios";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
 import { watch } from "vue";
 import { useRoute } from "vue-router";
+import AdminHeader from "@/components/admin/AdminHeader.vue";
+import AdminSvg from "@/components/admin/AdminSvg.vue";
 
 const accountStore = useAccountStore();
 const check = () => {

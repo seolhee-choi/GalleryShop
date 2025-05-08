@@ -1,41 +1,54 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Home from "@/pages/Home.vue";
-import Login from "@/pages/Login.vue";
-import Cart from "@/pages/Cart.vue";
-import Order from "@/pages/Order.vue";
-import Orders from "@/pages/Orders.vue";
-import Join from "@/pages/Join.vue";
-// import Data from '@/pages/Data.vue';
 
 const routes = [
   {
     path: "/",
-    component: Home,
+    component: () => import("@/UserApp.vue"),
+    children: [
+      {
+        path: "",
+        component: () => import("@/pages/user/Home.vue"),
+      },
+      {
+        path: "login",
+        component: () => import("@/pages/user/Login.vue"),
+      },
+      {
+        path: "cart",
+        component: () => import("@/pages/user/Cart.vue"),
+      },
+      {
+        path: "order",
+        component: () => import("@/pages/user/Order.vue"),
+      },
+      {
+        path: "orders",
+        component: () => import("@/pages/user/Orders.vue"),
+      },
+      {
+        path: "join",
+        component: () => import("@/pages/user/Join.vue"),
+      },
+      {
+        path: "mypage",
+        component: () => import("@/pages/user/Mypage.vue"),
+      },
+      // {
+      //     path: 'data',
+      //     component: () => import("@/pages/user/Data.vue"),
+      // },
+    ],
   },
   {
-    path: "/login",
-    component: Login,
+    path: "/admin",
+    component: () => import("@/AdminApp.vue"),
+    children: [
+      {
+        path: "dashboard",
+        component: () => import("@/pages/admin/Dashboard.vue"),
+      },
+    ],
   },
-  {
-    path: "/cart",
-    component: Cart,
-  },
-  {
-    path: "/order",
-    component: Order,
-  },
-  {
-    path: "/orders",
-    component: Orders,
-  },
-  {
-    path: "/join",
-    component: Join,
-  },
-  // {
-  //     path: '/data',
-  //     component: Data,
-  // },
 ];
 
 const router = createRouter({

@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { useAlert } from "@/utils/alert";
+import { useAlert } from "@/utils/alert.js";
 const { alerts } = useAlert();
 const typeStyle = (type) =>
   type === "error" ? "alert-danger" : "alert-primary";

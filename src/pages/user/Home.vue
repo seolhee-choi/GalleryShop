@@ -4,7 +4,7 @@
       <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
           <div class="col" v-for="(item, idx) in state.items" :key="idx">
-            <Card :item="item"/>
+            <Card :item="item" />
           </div>
         </div>
       </div>
@@ -13,23 +13,20 @@
 </template>
 
 <script setup>
-import {reactive} from 'vue';
+import { reactive } from "vue";
 import axios from "axios";
-import Card from "@/components/Card.vue";
+import Card from "@/components/user/Card.vue";
 
 const state = reactive({
-  items: []
+  items: [],
 });
 const api = () => {
-  axios.get("/api/items")
-      .then(({data}) => {
-        state.items = data;
-      })
-}
+  axios.get("/api/items").then(({ data }) => {
+    state.items = data;
+  });
+};
 
 api();
 </script>
 
-<style>
-
-</style>
+<style></style>

@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
@@ -66,7 +67,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         res.setStatus(HttpServletResponse.SC_OK);
         res.setContentType("application/json;charset=UTF-8");
-        res.getWriter().write("{\"id\": " + member.getId() + "}");
+//        res.getWriter().write("{\"id\": " + member.getId() + ", \"email\": \"" + member.getEmail() + "\"}");
+
+        //front쪽에 JSON 객체로 응답하는 과정
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("id", member.getId());
+        responseBody.put("email", member.getEmail());
+
+        ObjectMapper mapper = new ObjectMapper();
+        res.getWriter().write(mapper.writeValueAsString(responseBody));
 
         //로그인 성공 상태 코드
         System.out.println("로그인 성공 (JWT 발급 완료)!!!!!!!");

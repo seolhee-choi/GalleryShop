@@ -11,4 +11,5 @@ public interface AccountService {
     ResponseEntity<?> check(String token);
     ResponseEntity<?> join(Map<String, String> params, HttpServletResponse res);
     ResponseEntity<?> checkDuplicateEmail(String params);
+    ResponseEntity<?> changePassword(Map<String, String> params, HttpServletResponse res);
 }

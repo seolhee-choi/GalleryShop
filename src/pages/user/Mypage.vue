@@ -1,46 +1,39 @@
 <template>
   <div class="form-signin w-100 m-auto">
-    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+    <h1 class="h3 mb-3 fw-normal">비밀번호 변경</h1>
     <div class="form-floating">
       <input
         type="email"
         class="form-control"
         id="floatingInput"
-        placeholder="name@example.com"
-        v-model="state.form.email"
-        @keyup.enter="submit()"
+        v-model="accountStore.account.email"
+        disabled
       />
-      <label for="floatingInput">Email address</label>
     </div>
     <div class="form-floating">
       <input
         type="password"
         class="form-control"
         id="floatingPassword"
-        placeholder="Password"
+        placeholder="기존 비밀번호"
         v-model="state.form.password"
         @keyup.enter="submit()"
       />
-      <label for="floatingPassword">Password</label>
+      <label for="floatingPassword">기존 비밀번호</label>
     </div>
-    <div class="form-check text-start my-3">
+    <div class="form-floating">
       <input
-        class="form-check-input"
-        type="checkbox"
-        value="remember-me"
-        id="checkDefault"
-      />
-      <label
-        class="form-check-label"
-        for="checkDefault"
+        type="password"
+        class="form-control"
+        id="floatingNewPassword"
+        placeholder="새로운 비밀번호"
+        v-model="state.form.newPassword"
         @keyup.enter="submit()"
-      >
-        Remember me
-      </label>
-      <router-link to="/join" class="join">회원가입</router-link>
+      />
+      <label for="floatingNewPassword">새로운 비밀번호</label>
     </div>
     <button class="btn btn-primary w-100 py-2" @click="submit()">
-      Sign in
+      비밀번호 변경
     </button>
     <p class="mt-5 mb-3 text-body-secondary">&copy; 2017–2025</p>
   </div>
@@ -48,8 +41,8 @@
 
 <script setup>
 import { reactive } from "vue";
-import { useAlert } from "@/utils/alert.js";
 import { validate } from "@/utils/validation.js";
+import { useAlert } from "@/utils/alert.js";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
 const { vAlert, vSuccess } = useAlert();
 import axios from "axios";
@@ -58,16 +51,18 @@ import router from "@/scripts/router.js";
 const accountStore = useAccountStore();
 const state = reactive({
   form: {
-    email: "",
+    email: accountStore.account.email,
     password: "",
+    newPassword: "",
   },
 });
 
 //유효성 검사 함수
 const validateForm = () => {
   const errors = validate({
-    email: state.form.email,
+    email: accountStore.account.email,
     password: state.form.password,
+    newPassword: state.form.newPassword,
   });
   return errors;
 };
@@ -77,29 +72,30 @@ const errorResponse = (err) => {
   const status = err.response?.status;
   const errMsg = err.response?.data?.error;
 
-  if (status === 401 || status === 404) {
-    vAlert(errMsg);
+  if (status === 400) {
+    vAlert("기존 비밀번호가 일치하지 않습니다.");
   } else {
-    vAlert("로그인 중 알 수 없는 오류가 발생했습니다.");
+    vAlert("로그인 중 알 수 없는 오류가 발생했습니다~~.");
   }
 };
+
 const submit = () => {
   const errors = validateForm();
 
-  // 유효성 검사에서 오류 있으면 return
-  if (errors.email || errors.password) {
-    vAlert(errors.email || errors.password);
+  if (errors.password || errors.newPassword) {
+    vAlert(errors.password || errors.newPassword);
     return;
   }
 
   axios
-    .post("/api/account/login", state.form)
+    .post("/api/account/changePassword", state.form)
     .then((res) => {
-      accountStore.setAccount(res.data);
+      vSuccess("비밀번호가 변경되었습니다.");
       router.push("/");
-      vSuccess("로그인하였습니다.");
     })
-    .catch(errorResponse);
+    .catch((err) => {
+      errorResponse(err);
+    });
 };
 </script>
 
@@ -119,13 +115,15 @@ const submit = () => {
   border-bottom-left-radius: 0;
 }
 
-.form-signin input[type="password"] {
-  margin-bottom: 10px;
+.form-signin input[type="password"]:first-of-type {
+  margin-bottom: -1px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
 
-.join {
-  float: right;
+.form-signin input[type="password"]:last-of-type {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 </style>

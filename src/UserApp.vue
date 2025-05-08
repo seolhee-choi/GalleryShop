@@ -1,8 +1,8 @@
 <template>
-  <!--  <Header />-->
+  <Header />
   <RouterView />
   <Alert />
-  <!--  <Footer />-->
+  <Footer />
 </template>
 
 <script setup>

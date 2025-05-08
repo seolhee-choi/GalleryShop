@@ -11,14 +11,13 @@
               lib.getNumberFormatted(i.price - (i.price * i.discountPer) / 100)
             }}원</span
           >
-
           <div>
             <i
               class="fa fa-arrow-down"
               :class="{ disabled: i.quantity <= 1 }"
               @click="cartStore.updateQuantity(i.id, i.quantity - 1)"
             ></i>
-            <input class="number" :value="i.quantity" />
+            <input type="number" class="number" :value="i.quantity" disabled />
             <i
               class="fa fa-arrow-up"
               @click="cartStore.updateQuantity(i.id, i.quantity + 1)"
@@ -27,7 +26,7 @@
           <i class="fa fa-trash" @click="remove(i.id)"></i>
         </li>
       </ul>
-      <router-link to="/order" class="btn btn-primary">구입하기</router-link>
+      <router-link to="/order" class="btn btn-primary">구매하기</router-link>
     </div>
   </div>
 </template>
@@ -40,7 +39,7 @@ import lib from "@/scripts/lib.js";
 const cartStore = useCartStore();
 
 const checkCartItems = (data) => {
-  data.map((item) => {
+  return data.map((item) => {
     const existing = cartStore.items.find((i) => i.id === item.id);
     return {
       ...item,
@@ -52,7 +51,7 @@ const checkCartItems = (data) => {
 const load = async () => {
   const { data } = await axios.get("/api/cart/items");
   cartStore.setItems(checkCartItems(data));
-  console.log("data", data);
+  console.log("data1", data);
 };
 
 const remove = async (itemId) => {
@@ -128,5 +127,18 @@ load();
   margin: 0 auto;
   padding: 30px 50px;
   font-size: 20px;
+}
+
+.number {
+  width: 60px;
+}
+</style>
+
+<style>
+/*   !* 글로벌 스타일에서만 작동 *!*/
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 </style>

@@ -19,6 +19,8 @@ public class Member implements UserDetails {
 
     private String password;
 
+    private String newPassword;
+
     private String role;
 
     // UserDetails 인터페이스 구현(Spring Security)

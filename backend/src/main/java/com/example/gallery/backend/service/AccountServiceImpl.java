@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
@@ -80,7 +81,7 @@ public class AccountServiceImpl implements AccountService{
         //1. 기존 회원 아이디가 있는지 조회한다.
         Member member = memberMapper.findByEmail(params.get("email"));
 
-        //2. 기존 회원 아이디가 없으면 db에 저장
+        //2. 기존 회원 이메일이 없으면 db에 저장
         if (member == null || member.equals("")) {
             Member member1 = new Member();
             member1.setEmail(params.get("email"));
@@ -101,5 +102,31 @@ public class AccountServiceImpl implements AccountService{
     public ResponseEntity checkDuplicateEmail(@RequestParam String email) {
         boolean exists = memberMapper.existsMemberByEmail(email);
         return ResponseEntity.ok(Map.of("exists", exists));
+    }
+
+    @Override
+    public ResponseEntity changePassword(@RequestBody Map<String, String> params, HttpServletResponse res) {
+        //1. 회원의 email로 일치하는 회원을 먼저 조회한다.
+        Member member = memberMapper.findByEmail(params.get("email"));
+
+        //1-2. 일치하는 회원이 없으면 에러 반환
+        if (member == null || member.getEmail().isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+        //2. 1에서 찾은 회원의 password와 사용자로부터 입력받은 password가 일치하는지 확인
+        if (bCryptPasswordEncoder.matches(params.get("password"), member.getPassword())) {
+            //2-1. 일치하면 newPassword를 인코딩
+            String encodePassword = bCryptPasswordEncoder.encode(params.get("newPassword"));
+            //2-2. 인코딩한 새 비밀번호를 member에 설정
+            member.setPassword(encodePassword);
+            //2-3. 비밀번호 변경 실행
+            memberMapper.changePassword(member);
+
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } else {
+            //3. 기존 비밀번호가 일치하지 않으면 에러 반환("기존 비밀번호가 다릅니다")
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
     }
 }
