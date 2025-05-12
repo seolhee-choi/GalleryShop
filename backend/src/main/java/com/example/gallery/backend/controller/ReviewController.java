@@ -2,6 +2,7 @@ package com.example.gallery.backend.controller;
 
 import com.example.gallery.backend.auth.JwtService;
 import com.example.gallery.backend.dto.Member;
+import com.example.gallery.backend.dto.ResultVO;
 import com.example.gallery.backend.dto.Review;
 import com.example.gallery.backend.mapper.ItemMapper;
 import com.example.gallery.backend.mapper.MemberMapper;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.xml.transform.Result;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;

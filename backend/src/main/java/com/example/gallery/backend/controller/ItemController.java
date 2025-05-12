@@ -1,6 +1,7 @@
 package com.example.gallery.backend.controller;
 
 import com.example.gallery.backend.dto.Item;
+import com.example.gallery.backend.dto.ResultVO;
 import com.example.gallery.backend.mapper.ItemMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

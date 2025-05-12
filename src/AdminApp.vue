@@ -1,31 +1,22 @@
 <template>
   <AdminHeader />
+  <AdminSidebar />
   <AdminSvg />
   <RouterView />
 </template>
 
 <script setup>
-import axios from "axios";
-import { useAccountStore } from "@/scripts/useAccountStore.js";
-import { watch } from "vue";
-import { useRoute } from "vue-router";
 import AdminHeader from "@/components/admin/AdminHeader.vue";
 import AdminSvg from "@/components/admin/AdminSvg.vue";
+import AdminSidebar from "@/components/admin/AdminSidebar.vue";
+import axios from "axios";
+import { useAccountStore } from "@/scripts/useAccountStore.js";
+import { onMounted, watch } from "vue";
 
 const accountStore = useAccountStore();
-const check = () => {
-  axios.get("/api/account/check").then(({ data }) => {
-    accountStore.setAccount({
-      id: data || 0,
-      email: accountStore.account.email,
-    });
-  });
-};
 
-const route = useRoute();
-
-watch(route, () => {
-  check();
+onMounted(() => {
+  accountStore.check();
 });
 </script>
 

@@ -4,6 +4,7 @@ import com.example.gallery.backend.dto.Member;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 @Mapper
@@ -15,4 +16,8 @@ public interface MemberMapper {
     void insert(Member member);
 
     void changePassword(Member member);
+
+    String findEmailById(@Param("id") int id);
+
+    List<Member> findAllMember();
 }

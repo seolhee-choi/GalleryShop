@@ -12,4 +12,5 @@ public interface OrderMapper{
     List<Order> findByMemberIdOrderByIdDesc(@Param("memberId") int memberId);
 
     void save(Order order);
+    List<Order> findAllOrder();
 }

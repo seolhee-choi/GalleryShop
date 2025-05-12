@@ -32,4 +32,17 @@
         SET password = #{password}
         WHERE id = #{id}
     </update>
+
+    <!-- 아이디로 이메일 찾기 -->
+    <select id="findEmailById" resultType="java.lang.String">
+        SELECT email
+        FROM members
+        WHERE id = #{id}
+    </select>
+
+    <!-- 전체 회원 검색 -->
+    <select id="findAllMember" resultType="com.example.gallery.backend.dto.Member">
+        SELECT *
+        FROM members
+    </select>
 </mapper>

@@ -85,13 +85,16 @@
 
 <script setup>
 import { useAccountStore } from "@/scripts/useAccountStore.js";
+import { useCartStore } from "@/scripts/useCartStore.js";
 import router from "@/scripts/router.js";
 import axios from "axios";
 
 const accountStore = useAccountStore();
+const cartStore = useCartStore();
 const logout = () => {
   axios.post("/api/account/logout").then(() => {
     accountStore.setAccount({ id: 0, email: "" });
+    cartStore.$reset(); // Pinia 상태만 초기화 (localStorage는 유지 가능)
     router.push("/");
   });
 };

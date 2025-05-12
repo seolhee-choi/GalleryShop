@@ -1,5 +1,13 @@
 package com.example.gallery.backend.auth;
 
+import com.example.gallery.backend.auth.JwtAuthenticationFilter;
+import com.example.gallery.backend.auth.JwtService;
+import com.example.gallery.backend.auth.LoginFilter;
+import com.example.gallery.backend.mapper.MemberMapper;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,6 +16,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -15,61 +24,71 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
     private final AuthenticationConfiguration authenticationConfiguration;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration) {
+    private final JwtService jwtService;
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtService jwtService) {
         this.authenticationConfiguration = authenticationConfiguration;
+        this.jwtService = jwtService;
     }
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception{
-        return configuration.getAuthenticationManager();
-    }
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtService jwtService) throws Exception {
+    public AuthenticationManager authenticationManager() throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
-        //csrf disable
-        http.csrf((auth) -> auth.disable());
+    // ✅ LoginFilter를 Bean으로 등록
+//    @Bean
+//    public LoginFilter loginFilter() throws Exception {
+//        return new LoginFilter(authenticationManager(), jwtService); // authenticationManager()가 호출되면 Bean이 주입됩니다.
+//    }
 
-        //Form 로그인 방식 disable
-        http.formLogin((auth) -> auth.disable());
+    // ✅ SecurityFilterChain 설정
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .formLogin(form -> form.disable())
+                .httpBasic(basic -> basic.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/api/**").permitAll()
+                        .anyRequest().authenticated())
+                .exceptionHandling(ex -> ex.accessDeniedPage("/access-denied"))
+                .cors(Customizer.withDefaults())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        //http basic 인증 방식 disable
-        http.httpBasic((auth) -> auth.disable());
-
-        //경로별 인가 작업
-        http.authorizeHttpRequests((auth) -> auth
-//                .requestMatchers("/login","/","/join").permitAll()
-                .requestMatchers("/admin").hasRole("ADMIN")
-                .requestMatchers("/api/**").permitAll() //api로 시작하는 url들은 로그인 없이 접근 허용
-                .anyRequest().authenticated()) //나머지는 인증필요
-                .cors(Customizer.withDefaults());
-
-        // 로그인시 LoginFilter가 탈 수 있게 설정하는 로직
-        LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration), jwtService);
-        loginFilter.setFilterProcessesUrl("/api/account/login");
-        http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
-
-        //세션 설정 - 무상태(stateless) 세션 정책 사용
-        http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        // LoginFilter 추가
+//        http.addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class);
+        logger.info("*****JWT Filter added");
         return http.build();
     }
 
+    // CORS 설정
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOriginPattern("*"); // 모든 origin 허용 (개발 중이라면)
+        configuration.addAllowedOriginPattern("http://localhost:5173");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
-        configuration.setAllowCredentials(true); // 쿠키 허용 (필요한 경우)
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

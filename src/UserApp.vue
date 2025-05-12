@@ -10,23 +10,12 @@ import Header from "@/components/user/Header.vue";
 import Footer from "@/components/user/Footer.vue";
 import axios from "axios";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
-import { watch } from "vue";
-import { useRoute } from "vue-router";
+import { watch, onMounted } from "vue";
 
 const accountStore = useAccountStore();
-const check = () => {
-  axios.get("/api/account/check").then(({ data }) => {
-    accountStore.setAccount({
-      id: data || 0,
-      email: accountStore.account.email,
-    });
-  });
-};
 
-const route = useRoute();
-
-watch(route, () => {
-  check();
+onMounted(() => {
+  accountStore.check();
 });
 </script>
 

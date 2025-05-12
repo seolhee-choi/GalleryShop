@@ -51,7 +51,6 @@ const checkCartItems = (data) => {
 const load = async () => {
   const { data } = await axios.get("/api/cart/items");
   cartStore.setItems(checkCartItems(data));
-  console.log("data1", data);
 };
 
 const remove = async (itemId) => {

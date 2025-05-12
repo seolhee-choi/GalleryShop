@@ -18,4 +18,32 @@
         INSERT INTO orders (member_id, name, address, payment, card_number, items)
         VALUES (#{memberId}, #{name}, #{address}, #{payment}, #{cardNumber}, #{items})
     </insert>
+
+    <!-- 전체 주문 검색 (ID 내림차순 정렬) -->
+    <select id="findAllOrder" resultType="com.example.gallery.backend.dto.Order">
+        SELECT *
+        FROM orders
+        ORDER BY id DESC
+    </select>
+
+    <!-- 기존 order의 items를 관계형 테이블로 insert하는 쿼리 -->
+    <insert id="saveToOrderItems" parameterType="com.example.gallery.backend.dto.Order">
+        INSERT INTO order_items (order_id, item_id, item_name, price_at_order, quantity, discount_per)
+        SELECT
+            o.id AS order_id,
+            i.id AS item_id,
+            i.name AS item_name,
+            i.price AS price_at_order,
+            i.quantity AS quantity,  -- 수량 정보가 있으면, 없으면 1로 설정
+            i.discount_per AS discount_per
+        FROM
+            orders o
+        JOIN JSON_TABLE(o.items, '$[*]' COLUMNS (
+            id INT PATH '$.id',
+            name VARCHAR(255) PATH '$.name',
+            price INT PATH '$.price',
+            quantity INT PATH '$.quantity',
+            discount_per INT PATH '$.discountPer'
+        )) i ON o.id = i.order_id;
+    </insert>
 </mapper>

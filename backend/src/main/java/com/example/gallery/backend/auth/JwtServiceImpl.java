@@ -1,6 +1,9 @@
 package com.example.gallery.backend.auth;
 
+import com.example.gallery.backend.dto.Member;
 import io.jsonwebtoken.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +20,11 @@ public class JwtServiceImpl implements JwtService {
     @Value("${jwt.secret}")
     private String secretKey;
 
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
+
     @Override
-    public String getToken(String key, Object value) {
+//    public String getToken(String key, Object value) {
+    public String getToken(Member member) {
 
         Date expTime = new Date();
         expTime.setTime(expTime.getTime() + 1000 * 60 * 30);
@@ -31,13 +37,20 @@ public class JwtServiceImpl implements JwtService {
         headerMap.put("alg", "HS256");
 
         Map<String, Object> map = new HashMap<>();
-        map.put(key, value);
+//        map.put(key, value);
+        map.put("id", member.getId());
+        map.put("email" , member.getEmail());
+        map.put("role", member.getRole());
 
-        JwtBuilder builder = Jwts.builder().setHeader(headerMap)
+        logger.info("*****Generating JWT with claim: " + map);
+
+        JwtBuilder builder = Jwts.builder()
+                .setHeader(headerMap)
                 .setClaims(map)
                 .setExpiration(expTime)
                 .signWith(signKey, SignatureAlgorithm.HS256);
 
+        logger.debug("*****Generated JWT: " + builder);
         return builder.compact();
     }
 
