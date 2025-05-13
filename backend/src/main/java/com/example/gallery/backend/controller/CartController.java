@@ -4,6 +4,9 @@ import com.example.gallery.backend.dto.Cart;
 import com.example.gallery.backend.dto.Item;
 import com.example.gallery.backend.dto.Member;
 import com.example.gallery.backend.dto.ResultVO;
+import com.example.gallery.backend.exception.BizException;
+import com.example.gallery.backend.exception.ErrorCode;
+import com.example.gallery.backend.exception.ErrorResponse;
 import com.example.gallery.backend.mapper.CartMapper;
 import com.example.gallery.backend.mapper.ItemMapper;
 import com.example.gallery.backend.auth.JwtService;
@@ -56,9 +59,13 @@ public class CartController {
             List<Integer> itemIds = cartItems.stream().map(Cart::getItemId).toList();
             List<Item> items = itemMapper.findByIdIn(itemIds, userId);
 
-            return new ResponseEntity<>(items, HttpStatus.OK);
+//            return new ResponseEntity<>(items, HttpStatus.OK);
+            return new ResponseEntity<>(items, ErrorCode.OK.getHttpStatus());
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 정보 없음");
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 정보 없음");
+//        return new BizException(ErrorCode.ERROR_998);
+        return new ResponseEntity<>(new ErrorResponse(ErrorCode.ERROR_001), ErrorCode.ERROR_001.getHttpStatus());
+
     }
 
 
