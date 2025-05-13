@@ -9,7 +9,7 @@
 import AdminHeader from "@/components/admin/AdminHeader.vue";
 import AdminSvg from "@/components/admin/AdminSvg.vue";
 import AdminSidebar from "@/components/admin/AdminSidebar.vue";
-import axios from "axios";
+import axios from "@/axios.js";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
 import { onMounted, watch } from "vue";
 

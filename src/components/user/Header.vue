@@ -87,7 +87,7 @@
 import { useAccountStore } from "@/scripts/useAccountStore.js";
 import { useCartStore } from "@/scripts/useCartStore.js";
 import router from "@/scripts/router.js";
-import axios from "axios";
+import axios from "@/axios.js";
 
 const accountStore = useAccountStore();
 const cartStore = useCartStore();

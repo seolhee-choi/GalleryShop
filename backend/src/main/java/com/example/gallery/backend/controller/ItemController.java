@@ -2,6 +2,8 @@ package com.example.gallery.backend.controller;
 
 import com.example.gallery.backend.dto.Item;
 import com.example.gallery.backend.dto.ResultVO;
+import com.example.gallery.backend.exception.BizException;
+import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.ItemMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +44,7 @@ public class ItemController {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("업로드 실패");
+            throw new BizException(ErrorCode.ERROR_007);
         }
     }
 }

@@ -33,7 +33,7 @@
 
 <script setup>
 import { useCartStore } from "@/scripts/useCartStore.js";
-import axios from "axios";
+import axios from "@/axios.js";
 import lib from "@/scripts/lib.js";
 
 const cartStore = useCartStore();
@@ -49,8 +49,12 @@ const checkCartItems = (data) => {
   });
 };
 const load = async () => {
-  const { data } = await axios.get("/api/cart/items");
-  cartStore.setItems(checkCartItems(data));
+  try {
+    const { data } = await axios.get("/api/cart/items");
+    cartStore.setItems(checkCartItems(data));
+  } catch (err) {
+    alert(err.response?.data?.msg || "장바구니 조회 실패");
+  }
 };
 
 const remove = async (itemId) => {

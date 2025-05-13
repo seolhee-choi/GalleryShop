@@ -13,4 +13,6 @@ public interface OrderMapper{
 
     void save(Order order);
     List<Order> findAllOrder();
+
+    void saveToOrderItems(@Param("orderId") int orderId, @Param("items") String items);
 }

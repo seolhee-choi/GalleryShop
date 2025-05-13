@@ -23,14 +23,17 @@ const routes = [
       {
         path: "cart",
         component: () => import("@/pages/user/Cart.vue"),
+        meta: { requiresAuth: true },
       },
       {
         path: "order",
         component: () => import("@/pages/user/Order.vue"),
+        meta: { requiresAuth: true },
       },
       {
         path: "orders",
         component: () => import("@/pages/user/Orders.vue"),
+        meta: { requiresAuth: true },
       },
       {
         path: "join",
@@ -40,6 +43,7 @@ const routes = [
       {
         path: "mypage",
         component: () => import("@/pages/user/Mypage.vue"),
+        meta: { requiresAuth: true },
       },
       // {
       //     path: 'data',
@@ -81,18 +85,18 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  // const publicPaths = ["/", "/login", "/join", "/access-denied"];
-
   const accountStore = useAccountStore();
 
-  // 먼저 사용자 상태를 최신화
   await accountStore.check();
 
-  if (to.meta.requiresAuth && !accountStore.isLoggedIn) {
+  const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+  const guestOnly = to.matched.some((record) => record.meta.guestOnly);
+
+  if (requiresAuth && !accountStore.isLoggedIn) {
     return next("/login");
   }
 
-  if (to.meta.guestOnly && accountStore.isLoggedIn) {
+  if (requiresAuth && accountStore.isLoggedIn) {
     return next("/"); // 로그인된 사용자는 guestOnly 페이지 접근 금지
   }
 

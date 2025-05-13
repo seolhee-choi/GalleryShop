@@ -45,7 +45,7 @@
 
 <script setup>
 import { reactive } from "vue";
-import axios from "axios";
+import axios from "@/axios.js";
 import ReviewModal from "@/pages/user/ReviewModal.vue";
 
 const state = reactive({

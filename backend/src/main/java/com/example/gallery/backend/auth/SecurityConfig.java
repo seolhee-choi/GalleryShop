@@ -53,13 +53,19 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // ✅ LoginFilter를 Bean으로 등록
+    // LoginFilter를 Bean으로 등록
 //    @Bean
 //    public LoginFilter loginFilter() throws Exception {
 //        return new LoginFilter(authenticationManager(), jwtService); // authenticationManager()가 호출되면 Bean이 주입됩니다.
 //    }
 
-    // ✅ SecurityFilterChain 설정
+    private static final String[] PUBLIC_URLS = {
+            "/api/login",
+            "/api/join",
+            "/api/items",
+            "/api/account/check",
+    };
+    // SecurityFilterChain 설정
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -68,8 +74,9 @@ public class SecurityConfig {
                 .httpBasic(basic -> basic.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/admin").hasRole("ADMIN")
-                        .requestMatchers("/api/**").permitAll()
-                        .anyRequest().authenticated())
+                        .requestMatchers(PUBLIC_URLS).permitAll()
+//                        .anyRequest().authenticated())
+                        .anyRequest().permitAll())
                 .exceptionHandling(ex -> ex.accessDeniedPage("/access-denied"))
                 .cors(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

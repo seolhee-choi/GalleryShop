@@ -52,7 +52,7 @@ import { useAlert } from "@/utils/alert.js";
 import { validate } from "@/utils/validation.js";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
 const { vAlert, vSuccess } = useAlert();
-import axios from "axios";
+import axios from "@/axios.js";
 import router from "@/scripts/router.js";
 
 const accountStore = useAccountStore();

@@ -1,3 +1,4 @@
+import router from "@/scripts/router.js";
 import axios from "axios";
 
 // Axios 기본 설정
@@ -23,10 +24,9 @@ instance.interceptors.response.use(
     return response;
   },
   (error) => {
-    // 예외 처리 (예: 인증 오류 발생 시)
     if (error.response && error.response.status === 401) {
-      console.error("Unauthorized access - redirecting to login page");
-      // 로그인 페이지로 리다이렉션 처리
+      alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+      router.push("/login");
     }
     return Promise.reject(error);
   },

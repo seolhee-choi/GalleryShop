@@ -29,21 +29,43 @@ export function validate({ email, password, newPassword = "" }) {
   return errors;
 }
 
-export function cardSerialNumberFormatter(serialnumber) {
-  if (/[^0-9]/.test(serialnumber)) {
-    alert("숫자만 입력할 수 있습니다.");
-    return "";
+// 이름 유효성 검사 함수
+export function validateNameFormat(name) {
+  if (!name || name.trim().length === 0) {
+    return "이름을 입력해주세요.";
   }
 
-  const raw = serialnumber.replace(/[^0-9]/g, "");
-  if (raw.length > 16) return raw.slice(0, 16); // 16자 초과 방지
+  // 한글, 영문만 허용 (공백 포함), 숫자 및 특수문자 금지
+  const nameRegex = /^[가-힣a-zA-Z\s]+$/;
+  if (!nameRegex.test(name)) {
+    return "이름에는 숫자나 특수문자를 사용할 수 없습니다.";
+  }
 
-  return raw;
+  return null; // 통과
 }
 
+// 카드 유효성 검사 함수
+export function cardSerialNumberFormatter(value) {
+  if (/[^0-9]/.test(value)) {
+    return { formatted: "", error: "카드번호는 숫자만 입력할 수 있습니다." };
+  }
+
+  const raw = serialnumber.replace(/[^0-9]/g, ""); // 숫자만 남김
+  if (raw.length > 16) {
+    // 16자리 이상이면 16자리까지 자르고, 오류 메시지 반환
+    return {
+      formatted: raw.slice(0, 16),
+      error: "카드 번호는 16자리를 초과할 수 없습니다.",
+    };
+  }
+
+  return { formatted: raw, error: null };
+}
+
+// 주소 유효성 검사 함수
 export function validateAddressFormat(address) {
   if (!address || address.trim().length < 5) {
-    return "주소는 5자 이상 입력해주세요.";
+    return "주소를 올바르게 입력해주세요.";
   }
 
   if (/[^a-zA-Z0-9가-힣\s\-.,]/.test(address)) {

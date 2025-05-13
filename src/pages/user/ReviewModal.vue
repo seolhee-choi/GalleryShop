@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import axios from "axios";
+import axios from "@/axios.js";
 import { ref, watch, reactive } from "vue";
 import { useAlert } from "@/utils/alert.js";
 

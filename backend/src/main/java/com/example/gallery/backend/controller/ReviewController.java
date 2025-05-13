@@ -4,6 +4,8 @@ import com.example.gallery.backend.auth.JwtService;
 import com.example.gallery.backend.dto.Member;
 import com.example.gallery.backend.dto.ResultVO;
 import com.example.gallery.backend.dto.Review;
+import com.example.gallery.backend.exception.BizException;
+import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.ItemMapper;
 import com.example.gallery.backend.mapper.MemberMapper;
 import com.example.gallery.backend.mapper.ReviewMapper;
@@ -43,22 +45,16 @@ public class ReviewController {
         if(review != null) {
             return new ResponseEntity<>(review, HttpStatus.OK);
         } else {
-            return new ResponseEntity(HttpStatus.NOT_FOUND);
+            throw new BizException(ErrorCode.ERROR_003);
         }
     }
 
     @Transactional
     @PostMapping("/api/reviews/register/{itemId}")
     public ResponseEntity registerReview(@PathVariable("itemId") int itemId, @RequestBody Review dto, @CookieValue(value = "token", required = false) String token) {
-        try {
-            if (!jwtService.isValid(token)) {
-                System.out.println("JWT INVALID - throwing 401");
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인 이후 등록 가능합니다.");
-            }
-        } catch (ResponseStatusException ex) {
-            System.out.println("잡힌 에러" + ex.getStatusCode());
-            throw ex;
-        }
+//        if (!jwtService.isValid(token)) {
+//            throw new BizException(ErrorCode.ERROR_001);
+//        }
 
         int memberId = jwtService.getId(token);
         Review newReview = new Review();

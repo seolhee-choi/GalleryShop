@@ -64,8 +64,7 @@
                     class="form-control"
                     id="address"
                     required=""
-                    :value="state.form.address"
-                    @input="handleAddrInput"
+                    v-model="state.form.address"
                   />
                 </div>
               </div>
@@ -102,9 +101,10 @@
                     type="text"
                     class="form-control"
                     id="cc-name"
-                    :value="state.form.cardNumber"
+                    v-model="state.form.cardNumber"
                     @input="handleCardInput"
                     placeholder="카드번호 숫자만 입력해주세요(16자리)"
+                    maxlength="16"
                   />
                 </div>
               </div>
@@ -131,8 +131,9 @@ import { useAlert } from "@/utils/alert.js";
 import {
   cardSerialNumberFormatter,
   validateAddressFormat,
+  validateNameFormat,
 } from "@/utils/validation.js";
-import axios from "axios";
+import axios from "@/axios.js";
 import lib from "@/scripts/lib.js";
 import router from "@/scripts/router.js";
 
@@ -165,54 +166,51 @@ const computedPrice = computed(() => {
   return result;
 });
 
-//카드번호 유효성 검사 함수
 const handleCardInput = (e) => {
-  const formatted = cardSerialNumberFormatter(e.target.value);
+  const { formatted, error } = cardSerialNumberFormatter(e.target.value);
 
-  // input DOM 값도 즉시 변경
-  e.target.value = formatted;
-
-  // 상태에도 반영
-  state.form.cardNumber = formatted;
-};
-
-//주소 유효성 검사 함수
-const handleAddrInput = (e) => {
-  const error = validateAddressFormat(state.form.address);
   if (error) {
     vAlert(error, "error");
-    return false;
+    return;
   }
-  return true;
+
+  state.form.cardNumber = formatted;
 };
 const submit = () => {
   const args = JSON.parse(JSON.stringify(state.form));
   args.items = JSON.stringify(cartStore.items);
 
+  // 이름 유효성 검사
+  const nameError = validateNameFormat(state.form.name);
+  if (nameError) {
+    vAlert(nameError, "error");
+    return;
+  }
+
   // 카드번호 유효성 검사
-  const cardError = cardSerialNumberFormatter(state.form.cardNumber);
-  if (!state.form.cardNumber || cardError) {
-    vAlert("카드번호가 유효하지 않습니다.", "error");
+  const { error: cardError } = cardSerialNumberFormatter(state.form.cardNumber);
+  if (cardError) {
+    vAlert(cardError, "error");
     return;
   }
 
   // 주소 유효성 검사
-  if (!handleAddrInput()) {
-    vAlert("주소를 입력해주세요.", "error");
-    return; // 주소가 유효하지 않으면 submit을 중단
+  const addrError = validateAddressFormat(state.form.address);
+  if (addrError) {
+    vAlert(addrError, "error");
+    return;
   }
-  const submit = () => {
-    const args = JSON.parse(JSON.stringify(state.form));
-    args.items = JSON.stringify(cartStore.items);
 
-    axios.post("/api/orders", args).then(() => {
+  axios
+    .post("/api/orders", args)
+    .then(() => {
+      // 결제 완료 후 cartStore초기화
+      cartStore.setItems([]);
       router.push("/orders");
+    })
+    .catch((error) => {
+      alert("결제 실패");
     });
-  };
-
-  axios.post("/api/orders", args).then(() => {
-    router.push("/orders");
-  });
 };
 </script>
 

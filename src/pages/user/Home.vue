@@ -14,7 +14,7 @@
 
 <script setup>
 import { reactive } from "vue";
-import axios from "axios";
+import axios from "@/axios.js";
 import Card from "@/components/user/Card.vue";
 
 const state = reactive({

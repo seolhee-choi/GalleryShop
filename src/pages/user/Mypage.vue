@@ -45,7 +45,7 @@ import { validate } from "@/utils/validation.js";
 import { useAlert } from "@/utils/alert.js";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
 const { vAlert, vSuccess } = useAlert();
-import axios from "axios";
+import axios from "@/axios.js";
 import router from "@/scripts/router.js";
 
 const accountStore = useAccountStore();
@@ -73,9 +73,9 @@ const errorResponse = (err) => {
   const errMsg = err.response?.data?.error;
 
   if (status === 400) {
-    vAlert("기존 비밀번호가 일치하지 않습니다.");
+    vAlert(errMsg);
   } else {
-    vAlert("로그인 중 알 수 없는 오류가 발생했습니다~~.");
+    vAlert(errMsg);
   }
 };
 

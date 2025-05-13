@@ -8,7 +8,7 @@
 <script setup>
 import Header from "@/components/user/Header.vue";
 import Footer from "@/components/user/Footer.vue";
-import axios from "axios";
+import axios from "@/axios.js";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
 import { watch, onMounted } from "vue";
 

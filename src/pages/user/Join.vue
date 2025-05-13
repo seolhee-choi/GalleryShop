@@ -70,7 +70,7 @@ import { ref, reactive, watch } from "vue";
 import { validate } from "@/utils/validation.js";
 import { debounce } from "vue-debounce";
 import { useAlert } from "@/utils/alert.js";
-import axios from "axios";
+import axios from "@/axios.js";
 import router from "@/scripts/router.js";
 
 const { vAlert, vSuccess } = useAlert();

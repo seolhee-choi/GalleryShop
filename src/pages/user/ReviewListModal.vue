@@ -37,13 +37,18 @@
             <td>{{ review.email }}</td>
             <td>{{ review.createdAt.substr(0, 10) }}</td>
           </tr>
+          <tr v-if="state.reviews.length === 0">
+            <td colspan="5" style="text-align: center">
+              등록된 리뷰가 없습니다.
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
   </div>
 </template>
 <script setup>
-import axios from "axios";
+import axios from "@/axios.js";
 import { ref, reactive } from "vue";
 import ReviewModal from "@/pages/user/ReviewModal.vue";
 

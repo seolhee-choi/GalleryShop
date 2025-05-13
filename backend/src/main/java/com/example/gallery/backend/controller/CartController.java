@@ -7,6 +7,7 @@ import com.example.gallery.backend.dto.ResultVO;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.exception.ErrorResponse;
+import com.example.gallery.backend.exception.GlobalExceptionHandler;
 import com.example.gallery.backend.mapper.CartMapper;
 import com.example.gallery.backend.mapper.ItemMapper;
 import com.example.gallery.backend.auth.JwtService;
@@ -34,21 +35,6 @@ public class CartController {
     ItemMapper itemMapper;
 
     @GetMapping("/api/cart/items")
-//    public ResponseEntity getCartItems(@CookieValue(value = "token", required = false) String token) {
-//
-//        if (!jwtService.isValid(token)) {
-//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-//        }
-//
-//        int memberId = jwtService.getId(token);
-//        List<Cart> carts = cartMapper.findByMemberId(memberId);
-//        List<Integer> itemIds = carts.stream().map(Cart::getItemId).toList();
-//        List<Item> items = itemMapper.findByIdIn(itemIds, memberId);
-//
-//        return new ResponseEntity<>(items, HttpStatus.OK);
-//
-//    }
-
     public ResponseEntity getCartItems(HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -56,25 +42,31 @@ public class CartController {
             int userId = member.getId(); // 여기서 바로 ID 꺼내기
             // 장바구니 서비스로부터 해당 유저의 카트 아이템 조회
             List<Cart> cartItems = cartMapper.findByMemberId(userId);
+
+            if (cartItems.isEmpty()) {
+                throw new BizException(ErrorCode.ERROR_013);
+            }
+
             List<Integer> itemIds = cartItems.stream().map(Cart::getItemId).toList();
             List<Item> items = itemMapper.findByIdIn(itemIds, userId);
 
-//            return new ResponseEntity<>(items, HttpStatus.OK);
-            return new ResponseEntity<>(items, ErrorCode.OK.getHttpStatus());
-        }
-//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 정보 없음");
-//        return new BizException(ErrorCode.ERROR_998);
-        return new ResponseEntity<>(new ErrorResponse(ErrorCode.ERROR_001), ErrorCode.ERROR_001.getHttpStatus());
+            // 아이템이 없을 경우 에러 발생
+            if (items.isEmpty()) {
+                throw new BizException(ErrorCode.ERROR_013);
+            }
 
+            return new ResponseEntity<>(items, HttpStatus.OK);
+        }
+        throw new BizException(ErrorCode.ERROR_001);
     }
 
 
     @PostMapping("/api/cart/items/{itemId}")
     public ResponseEntity pushCartItem(@PathVariable("itemId") int itemId, @CookieValue(value = "token", required = false) String token) {
-
-        if (!jwtService.isValid(token)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+//
+//        if (!jwtService.isValid(token)) {
+//            throw new BizException(ErrorCode.ERROR_001);
+//        }
 
         int memberId = jwtService.getId(token);
         Cart cart = cartMapper.findByMemberIdAndItemId(memberId, itemId);
@@ -94,12 +86,12 @@ public class CartController {
     @DeleteMapping("/api/cart/items/{itemId}")
     public ResponseEntity removeCartItem(@PathVariable("itemId") int itemId, @CookieValue(value = "token", required = false) String token) {
 
-        if (!jwtService.isValid(token)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+//        if (!jwtService.isValid(token)) {
+//            throw new BizException(ErrorCode.ERROR_001);
+//        }
 
         int memberId = jwtService.getId(token);
-        Cart cart = cartMapper.findByMemberIdAndItemId(memberId, itemId);
+//        Cart cart = cartMapper.findByMemberIdAndItemId(memberId, itemId);
 
         cartMapper.deleteByMemberIdAndItemId(memberId, itemId);
         return new ResponseEntity<>(HttpStatus.OK);
