@@ -6,9 +6,12 @@ import com.example.gallery.backend.exception.ErrorCode;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+@Slf4j
 @Component
 public class JwtInterceptor implements HandlerInterceptor {
 
@@ -39,6 +42,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         // 요청에서 모든 쿠키를 가져옵니다.
         Cookie[] cookies = request.getCookies();
 
+
         // 쿠키가 존재하고, 그 중에서 "token"이라는 이름을 가진 쿠키를 찾아서 반환합니다.
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -47,6 +51,7 @@ public class JwtInterceptor implements HandlerInterceptor {
                 }
             }
         }
+
 
         // 토큰이 없다면 null을 반환
         return null;

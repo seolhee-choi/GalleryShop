@@ -1,5 +1,6 @@
 package com.example.gallery.backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,8 +24,11 @@ public class Member implements UserDetails {
 
     private String role;
 
+    private int status;
+
     // UserDetails 인터페이스 구현(Spring Security)
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         Collection<GrantedAuthority> collection = new ArrayList<>();
@@ -41,31 +45,37 @@ public class Member implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public String getPassword() {
         return this.password;
     }
 
     @Override
+    @JsonIgnore
     public String getUsername() {
         return this.email;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true; // 만료되지 않은 계정
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true; // 잠기지 않은 계정
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true; // 자격 증명이 만료되지 않음
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true; // 활성화된 계정
     }

@@ -25,7 +25,6 @@
         VALUES (#{email}, #{password})
     </insert>
 
-
     <!-- 비밀번호 변경 -->
     <update id="changePassword" parameterType="com.example.gallery.backend.dto.Member">
         UPDATE members
@@ -45,4 +44,22 @@
         SELECT *
         FROM members
     </select>
+
+    <!-- 회원정보 변경 -->
+<!--    <update id="updateMembers">-->
+<!--        <foreach collection="members" item="m" separator=";">-->
+<!--            UPDATE members-->
+<!--            SET-->
+<!--                role = #{m.role}-->
+<!--                ,status = #{m.status}-->
+<!--            WHERE id = #{m.id}-->
+<!--        </foreach>-->
+<!--    </update>-->
+    <update id="updateMember">
+        UPDATE members
+        SET
+            role = #{role}
+            ,status = #{status}
+        WHERE id = #{id}
+    </update>
 </mapper>

@@ -2,11 +2,9 @@ package com.example.gallery.backend.controller;
 
 import com.example.gallery.backend.auth.JwtService;
 import com.example.gallery.backend.dto.Member;
-import com.example.gallery.backend.dto.ResultVO;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.MemberMapper;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;

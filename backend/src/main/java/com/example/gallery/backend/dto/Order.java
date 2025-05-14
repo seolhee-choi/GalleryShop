@@ -3,6 +3,8 @@ package com.example.gallery.backend.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class Order {
@@ -20,4 +22,7 @@ public class Order {
     private String cardNumber;
 
     private String items;
+//    private List<OrderItem> items;
+
+    private List<OrderItem> itemList;
 }

@@ -56,7 +56,7 @@ const routes = [
     component: () => import("@/AdminApp.vue"),
     children: [
       {
-        path: "dashboard",
+        path: "",
         component: () => import("@/pages/admin/Dashboard.vue"),
       },
       {
@@ -96,7 +96,8 @@ router.beforeEach(async (to, from, next) => {
     return next("/login");
   }
 
-  if (requiresAuth && accountStore.isLoggedIn) {
+  // if (requiresAuth && accountStore.isLoggedIn) {
+  if (guestOnly && accountStore.isLoggedIn) {
     return next("/"); // 로그인된 사용자는 guestOnly 페이지 접근 금지
   }
 

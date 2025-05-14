@@ -42,15 +42,12 @@ public class JwtServiceImpl implements JwtService {
         map.put("email" , member.getEmail());
         map.put("role", member.getRole());
 
-        logger.info("*****Generating JWT with claim: " + map);
-
         JwtBuilder builder = Jwts.builder()
                 .setHeader(headerMap)
                 .setClaims(map)
                 .setExpiration(expTime)
                 .signWith(signKey, SignatureAlgorithm.HS256);
 
-        logger.debug("*****Generated JWT: " + builder);
         return builder.compact();
     }
 

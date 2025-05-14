@@ -42,7 +42,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        logger.info(">>> JwtAuthenticationFilter 실행됨. 요청 URI: " + request.getRequestURI());
 
         String token = null;
 
@@ -51,26 +50,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             for (Cookie cookie : request.getCookies()) {
                 if ("token".equals(cookie.getName())) {
                     token = cookie.getValue();
-                    logger.info(">>> JwtAuthenticationFilter 실행됨");
-                    logger.info(cookie.getName() + "=" + cookie.getValue());
                 }
             }
         }
 
         if (token != null && jwtService.isValid(token)) {
-            logger.info(">>> 토큰 유효함");
             int memberId = jwtService.getId(token); // token에서 id 꺼냄
-            logger.info(">>> memberId from token: " + memberId);
             // DB에서 이메일 조회 (id 기준) → 이걸 loadUserByUsername에 전달 -> UserDetails 객체 반환
             String email = memberMapper.findEmailById(memberId);
-            System.out.println(">>>>>>email: " + email);
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
             UsernamePasswordAuthenticationToken authToken =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
             SecurityContextHolder.getContext().setAuthentication(authToken);
-            logger.info(">>> 인증 성공 및 SecurityContextHolder에 저장");
         }
 
         filterChain.doFilter(request, response);

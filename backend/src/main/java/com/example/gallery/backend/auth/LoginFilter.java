@@ -47,8 +47,6 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
             String email = requestMap.get("email");
             String password = requestMap.get("password");
 
-            logger.info("*****Attempting authentication for email: " + email);
-
             // 스프링 시큐리티에서 email과 password를 검증하기 위해서는 token에 담아야함
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password);
 

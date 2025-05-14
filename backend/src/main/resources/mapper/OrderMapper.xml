@@ -4,7 +4,28 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.gallery.backend.mapper.OrderMapper">
+    <resultMap id="OrderResultMap" type="com.example.gallery.backend.dto.Order">
+        <id property="id" column="id" />
+        <result property="memberId" column="member_id"/>
+        <result property="name" column="name"/>
+        <result property="address" column="address"/>
+        <result property="payment" column="payment"/>
+        <result property="items" column="items"/>
 
+        <collection property="itemList"
+                    javaType="java.util.ArrayList"
+                    ofType="com.example.gallery.backend.dto.OrderItem">
+            <result property="orderId" column="order_id"/>
+            <result property="id" column="item_id"/>
+            <result property="name" column="item_name"/>
+            <result property="price" column="price_at_order"/>
+            <result property="discountPer" column="discount_per"/>
+            <result property="quantity" column="quantity"/>
+            <result property="createdAt" column="created_at"/>
+        </collection>
+    </resultMap>
+    
+    
     <!-- 회원 ID로 주문 리스트 가져오기 (ID 내림차순 정렬) -->
     <select id="findByMemberIdOrderByIdDesc" resultType="com.example.gallery.backend.dto.Order">
         SELECT *
@@ -14,43 +35,69 @@
     </select>
 
     <!-- 주문을 저장하는 insert 쿼리 -->
-    <insert id="save" parameterType="com.example.gallery.backend.dto.Order">
+    <insert id="save" useGeneratedKeys="true" keyProperty="id" parameterType="com.example.gallery.backend.dto.Order">
         INSERT INTO orders (member_id, name, address, payment, card_number, items)
         VALUES (#{memberId}, #{name}, #{address}, #{payment}, #{cardNumber}, #{items})
     </insert>
 
     <!-- 전체 주문 검색 (ID 내림차순 정렬) -->
-    <select id="findAllOrder" resultType="com.example.gallery.backend.dto.Order">
-        SELECT *
-        FROM orders
-        ORDER BY id DESC
+    <select id="findAllOrder" resultMap="OrderResultMap">
+        SELECT
+            o.id
+            , o.member_id
+            , o.name
+            , o.address
+            , o.payment
+            , o.items
+            , i.order_id AS orderId
+            , i.item_id AS itemId
+            , i.item_name AS itemName
+            , i.price_at_order AS priceAtOrder
+            , i.discount_per AS discountPer
+            , i.quantity
+            , i.created_at AS createdAt
+        FROM orders AS o
+        JOIN order_items AS i
+        ON o.id = i.order_id
+        ORDER BY o.id DESC
     </select>
 
-    <!-- 기존 order의 items를 관계형 테이블로 insert하는 쿼리 -->
-    <insert id="saveToOrderItems" parameterType="map">
-        INSERT INTO order_items (order_id, item_id, item_name, price_at_order, quantity, discount_per)
-        SELECT
-            #{orderId},
-            i.id,
-            i.name,
-            i.price,
-            i.quantity,
-            i.discount_per
-        FROM
-            JSON_TABLE(
-                    #{items},  -- 전달된 JSON 아이템 데이터
-                    '$[*]' COLUMNS (
-                id INT PATH '$.id',
-                name VARCHAR(255) PATH '$.name',
-                price INT PATH '$.price',
-                quantity INT PATH '$.quantity',
-                discount_per INT PATH '$.discountPer'
+    <!-- orders테이블의 item컬럼을 따로 저장하는 쿼리 -->
+<!--    <insert id="saveOrderItems">-->
+<!--        INSERT IGNORE INTO order_items (-->
+<!--        order_id, item_id, item_name, price_at_order, quantity, discount_per, created_at-->
+<!--        )-->
+<!--        VALUES-->
+<!--        <foreach collection="items" item="item" separator=",">-->
+<!--            (-->
+<!--            #{orderId},-->
+<!--            #{item.itemId},-->
+<!--            #{item.itemName},-->
+<!--            #{item.priceAtOrder},-->
+<!--            #{item.quantity},-->
+<!--            #{item.discountPer},-->
+<!--            NOW()-->
+<!--            )-->
+<!--        </foreach>-->
+<!--    </insert>-->
+    <insert id="saveOrderItems">
+        <foreach collection="items" item="item" separator=",">
+            <!-- 중복 체크 후 삽입 -->
+            INSERT INTO order_items (
+                order_id, item_id, item_name, price_at_order, quantity, discount_per, created_at
             )
-                ) i
-        WHERE NOT EXISTS (
-            SELECT 1
-            FROM order_items oi
-            WHERE oi.order_id = #{orderId} AND oi.item_id = i.id
-        );
+            SELECT
+                #{orderId},
+                #{item.itemId},
+                #{item.itemName},
+                #{item.priceAtOrder},
+                #{item.quantity},
+                #{item.discountPer},
+                NOW()
+            WHERE NOT EXISTS (
+                SELECT 1 FROM order_items WHERE order_id = #{orderId} AND item_id = #{item.itemId}
+            )
+        </foreach>
     </insert>
+
 </mapper>

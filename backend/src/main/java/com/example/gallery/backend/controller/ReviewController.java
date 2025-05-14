@@ -1,8 +1,6 @@
 package com.example.gallery.backend.controller;
 
 import com.example.gallery.backend.auth.JwtService;
-import com.example.gallery.backend.dto.Member;
-import com.example.gallery.backend.dto.ResultVO;
 import com.example.gallery.backend.dto.Review;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
@@ -16,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.xml.transform.Result;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,9 +49,6 @@ public class ReviewController {
     @Transactional
     @PostMapping("/api/reviews/register/{itemId}")
     public ResponseEntity registerReview(@PathVariable("itemId") int itemId, @RequestBody Review dto, @CookieValue(value = "token", required = false) String token) {
-//        if (!jwtService.isValid(token)) {
-//            throw new BizException(ErrorCode.ERROR_001);
-//        }
 
         int memberId = jwtService.getId(token);
         Review newReview = new Review();

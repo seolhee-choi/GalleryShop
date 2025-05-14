@@ -137,7 +137,7 @@ import axios from "@/axios.js";
 import lib from "@/scripts/lib.js";
 import router from "@/scripts/router.js";
 
-const { vAlert } = useAlert();
+const { vAlert, vSuccess } = useAlert();
 const cartStore = useCartStore();
 const items = cartStore.items;
 const state = reactive({
@@ -176,7 +176,7 @@ const handleCardInput = (e) => {
 
   state.form.cardNumber = formatted;
 };
-const submit = () => {
+const submit = async () => {
   const args = JSON.parse(JSON.stringify(state.form));
   args.items = JSON.stringify(cartStore.items);
 
@@ -201,16 +201,29 @@ const submit = () => {
     return;
   }
 
-  axios
-    .post("/api/orders", args)
-    .then(() => {
-      // 결제 완료 후 cartStore초기화
+  try {
+    const response = await axios.post("/api/orders", args);
+    if (response.status === 200) {
+      vSuccess("결제되었습니다.");
       cartStore.setItems([]);
       router.push("/orders");
-    })
-    .catch((error) => {
-      alert("결제 실패");
-    });
+    } else {
+      vAlert("결제가 실패되었습니다.");
+    }
+  } catch (err) {
+    console.error(err);
+    vAlert("서버 오류");
+  }
+  // await axios
+  //   .post("/api/orders", args)
+  //   .then(() => {
+  //     // 결제 완료 후 cartStore초기화
+  //     cartStore.setItems([]);
+  //     router.push("/orders");
+  //   })
+  //   .catch((error) => {
+  //     alert("결제 실패");
+  //   });
 };
 </script>
 

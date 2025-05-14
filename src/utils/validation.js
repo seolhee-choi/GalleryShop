@@ -35,6 +35,11 @@ export function validateNameFormat(name) {
     return "이름을 입력해주세요.";
   }
 
+  // 중간 공백 제거 (앞뒤 trim은 이미 위에서 처리됨)
+  if (/\s/.test(name)) {
+    return "이름에 공백을 포함할 수 없습니다.";
+  }
+
   // 한글, 영문만 허용 (공백 포함), 숫자 및 특수문자 금지
   const nameRegex = /^[가-힣a-zA-Z\s]+$/;
   if (!nameRegex.test(name)) {
@@ -50,7 +55,7 @@ export function cardSerialNumberFormatter(value) {
     return { formatted: "", error: "카드번호는 숫자만 입력할 수 있습니다." };
   }
 
-  const raw = serialnumber.replace(/[^0-9]/g, ""); // 숫자만 남김
+  const raw = value.replace(/[^0-9]/g, ""); // 숫자만 남김
   if (raw.length > 16) {
     // 16자리 이상이면 16자리까지 자르고, 오류 메시지 반환
     return {

@@ -1,82 +1,56 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
-      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <div
-          class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
-        >
-          <h1 class="h2">Dashboard</h1>
-          <div class="btn-toolbar mb-2 mb-md-0">
-            <div class="btn-group me-2">
-              <button type="button" class="btn btn-sm btn-outline-secondary">
-                Share
-              </button>
-              <button type="button" class="btn btn-sm btn-outline-secondary">
-                Export
-              </button>
-            </div>
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center gap-1"
-            >
-              <svg class="bi" aria-hidden="true">
-                <use xlink:href="#calendar3"></use>
-              </svg>
-              This week
-            </button>
-          </div>
+  <main class="main-content">
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">Dashboard</h1>
+      <div class="dashboard-actions">
+        <div class="button-group">
+          <button class="btn">Share</button>
+          <button class="btn">Export</button>
         </div>
-
-        <canvas
-          ref="chartRef"
-          class="my-4 w-100"
-          id="myChart"
-          width="683"
-          height="288"
-          style="
-            display: block;
-            box-sizing: border-box;
-            height: 230px;
-            width: 546px;
-          "
-        ></canvas>
-
-        <h2>최근 주문 상품</h2>
-        <div class="table-responsive small">
-          <table class="table table-striped table-sm">
-            <thead>
-              <tr>
-                <th scope="col">상품명</th>
-                <th scope="col">상품 가격</th>
-                <th scope="col">누적 판매수</th>
-                <th scope="col">순위</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>random</td>
-                <td>data</td>
-                <td>placeholder</td>
-                <td>text</td>
-              </tr>
-              <tr>
-                <td>random</td>
-                <td>data</td>
-                <td>placeholder</td>
-                <td>text</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </main>
+        <button class="btn dropdown">
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#calendar3"></use>
+          </svg>
+          This week
+        </button>
+      </div>
     </div>
-  </div>
+
+    <canvas ref="chartRef" id="myChart" class="chart-canvas"></canvas>
+
+    <h2 class="section-title">최근 주문 상품</h2>
+    <div class="table-container">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>상품명</th>
+            <th>상품 가격</th>
+            <th>누적 판매수</th>
+            <th>순위</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>random</td>
+            <td>data</td>
+            <td>placeholder</td>
+            <td>text</td>
+          </tr>
+          <tr>
+            <td>random</td>
+            <td>data</td>
+            <td>placeholder</td>
+            <td>text</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
 </template>
 
 <script setup>
 import { Chart } from "chart.js/auto";
 import { onMounted, ref } from "vue";
-import AdminSidebar from "@/components/admin/AdminSidebar.vue";
 
 const chartRef = ref(null);
 
@@ -117,23 +91,61 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.bi {
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-}
-/*
- * Navbar
- */
-
-.navbar-brand {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-  background-color: rgba(0, 0, 0, 0.25);
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.25);
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 24px;
 }
 
-.navbar .form-control {
-  padding: 0.75rem 1rem;
+.dashboard-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.dashboard-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.button-group {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  background-color: #f1f3f5;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn:hover {
+  background-color: #e0e0e0;
+}
+
+.dropdown {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.chart-canvas {
+  width: 100%;
+  height: 230px;
+  margin-bottom: 40px;
 }
 </style>

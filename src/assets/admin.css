@@ -1,0 +1,52 @@
+/* admin.css */
+.section-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+    font-weight: bold;
+}
+
+.table-container {
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+.custom-table {
+    font-size: 14px;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.custom-table th,
+.custom-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.custom-table th {
+    background-color: #f4f4f4;
+    text-align: left;
+}
+
+.action-btn {
+    font-size: 12px;
+    padding: 4px 8px;
+    margin: 0 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    transition: 0.2s;
+}
+
+.action-btn:hover {
+    background-color: #0056b3;
+}
+
+.action-btn.danger {
+    background-color: #dc3545;
+}
+
+.action-btn.danger:hover {
+    background-color: #b02a37;
+}

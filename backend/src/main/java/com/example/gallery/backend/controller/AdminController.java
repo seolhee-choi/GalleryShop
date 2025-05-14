@@ -2,17 +2,21 @@ package com.example.gallery.backend.controller;
 
 import com.example.gallery.backend.dto.Member;
 import com.example.gallery.backend.dto.Order;
+import com.example.gallery.backend.dto.OrderItem;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.MemberMapper;
 import com.example.gallery.backend.mapper.OrderMapper;
+import com.example.gallery.backend.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class AdminController {
@@ -23,6 +27,10 @@ public class AdminController {
     @Autowired
     OrderMapper orderMapper;
 
+    @Autowired
+    OrderService orderService;
+
+    // 회원 조회
     @GetMapping("/api/admin/members")
     public ResponseEntity<List<Member>> memberList() {
         List<Member> members = memberMapper.findAllMember();
@@ -33,13 +41,44 @@ public class AdminController {
         return ResponseEntity.ok(members);
     }
 
+    // 회원 업데이트
+    @PostMapping("/api/admin/members")
+    public ResponseEntity<?> updateMembers(@RequestBody List<Member> members) {
+//        memberMapper.updateMembers(members);
+        for (Member m : members) {
+            memberMapper.updateMember(m);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping("/api/admin/orders")
-    public ResponseEntity<List<Order>> orderList() {
+//    public ResponseEntity<List<Order>> orderList() {
+    public ResponseEntity<Map<String, Object>> orderList() {
         List<Order> orders = orderMapper.findAllOrder();
 
         if(orders.isEmpty()) {
             throw new BizException(ErrorCode.ERROR_007);
         }
-        return ResponseEntity.ok(orders);
+
+        List<Map<String, Object>> ordersWithItems = new ArrayList<>();
+
+        // orders 테이블 items값을 JSON으로 파싱
+        for (Order order : orders) {
+            String itemsJson = order.getItems();
+            List<OrderItem> itemList = orderService.parseItemJson(itemsJson);
+
+            // Map을 사용하여 order와 itemList 함께 묶기
+            Map<String, Object> orderData = new HashMap<>();
+            orderData.put("order", order);
+            orderData.put("items", itemList);
+
+            ordersWithItems.add(orderData);
+        }
+
+        // 전체 데이터를 Map으로 반환
+        Map<String, Object> response = new HashMap<>();
+        response.put("orders", ordersWithItems);
+
+        return ResponseEntity.ok(response);
     }
 }

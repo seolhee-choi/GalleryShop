@@ -25,7 +25,8 @@ public enum ErrorCode {
 
     ERROR_014("014", "비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED),
     ERROR_015("015", "존재하지 않는 사용자입니다.", HttpStatus.UNAUTHORIZED),
-    ERROR_016("016", "이미 존재하는 이메일입니다.", HttpStatus.BAD_REQUEST);
+    ERROR_016("016", "이미 존재하는 이메일입니다.", HttpStatus.BAD_REQUEST),
+    ERROR_017("017", "json으로 변환하는데 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
 
     @Schema(description = "코드값")

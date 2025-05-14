@@ -20,4 +20,7 @@ public interface MemberMapper {
     String findEmailById(@Param("id") int id);
 
     List<Member> findAllMember();
+
+//    void updateMembers(@Param("members") List<Member> members);
+    void updateMember(Member member);
 }

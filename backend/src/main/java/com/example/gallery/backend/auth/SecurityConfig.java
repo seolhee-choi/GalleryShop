@@ -63,7 +63,7 @@ public class SecurityConfig {
             "/api/login",
             "/api/join",
             "/api/items",
-            "/api/account/check",
+//            "/api/account/check",
     };
     // SecurityFilterChain 설정
     @Bean
@@ -84,7 +84,6 @@ public class SecurityConfig {
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         // LoginFilter 추가
 //        http.addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class);
-        logger.info("*****JWT Filter added");
         return http.build();
     }
 

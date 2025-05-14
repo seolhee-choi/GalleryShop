@@ -24,8 +24,6 @@ public class AccountControllerTest {
     @Test
     void 회원가입성공() {
         //given
-//
-//
 //        Map<String, String> params = new HashMap<>();
 //        params.put("email", "test1@test.com");
 //        params.put("password", "test123456");

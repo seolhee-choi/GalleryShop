@@ -10,3 +10,8 @@ export const useAlert = () => {
     vSuccess,
   };
 };
+
+export const confirmAndSaveChanges = async (data) => {
+  const isConfirmed = window.confirm("정말로 저장하시겠습니까?");
+  return isConfirmed;
+};
