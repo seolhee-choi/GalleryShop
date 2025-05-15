@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, nextTick } from "vue";
 import { useAlert } from "@/utils/alert.js";
 import { validate } from "@/utils/validation.js";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
@@ -84,6 +84,7 @@ const submit = async () => {
   try {
     await axios.post("/api/account/login", state.form);
     await accountStore.check();
+    await nextTick();
 
     if (accountStore.isLoggedIn) {
       vSuccess("로그인하였습니다.");

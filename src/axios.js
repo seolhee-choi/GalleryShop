@@ -31,8 +31,6 @@ instance.interceptors.response.use(
 
     // code === "200" 이면 성공, data 유무에 따라 적절히 반환
     return res.hasOwnProperty("data") ? res.data : null;
-    // return res.hasOwnProperty("data") ? res.data : res;
-    // return res;
   },
   (error) => {
     const errorMsg =
@@ -43,7 +41,6 @@ instance.interceptors.response.use(
       return Promise.reject(new Error(errorMsg));
     }
 
-    console.log(errorMsg);
     return Promise.reject(error);
   },
 );

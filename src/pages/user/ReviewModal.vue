@@ -46,8 +46,9 @@ import { useAlert } from "@/utils/alert.js";
 
 const { vAlert, vSuccess } = useAlert();
 const props = defineProps({
-  item: Object,
+  itemId: "",
 });
+const emit = defineEmits(["close-review"]);
 
 const state = reactive({
   form: {
@@ -76,14 +77,12 @@ const hover = (index) => {
   hovered.value = index;
 };
 const register = () => {
-  const itemId = props.item.id;
-
+  const itemId = props.itemId;
   axios
     .post(`/api/reviews/register/${itemId}`, state.form)
     .then((res) => {
       vSuccess("리뷰가 성공적으로 등록되었습니다.");
       emit("close-review");
-      emit("");
     })
     .catch((err) => {
       vAlert("리뷰 등록 중 에러가 발생했습니다.");

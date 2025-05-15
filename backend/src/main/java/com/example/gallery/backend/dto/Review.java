@@ -24,4 +24,6 @@ public class Review {
     private int itemId;
 
     private String email;
+
+    private int status;
 }

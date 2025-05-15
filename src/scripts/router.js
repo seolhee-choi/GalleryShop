@@ -72,6 +72,10 @@ const routes = [
         component: () => import("@/pages/admin/ProductManage.vue"),
       },
       {
+        path: "review",
+        component: () => import("@/pages/admin/ReviewManage.vue"),
+      },
+      {
         path: "statistics",
         component: () => import("@/pages/admin/Statistics.vue"),
       },

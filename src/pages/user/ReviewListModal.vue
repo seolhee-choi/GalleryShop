@@ -76,9 +76,8 @@ const loadReview = () => {
 
   axios
     .get(`/api/reviews/${itemId}`)
-    .then(({ data }) => {
+    .then((data) => {
       state.reviews = data;
-      console.log(state.reviews);
     })
     .catch((err) => alert(err));
 };
@@ -87,12 +86,6 @@ const handleCloseReview = () => {
   isOpen.value = fasle; //리뷰작성 모달 닫기
   loadReview();
 };
-// const test403 = () => {
-//   axios
-//     .get("http://localhost:8080/test-error")
-//     .then((res) => console.log("403에러테스트"))
-//     .catch((err) => console.log(err));
-// };
 
 loadReview();
 

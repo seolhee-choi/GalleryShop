@@ -32,9 +32,11 @@
 
 <script setup>
 import { useCartStore } from "@/scripts/useCartStore.js";
+import { useAlert } from "@/utils/alert.js";
 import axios from "@/axios.js";
 import lib from "@/scripts/lib.js";
 
+const { vAlert } = useAlert();
 const cartStore = useCartStore();
 
 const checkCartItems = (items = [], cartStore) => {
@@ -53,8 +55,10 @@ const load = async () => {
     const res = await axios.get("/api/cart/items");
     cartStore.setItems(checkCartItems(res, cartStore));
   } catch (err) {
-    if (err.response?.data?.msg) {
+    const errMsg = err.response?.data?.msg;
+    if (errMsg) {
       cartStore.setItems([]);
+      vAlert(errMsg);
     }
   }
 };

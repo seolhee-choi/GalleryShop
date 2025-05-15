@@ -45,12 +45,10 @@
 import { ref } from "vue";
 import { useAlert } from "@/utils/alert.js";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
-import { useCartStore } from "@/scripts/useCartStore.js";
 import lib from "@/scripts/lib.js";
 import axios from "@/axios.js";
 import ReviewListModal from "@/pages/user/ReviewListModal.vue";
 
-const cartStore = useCartStore();
 const { vAlert } = useAlert();
 
 const props = defineProps({

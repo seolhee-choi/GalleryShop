@@ -12,7 +12,7 @@
           <tr>
             <th>상품ID</th>
             <th>상품명</th>
-            <th>상품이미지</th>
+            <th>상품 이미지 경로</th>
             <th>상품원가</th>
             <th>할인율</th>
           </tr>
@@ -22,8 +22,8 @@
             <td>{{ i.id }}</td>
             <td>{{ i.name }}</td>
             <td>{{ i.imgPath }}</td>
-            <td>{{ i.price }}</td>
-            <td>{{ i.discountPer }}</td>
+            <td>{{ Intl.NumberFormat().format(i.price) }}</td>
+            <td>{{ i.discountPer }} %</td>
           </tr>
         </tbody>
       </table>

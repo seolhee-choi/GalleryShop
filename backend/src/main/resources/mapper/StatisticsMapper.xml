@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.gallery.backend.mapper.StatisticsMapper">
+
+    <!-- 일별 조회 -->
+    <select id="findDailyStats" resultType="com.example.gallery.backend.dto.Statistics">
+        SELECT
+            DATE(oi.created_at) AS order_date,
+            COUNT(DISTINCT o.id) AS order_count,
+            SUM(oi.price_at_order * oi.quantity * (1 - IFNULL(oi.discount_per, 0)/100)) AS total_sales,
+            SUM(oi.quantity) AS total_quantity
+        FROM
+            order_items oi
+                JOIN
+            orders o ON oi.order_id = o.id
+        WHERE
+            o.payment IS NOT NULL -- 예: 결제 완료 주문만
+        GROUP BY
+            DATE(oi.created_at)
+        ORDER BY
+            order_date DESC
+            LIMIT 30;
+    </select>
+
+    <!-- 월별 조회 -->
+    <select id="findMonthlyStats" resultType="com.example.gallery.backend.dto.Statistics">
+        SELECT
+            DATE(created_at) AS label
+             , SUM(total_price) AS value
+        FROM orders
+        WHERE status = 'COMPLETE'
+        GROUP BY DATE(created_at)
+        ORDER BY DATE(created_at) DESC
+            LIMIT 30
+    </select>
+
+    <!-- 상품별 조회 -->
+    <select id="findProductStats" resultType="com.example.gallery.backend.dto.Statistics">
+        SELECT
+            DATE(created_at) AS label
+             , SUM(total_price) AS value
+        FROM orders
+        WHERE status = 'COMPLETE'
+        GROUP BY DATE(created_at)
+        ORDER BY DATE(created_at) DESC
+            LIMIT 30
+    </select>
+</mapper>

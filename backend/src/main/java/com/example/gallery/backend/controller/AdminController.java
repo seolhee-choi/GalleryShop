@@ -3,10 +3,12 @@ package com.example.gallery.backend.controller;
 import com.example.gallery.backend.dto.Member;
 import com.example.gallery.backend.dto.Order;
 import com.example.gallery.backend.dto.OrderItem;
+import com.example.gallery.backend.dto.Review;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.MemberMapper;
 import com.example.gallery.backend.mapper.OrderMapper;
+import com.example.gallery.backend.mapper.ReviewMapper;
 import com.example.gallery.backend.response.ApiResponse;
 import com.example.gallery.backend.response.ResponseFactory;
 import com.example.gallery.backend.service.OrderService;
@@ -28,6 +30,9 @@ public class AdminController {
 
     @Autowired
     OrderMapper orderMapper;
+
+    @Autowired
+    ReviewMapper reviewMapper;
 
     @Autowired
     OrderService orderService;
@@ -53,12 +58,13 @@ public class AdminController {
         return ResponseFactory.success(null);
     }
 
+    // 주문 조회
     @GetMapping("/api/admin/orders")
     public ResponseEntity<ApiResponse<Map<String, Object>>> orderList() {
         List<Order> orders = orderMapper.findAllOrder();
 
         if(orders.isEmpty()) {
-            throw new BizException(ErrorCode.ERROR_007);
+            throw new BizException(ErrorCode.ERROR_018);
         }
 
         List<Map<String, Object>> ordersWithItems = new ArrayList<>();
@@ -82,4 +88,26 @@ public class AdminController {
 
         return ResponseFactory.success(response);
     }
+
+    // 리뷰 조회
+    @GetMapping("/api/admin/reviews")
+    public ResponseEntity<ApiResponse<List<Review>>> reviewList(){
+
+        List<Review> review = reviewMapper.findAllReview();
+
+        if(review.isEmpty()) {
+            throw new BizException(ErrorCode.ERROR_003);
+        }
+        return ResponseFactory.success(review);
+    }
+
+    // 리뷰 업데이트
+    @PostMapping("/api/admin/reviews")
+    public ResponseEntity<ApiResponse<Void>> updateReviews(@RequestBody List<Review> reviews) {
+        for (Review r : reviews) {
+            reviewMapper.updateReview(r);
+        }
+        return ResponseFactory.success(null);
+    }
+
 }

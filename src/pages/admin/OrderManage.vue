@@ -22,19 +22,6 @@
           </tr>
         </thead>
         <tbody>
-          <!--          <tr v-for="(o, idx) in state.orders" :key="idx">-->
-          <!--            <td>{{ o.id }}</td>-->
-          <!--            <td>{{ o.memberId }}</td>-->
-          <!--            <td>{{ o.name }}</td>-->
-          <!--            <td>{{ o.address }}</td>-->
-          <!--            <td>{{ o.payment }}</td>-->
-          <!--            <td>{{ o.quantity }}</td>-->
-          <!--            <td>-->
-          <!--              <div v-for="(i, index) in o.items" :key="index">-->
-          <!--                {{ i.name }} / {{ i.price }}-->
-          <!--              </div>-->
-          <!--            </td>-->
-          <!--          </tr>-->
           <template v-for="(o, idx) in state.orders" :key="idx">
             <!-- 첫 번째 tr에 주문 공통 정보 + 첫 번째 상품 -->
             <tr>
@@ -47,7 +34,7 @@
               <!-- 첫 번째 상품 -->
               <td>{{ o.items[0].quantity }}</td>
               <td>{{ o.items[0].name }}</td>
-              <td>{{ o.items[0].price }}</td>
+              <td>{{ Intl.NumberFormat().format(o.items[0].price) }}</td>
               <td>{{ orderItemPrices[idx][0] }}</td>
             </tr>
 
@@ -55,7 +42,7 @@
             <tr v-for="(i, iIdx) in o.items.slice(1)" :key="iIdx">
               <td>{{ i.quantity }}</td>
               <td>{{ i.name }}</td>
-              <td>{{ i.price }}</td>
+              <td>{{ Intl.NumberFormat().format(i.price) }}</td>
               <td>{{ orderItemPrices[idx][iIdx + 1] }}</td>
             </tr>
           </template>

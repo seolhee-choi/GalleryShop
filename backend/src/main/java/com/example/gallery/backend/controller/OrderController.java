@@ -18,7 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class OrderController {
@@ -36,13 +39,31 @@ public class OrderController {
     OrderService orderService;
 
     @GetMapping("/api/orders")
-    public ResponseEntity<ApiResponse<List<Order>>> getOrder(@CookieValue(value = "token", required = false) String token) {
+//    public ResponseEntity<ApiResponse<List<Order>>> getOrder(@CookieValue(value = "token", required = false) String token) {
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getOrder(@CookieValue(value = "token", required = false) String token) {
 
         int memberId = jwtService.getId(token);
 
         List<Order> orders = orderMapper.findByMemberIdOrderByIdDesc(memberId);
 
-        return ResponseFactory.success(orders);
+        if(orders.isEmpty()) {
+            throw new BizException(ErrorCode.ERROR_018);
+        }
+
+        List<Map<String, Object>> ordersWithItems = new ArrayList<>();
+        for (Order order : orders) {
+
+            Map<String, Object> orderData = new HashMap<>();
+            orderData.put("order", order);
+            orderData.put("items", order.getItemList());
+
+            ordersWithItems.add(orderData);
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("orders", ordersWithItems);
+
+        return ResponseFactory.success(response);
     }
 
     @Transactional
