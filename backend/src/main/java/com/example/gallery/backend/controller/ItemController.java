@@ -4,6 +4,8 @@ import com.example.gallery.backend.dto.Item;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.ItemMapper;
+import com.example.gallery.backend.response.ApiResponse;
+import com.example.gallery.backend.response.ResponseFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +25,15 @@ public class ItemController {
     ItemMapper itemMapper;
 
     @GetMapping("/api/items")
-    public List<Item> getItems() {
+    public ResponseEntity<ApiResponse<List<Item>>> getItems() {
         List<Item> items = itemMapper.findAll();
 
-        return items;
+//        return items;
+        return ResponseFactory.success(items);
     }
 
     @PostMapping("/api/items/upload")
-    public ResponseEntity<String> uploadJson(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ApiResponse<Void>> uploadJson(@RequestParam("file") MultipartFile file) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             List<Item> items = objectMapper.readValue(file.getInputStream(),
@@ -38,7 +41,7 @@ public class ItemController {
 
             itemMapper.saveAll(items);
 
-            return ResponseEntity.ok("아이템 저장 완료");
+            return ResponseFactory.success(null);
 
         } catch (Exception e) {
             e.printStackTrace();

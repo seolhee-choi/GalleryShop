@@ -3,7 +3,7 @@
     <main>
       <div class="py-5 text-center">
         <h1 class="h2">회원가입</h1>
-        <p class="lead">회원가입 어쩌구저쩌구 저쩌구블라블ㄹ라</p>
+        <p class="lead">회원가입을 위한 정보를 기입해주세요</p>
       </div>
       <div class="row justify-content-center">
         <div class="col-md-7 col-lg-6">

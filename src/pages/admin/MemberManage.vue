@@ -51,10 +51,10 @@ const state = reactive({
 });
 
 const loadMember = () => {
-  axios.get("/api/admin/members").then(({ data }) => {
+  axios.get("/api/admin/members").then((res) => {
     state.members = [];
 
-    for (let d of data) {
+    for (let d of res) {
       if (d.items) {
         d.items = JSON.parse(d.items);
       }
@@ -67,7 +67,7 @@ const saveChanges = async () => {
   const isConfirmed = await confirmAndSaveChanges();
   if (isConfirmed) {
     try {
-      const { data } = await axios.post("/api/admin/members", state.members);
+      const response = await axios.post("/api/admin/members", state.members);
       vSuccess("사용자 정보가 성공적으로 저장되었습니다.");
     } catch (err) {
       console.error(err);

@@ -176,7 +176,7 @@ const handleCardInput = (e) => {
 
   state.form.cardNumber = formatted;
 };
-const submit = async () => {
+const submit = () => {
   const args = JSON.parse(JSON.stringify(state.form));
   args.items = JSON.stringify(cartStore.items);
 
@@ -201,29 +201,18 @@ const submit = async () => {
     return;
   }
 
-  try {
-    const response = await axios.post("/api/orders", args);
-    if (response.status === 200) {
-      vSuccess("결제되었습니다.");
-      cartStore.setItems([]);
-      router.push("/orders");
-    } else {
-      vAlert("결제가 실패되었습니다.");
-    }
-  } catch (err) {
-    console.error(err);
-    vAlert("서버 오류");
-  }
-  // await axios
-  //   .post("/api/orders", args)
-  //   .then(() => {
-  //     // 결제 완료 후 cartStore초기화
-  //     cartStore.setItems([]);
-  //     router.push("/orders");
-  //   })
-  //   .catch((error) => {
-  //     alert("결제 실패");
-  //   });
+  axios
+    .post("/api/orders", args)
+    .then((res) => {
+      if (res) {
+        vSuccess("결제되었습니다.");
+        cartStore.setItems([]);
+        router.push("/orders");
+      } else {
+        vAlert("결제 실패");
+      }
+    })
+    .catch(() => vAlert("서버 오류"));
 };
 </script>
 

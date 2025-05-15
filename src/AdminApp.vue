@@ -2,6 +2,7 @@
   <AdminHeader />
   <AdminSidebar />
   <RouterView />
+  <Alert />
   <AdminFooter />
 </template>
 

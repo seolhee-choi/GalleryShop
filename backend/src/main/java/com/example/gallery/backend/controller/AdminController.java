@@ -7,6 +7,8 @@ import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.MemberMapper;
 import com.example.gallery.backend.mapper.OrderMapper;
+import com.example.gallery.backend.response.ApiResponse;
+import com.example.gallery.backend.response.ResponseFactory;
 import com.example.gallery.backend.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,28 +34,27 @@ public class AdminController {
 
     // 회원 조회
     @GetMapping("/api/admin/members")
-    public ResponseEntity<List<Member>> memberList() {
+    public ResponseEntity<ApiResponse<List<Member>>> memberList() {
         List<Member> members = memberMapper.findAllMember();
 
         if(members.isEmpty()) {
             throw new BizException(ErrorCode.ERROR_007);
         }
-        return ResponseEntity.ok(members);
+        return ResponseFactory.success(members);
+
     }
 
     // 회원 업데이트
     @PostMapping("/api/admin/members")
-    public ResponseEntity<?> updateMembers(@RequestBody List<Member> members) {
-//        memberMapper.updateMembers(members);
+    public ResponseEntity<ApiResponse<Void>> updateMembers(@RequestBody List<Member> members) {
         for (Member m : members) {
             memberMapper.updateMember(m);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseFactory.success(null);
     }
 
     @GetMapping("/api/admin/orders")
-//    public ResponseEntity<List<Order>> orderList() {
-    public ResponseEntity<Map<String, Object>> orderList() {
+    public ResponseEntity<ApiResponse<Map<String, Object>>> orderList() {
         List<Order> orders = orderMapper.findAllOrder();
 
         if(orders.isEmpty()) {
@@ -79,6 +80,6 @@ public class AdminController {
         Map<String, Object> response = new HashMap<>();
         response.put("orders", ordersWithItems);
 
-        return ResponseEntity.ok(response);
+        return ResponseFactory.success(response);
     }
 }

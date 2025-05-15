@@ -21,8 +21,8 @@ const state = reactive({
   items: [],
 });
 const api = () => {
-  axios.get("/api/items").then(({ data }) => {
-    state.items = data;
+  axios.get("/api/items").then((res) => {
+    state.items = res;
   });
 };
 

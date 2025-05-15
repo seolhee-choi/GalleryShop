@@ -7,6 +7,8 @@ import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.CartMapper;
 import com.example.gallery.backend.mapper.OrderMapper;
 import com.example.gallery.backend.auth.JwtService;
+import com.example.gallery.backend.response.ApiResponse;
+import com.example.gallery.backend.response.ResponseFactory;
 import com.example.gallery.backend.service.OrderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,18 +36,18 @@ public class OrderController {
     OrderService orderService;
 
     @GetMapping("/api/orders")
-    public ResponseEntity getOrder(@CookieValue(value = "token", required = false) String token) {
+    public ResponseEntity<ApiResponse<List<Order>>> getOrder(@CookieValue(value = "token", required = false) String token) {
 
         int memberId = jwtService.getId(token);
 
         List<Order> orders = orderMapper.findByMemberIdOrderByIdDesc(memberId);
 
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        return ResponseFactory.success(orders);
     }
 
     @Transactional
     @PostMapping("/api/orders")
-    public ResponseEntity pushOrder(@RequestBody Order dto, @CookieValue(value = "token", required = false) String token) {
+    public ResponseEntity<ApiResponse<Void>> pushOrder(@RequestBody Order dto, @CookieValue(value = "token", required = false) String token) {
         List<OrderItem> items = orderService.parseItemJson(dto.getItems());
 
         int memberId = jwtService.getId(token);
@@ -62,6 +64,6 @@ public class OrderController {
         orderMapper.saveOrderItems(newOrder.getId(), items);
         cartMapper.deleteByMemberId(memberId);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseFactory.success(null);
     }
 }

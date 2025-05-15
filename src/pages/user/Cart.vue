@@ -2,7 +2,6 @@
   <div class="cart">
     <div class="container">
       <ul>
-        <!--        <li v-for="(i, idx) in state.items" :key="idx">-->
         <li v-for="(i, idx) in cartStore.items" :key="idx">
           <img :src="i.imgPath" />
           <span class="name">{{ i.name }}</span>
@@ -38,8 +37,8 @@ import lib from "@/scripts/lib.js";
 
 const cartStore = useCartStore();
 
-const checkCartItems = (data) => {
-  return data.map((item) => {
+const checkCartItems = (items = [], cartStore) => {
+  return items.map((item) => {
     const existing = cartStore.items.find((i) => i.id === item.id);
     return {
       ...item,
@@ -48,12 +47,15 @@ const checkCartItems = (data) => {
     };
   });
 };
+
 const load = async () => {
   try {
-    const { data } = await axios.get("/api/cart/items");
-    cartStore.setItems(checkCartItems(data));
+    const res = await axios.get("/api/cart/items");
+    cartStore.setItems(checkCartItems(res, cartStore));
   } catch (err) {
-    alert(err.response?.data?.msg || "장바구니 조회 실패");
+    if (err.response?.data?.msg) {
+      cartStore.setItems([]);
+    }
   }
 };
 

@@ -8,6 +8,8 @@ import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.CartMapper;
 import com.example.gallery.backend.mapper.ItemMapper;
 import com.example.gallery.backend.auth.JwtService;
+import com.example.gallery.backend.response.ApiResponse;
+import com.example.gallery.backend.response.ResponseFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,7 @@ public class CartController {
     ItemMapper itemMapper;
 
     @GetMapping("/api/cart/items")
-    public ResponseEntity getCartItems(HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<List<Item>>> getCartItems(HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.getPrincipal() instanceof Member member) {
@@ -51,14 +53,15 @@ public class CartController {
                 throw new BizException(ErrorCode.ERROR_013);
             }
 
-            return new ResponseEntity<>(items, HttpStatus.OK);
+            return ResponseFactory.success(items);
+
         }
         throw new BizException(ErrorCode.ERROR_001);
     }
 
 
     @PostMapping("/api/cart/items/{itemId}")
-    public ResponseEntity pushCartItem(@PathVariable("itemId") int itemId, @CookieValue(value = "token", required = false) String token) {
+    public ResponseEntity<ApiResponse<Cart>> pushCartItem(@PathVariable("itemId") int itemId, @CookieValue(value = "token", required = false) String token) {
 
         int memberId = jwtService.getId(token);
         Cart cart = cartMapper.findByMemberIdAndItemId(memberId, itemId);
@@ -71,17 +74,17 @@ public class CartController {
             cartMapper.insertCart(newCart);
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseFactory.success(cart);
     }
 
 
     @DeleteMapping("/api/cart/items/{itemId}")
-    public ResponseEntity removeCartItem(@PathVariable("itemId") int itemId, @CookieValue(value = "token", required = false) String token) {
+    public ResponseEntity<ApiResponse<Void>> removeCartItem(@PathVariable("itemId") int itemId, @CookieValue(value = "token", required = false) String token) {
 
         int memberId = jwtService.getId(token);
 //        Cart cart = cartMapper.findByMemberIdAndItemId(memberId, itemId);
 
         cartMapper.deleteByMemberIdAndItemId(memberId, itemId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseFactory.success(null);
     }
 }

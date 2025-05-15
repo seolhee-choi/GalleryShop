@@ -18,18 +18,33 @@ instance.interceptors.request.use(
   },
 );
 
-// 응답 인터셉터 설정 (필요시)
 instance.interceptors.response.use(
   (response) => {
-    return response;
+    const res = response.data;
+
+    // code가 200이 아닐 경우, 에러로 간주
+    if (res.code !== "200") {
+      // 필요한 경우 전역 alert 처리
+      console.log(res.msg || "오류가 발생했습니다.");
+      return Promise.reject(new Error(res.msg || "오류가 발생했습니다."));
+    }
+
+    // code === "200" 이면 성공, data 유무에 따라 적절히 반환
+    return res.hasOwnProperty("data") ? res.data : null;
+    // return res.hasOwnProperty("data") ? res.data : res;
+    // return res;
   },
   (error) => {
-    if (error.response && error.response.status === 401) {
-      alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+    const errorMsg =
+      error.response?.data?.msg || "서버에서 에러가 발생했습니다.";
+
+    if (error.response?.status === 401) {
       router.push("/login");
+      return Promise.reject(new Error(errorMsg));
     }
+
+    console.log(errorMsg);
     return Promise.reject(error);
   },
 );
-
 export default instance;

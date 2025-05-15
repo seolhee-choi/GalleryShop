@@ -21,10 +21,10 @@ export const useAccountStore = defineStore("account", {
         });
 
         // 서버가 인증된 사용자 정보를 보내면
-        if (response.data && response.data.id && response.data.email) {
-          this.account = { id: response.data.id, email: response.data.email };
+        if (response && response.id && response.email) {
+          this.account = { id: response.id, email: response.email };
         } else {
-          this.account = { id: null, email: "" }; // 로그인 안된 상태
+          this.account = { id: null, email: "" };
         }
       } catch (error) {
         console.error("check() 호출 실패:", error);

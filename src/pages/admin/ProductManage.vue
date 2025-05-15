@@ -1,30 +1,34 @@
 <template>
-  <div>
-    <h2>고객 조회</h2>
-    <div class="table-responsive small">
-      <table class="table table-striped table-sm">
+  <main class="main-content">
+    <h1 class="h2">
+      상품 조회
+      <button class="btn btn-primary save-btn" @click="saveChanges">
+        저장
+      </button>
+    </h1>
+    <div class="table-container">
+      <table class="custom-table">
         <thead>
           <tr>
-            <th scope="col">이메일</th>
-            <th scope="col">권한</th>
-            <th scope="col">가입일</th>
+            <th>상품ID</th>
+            <th>상품명</th>
+            <th>상품이미지</th>
+            <th>상품원가</th>
+            <th>할인율</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>random</td>
-            <td>data</td>
-            <td>placeholder</td>
-          </tr>
-          <tr>
-            <td>random</td>
-            <td>data</td>
-            <td>placeholder</td>
+          <tr v-for="(i, idx) in state.items" :key="idx">
+            <td>{{ i.id }}</td>
+            <td>{{ i.name }}</td>
+            <td>{{ i.imgPath }}</td>
+            <td>{{ i.price }}</td>
+            <td>{{ i.discountPer }}</td>
           </tr>
         </tbody>
       </table>
     </div>
-  </div>
+  </main>
 </template>
 
 <script setup>
@@ -32,17 +36,18 @@ import axios from "@/axios.js";
 import { reactive } from "vue";
 
 const state = reactive({
-  members: [],
+  items: [],
 });
 
-const loadMember = () => {
-  axios.get("/admin/members").then(({ data }) => {
-    console.log(data);
-    state.members = data;
+const loadItems = () => {
+  axios.get("/api/items").then((data) => {
+    for (let d of data) {
+      state.items.push(d);
+    }
   });
 };
 
-loadMember();
+loadItems();
 </script>
 
 <style scoped></style>

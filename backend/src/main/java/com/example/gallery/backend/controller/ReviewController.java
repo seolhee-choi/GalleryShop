@@ -7,6 +7,8 @@ import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.ItemMapper;
 import com.example.gallery.backend.mapper.MemberMapper;
 import com.example.gallery.backend.mapper.ReviewMapper;
+import com.example.gallery.backend.response.ApiResponse;
+import com.example.gallery.backend.response.ResponseFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,12 +37,12 @@ public class ReviewController {
 
 
     @GetMapping("/api/reviews/{itemId}")
-    public ResponseEntity getReview(@PathVariable("itemId") int itemId){
+    public ResponseEntity<ApiResponse<List<Review>>> getReview(@PathVariable("itemId") int itemId){
 
         List<Review> review = reviewMapper.findByItemIdOrderByUpdatedDateDesc(itemId);
 
         if(review != null) {
-            return new ResponseEntity<>(review, HttpStatus.OK);
+            return ResponseFactory.success(review);
         } else {
             throw new BizException(ErrorCode.ERROR_003);
         }
@@ -48,7 +50,7 @@ public class ReviewController {
 
     @Transactional
     @PostMapping("/api/reviews/register/{itemId}")
-    public ResponseEntity registerReview(@PathVariable("itemId") int itemId, @RequestBody Review dto, @CookieValue(value = "token", required = false) String token) {
+    public ResponseEntity<ApiResponse<Void>> registerReview(@PathVariable("itemId") int itemId, @RequestBody Review dto, @CookieValue(value = "token", required = false) String token) {
 
         int memberId = jwtService.getId(token);
         Review newReview = new Review();
@@ -61,7 +63,7 @@ public class ReviewController {
 
         reviewMapper.save(newReview);
 
-        return ResponseEntity.ok("리뷰가 정상 등록되었습니다.");
+        return ResponseFactory.success(null);
     }
 
     @GetMapping("/test-error")

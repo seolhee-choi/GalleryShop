@@ -23,23 +23,7 @@
   </aside>
 </template>
 
-<script setup>
-import { reactive } from "vue";
-
-const menu = reactive({
-  items: [
-    { title: "대시보드", to: "/admin/", link: "#house-fill" },
-    { title: "회원관리", to: "/admin/member", link: "#people" },
-    { title: "주문관리", to: "/admin/order", link: "#file-earmark" },
-    { title: "상품관리", to: "/admin/product", link: "#cart" },
-    { title: "통계", to: "/admin/statistics", link: "#graph-up" },
-    // "이번달 매출",
-    // "지난달 매출",
-    // "환경설정",
-    // "로그아웃",
-  ],
-});
-</script>
+<script setup></script>
 
 <style scoped>
 .bi {

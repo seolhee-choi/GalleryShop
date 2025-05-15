@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { reactive, nextTick } from "vue";
+import { reactive } from "vue";
 import { useAlert } from "@/utils/alert.js";
 import { validate } from "@/utils/validation.js";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
@@ -72,18 +72,6 @@ const validateForm = () => {
   });
   return errors;
 };
-
-//에러 메세지 처리 함수
-const errorResponse = (err) => {
-  const status = err.response?.status;
-  const errMsg = err.response?.data;
-
-  if (status === 401 || status === 404) {
-    vAlert(errMsg);
-  } else {
-    vAlert("로그인 중 알 수 없는 오류가 발생했습니다.");
-  }
-};
 const submit = async () => {
   const errors = validateForm();
 
@@ -95,18 +83,16 @@ const submit = async () => {
 
   try {
     await axios.post("/api/account/login", state.form);
-
-    await nextTick();
     await accountStore.check();
 
     if (accountStore.isLoggedIn) {
       vSuccess("로그인하였습니다.");
-      router.push("/"); // 인증 상태가 업데이트 된 후에 라우터 호출
+      await router.push("/"); // 인증 상태가 업데이트 된 후에 라우터 호출
     } else {
       console.warn("상태 반영실패");
     }
   } catch (error) {
-    errorResponse(error);
+    vAlert(error);
   }
 };
 </script>

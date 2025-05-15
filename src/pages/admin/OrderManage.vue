@@ -18,7 +18,7 @@
             <th scope="col" style="width: 50px">수량</th>
             <th scope="col" style="width: 100px">주문상품</th>
             <th scope="col" style="width: 50px">원가</th>
-            <th scope="col" style="width: 50px">최종구매가격</th>
+            <th scope="col" style="width: 50px">최종구매가격(수량*할인가)</th>
           </tr>
         </thead>
         <tbody>
@@ -43,23 +43,20 @@
               <td :rowspan="o.items.length">{{ o.name }}</td>
               <td :rowspan="o.items.length">{{ o.address }}</td>
               <td :rowspan="o.items.length">{{ o.payment }}</td>
-              <td :rowspan="o.items.length">{{ o.quantity }}</td>
 
               <!-- 첫 번째 상품 -->
+              <td>{{ o.items[0].quantity }}</td>
               <td>{{ o.items[0].name }}</td>
-              <td>{{ o.items[0].priceAtOrder }}</td>
-              <td>
-                {{
-                  o.items[0].priceAtOrder * (1 - o.items[0].discountPer / 100)
-                }}
-              </td>
+              <td>{{ o.items[0].price }}</td>
+              <td>{{ orderItemPrices[idx][0] }}</td>
             </tr>
 
             <!-- 두 번째 이후 상품 출력 -->
             <tr v-for="(i, iIdx) in o.items.slice(1)" :key="iIdx">
+              <td>{{ i.quantity }}</td>
               <td>{{ i.name }}</td>
-              <td>{{ i.priceAtOrder }}</td>
-              <td>{{ i.priceAtOrder * (1 - i.discountPer / 100) }}</td>
+              <td>{{ i.price }}</td>
+              <td>{{ orderItemPrices[idx][iIdx + 1] }}</td>
             </tr>
           </template>
         </tbody>
@@ -70,18 +67,25 @@
 
 <script setup>
 import axios from "@/axios.js";
-import { reactive } from "vue";
+import { computed, reactive } from "vue";
 
 const state = reactive({
   orders: [],
 });
 
+// 수량 * 구매금액의 합 계산 함수
+const orderItemPrices = computed(() =>
+  state.orders.map((order) =>
+    order.items.map(({ quantity = 0, price = 0, discountPer = 0 }) => {
+      const total = quantity * price * (1 - discountPer / 100);
+      return new Intl.NumberFormat().format(total);
+    }),
+  ),
+);
 const loadOrderList = () => {
-  // axios.get("/api/admin/orders").then(({ data }) => {
   axios.get("/api/admin/orders").then((res) => {
-    const data = res.data.orders;
+    const data = res.orders;
     state.orders = [];
-    console.log(data);
 
     for (let d of data) {
       if (d.order && d.items) {
@@ -91,7 +95,6 @@ const loadOrderList = () => {
         });
       }
     }
-    // console.log(state.orders);
   });
 };
 

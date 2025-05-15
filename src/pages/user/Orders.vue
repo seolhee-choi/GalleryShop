@@ -28,7 +28,7 @@
                 class="btn btn-outline-danger py-1 review-btn"
                 @click="isOpen = true"
               >
-                리뷰 보기
+                리뷰 작성
               </button>
               <ReviewModal
                 :item="item"
@@ -52,7 +52,7 @@ const state = reactive({
   orders: [],
 });
 const load = () => {
-  axios.get("/api/orders").then(({ data }) => {
+  axios.get("/api/orders").then((data) => {
     state.orders = [];
 
     for (let d of data) {

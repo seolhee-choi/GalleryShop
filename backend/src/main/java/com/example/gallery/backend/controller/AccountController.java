@@ -5,6 +5,8 @@ import com.example.gallery.backend.dto.Member;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.MemberMapper;
+import com.example.gallery.backend.response.ApiResponse;
+import com.example.gallery.backend.response.ResponseFactory;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +48,7 @@ public class AccountController {
     }
 
     @PostMapping("/api/account/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, Object> request, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<Void>> login(@RequestBody Map<String, Object> request, HttpServletResponse response) {
         String email = (String) request.get("email");
         String password = (String) request.get("password");
         try {
@@ -65,7 +67,7 @@ public class AccountController {
             cookie.setMaxAge(1800); // 30분
             response.addCookie(cookie);
 
-            return ResponseEntity.ok("로그인 성공");
+            return ResponseFactory.success(null);
         } catch (BadCredentialsException e) {
             throw new BizException(ErrorCode.ERROR_014);
         } catch (UsernameNotFoundException e) {
@@ -75,29 +77,29 @@ public class AccountController {
     }
 
     @PostMapping("/api/account/logout")
-    public ResponseEntity logout(HttpServletResponse res) {
+    public ResponseEntity<ApiResponse<Void>> logout(HttpServletResponse res) {
         Cookie cookie = new Cookie("token", null);
         cookie.setPath("/");
         cookie.setMaxAge(0);
         res.addCookie(cookie);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseFactory.success(null);
     }
 
     @GetMapping("/api/account/check")
-    public ResponseEntity<?> check(@AuthenticationPrincipal Member member) {
+    public ResponseEntity<ApiResponse<Map<String, Object>>> check(@AuthenticationPrincipal Member member) {
         if (member == null) {
-            return ResponseEntity.ok(null);
+            return ResponseFactory.success(null);
         }
 
         Map<String, Object> response = new HashMap<>();
         response.put("id", member.getId());
         response.put("email", member.getEmail());
-        return ResponseEntity.ok(response);
+        return ResponseFactory.success(response); // 메시지 생략
     }
 
     @PostMapping("/api/account/join")
-    public ResponseEntity join(@RequestBody Map<String, String> params, HttpServletResponse res) {
+    public ResponseEntity<ApiResponse<Void>> join(@RequestBody Map<String, String> params, HttpServletResponse res) {
         //1. 기존 회원 아이디가 있는지 조회한다.
         Member existingMember = memberMapper.findByEmail(params.get("email"));
 
@@ -112,18 +114,19 @@ public class AccountController {
         member.setPassword(bCryptPasswordEncoder.encode(params.get("password")));
         memberMapper.insert(member);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseFactory.success(null);
     }
 
     @GetMapping("/api/account/checkEmail")
-    public ResponseEntity checkDuplicateEmail(@RequestParam String email) {
+    public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkDuplicateEmail(@RequestParam String email) {
         boolean exists = memberMapper.existsMemberByEmail(email);
-        return ResponseEntity.ok(Map.of("exists", exists));
+        return ResponseFactory.success(Map.of("exists", exists));
+
     }
 
 
     @PostMapping("/api/account/changePassword")
-    public ResponseEntity changePassword(@RequestBody Map<String, String> params) {
+    public ResponseEntity<ApiResponse<Void>> changePassword(@RequestBody Map<String, String> params) {
         String email = params.get("email");
         String currentPassword = params.get("password");
         String newPassword = params.get("newPassword");
@@ -146,6 +149,6 @@ public class AccountController {
         member.setPassword(encodePassword);
         memberMapper.changePassword(member);
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return ResponseFactory.success(null);
     }
 }

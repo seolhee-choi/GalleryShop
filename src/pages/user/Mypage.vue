@@ -44,10 +44,10 @@ import { reactive } from "vue";
 import { validate } from "@/utils/validation.js";
 import { useAlert } from "@/utils/alert.js";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
-const { vAlert, vSuccess } = useAlert();
 import axios from "@/axios.js";
 import router from "@/scripts/router.js";
 
+const { vAlert, vSuccess } = useAlert();
 const accountStore = useAccountStore();
 const state = reactive({
   form: {
@@ -67,18 +67,6 @@ const validateForm = () => {
   return errors;
 };
 
-//에러 메세지 처리 함수
-const errorResponse = (err) => {
-  const status = err.response?.status;
-  const errMsg = err.response?.data?.error;
-
-  if (status === 400) {
-    vAlert(errMsg);
-  } else {
-    vAlert(errMsg);
-  }
-};
-
 const submit = () => {
   const errors = validateForm();
 
@@ -89,12 +77,12 @@ const submit = () => {
 
   axios
     .post("/api/account/changePassword", state.form)
-    .then((res) => {
+    .then(() => {
       vSuccess("비밀번호가 변경되었습니다.");
       router.push("/");
     })
     .catch((err) => {
-      errorResponse(err);
+      vAlert(err);
     });
 };
 </script>

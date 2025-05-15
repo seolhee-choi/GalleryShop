@@ -10,6 +10,7 @@
         SELECT *
         FROM members
         WHERE email = #{email}
+          AND status = 0
     </select>
 
     <!-- 이메일 존재 여부 확인 -->
