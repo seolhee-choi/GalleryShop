@@ -80,6 +80,7 @@ const routes = [
         component: () => import("@/pages/admin/Statistics.vue"),
       },
     ],
+    meta: { requiresAdmin: true },
   },
 ];
 
@@ -95,6 +96,7 @@ router.beforeEach(async (to, from, next) => {
 
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const guestOnly = to.matched.some((record) => record.meta.guestOnly);
+  const requiresAdmin = to.matched.some((record) => record.meta.requiresAdmin);
 
   if (requiresAuth && !accountStore.isLoggedIn) {
     return next("/login");
@@ -103,6 +105,15 @@ router.beforeEach(async (to, from, next) => {
   // if (requiresAuth && accountStore.isLoggedIn) {
   if (guestOnly && accountStore.isLoggedIn) {
     return next("/"); // 로그인된 사용자는 guestOnly 페이지 접근 금지
+  }
+
+  // admin 권한이 필요한 페이지 체크
+  if (requiresAdmin) {
+    if (accountStore.account.role === "ADMIN") {
+      next();
+    } else {
+      return next("/login"); // 또는 권한 없다는 페이지로 리다이렉트
+    }
   }
 
   next();

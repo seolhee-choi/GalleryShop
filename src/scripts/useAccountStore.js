@@ -6,6 +6,7 @@ export const useAccountStore = defineStore("account", {
     account: {
       id: null,
       email: "",
+      role: "",
     },
   }),
 
@@ -22,13 +23,17 @@ export const useAccountStore = defineStore("account", {
 
         // 서버가 인증된 사용자 정보를 보내면
         if (response && response.id && response.email) {
-          this.account = { id: response.id, email: response.email };
+          this.account = {
+            id: response.id,
+            email: response.email,
+            role: response.role,
+          };
         } else {
-          this.account = { id: null, email: "" };
+          this.account = { id: null, email: "", role: "" };
         }
       } catch (error) {
         console.error("check() 호출 실패:", error);
-        this.account = { id: null, email: "" }; // 로그인 안된 상태
+        this.account = { id: null, email: "", role: "" }; // 로그인 안된 상태
       }
     },
 
@@ -41,25 +46,6 @@ export const useAccountStore = defineStore("account", {
       this.account.id = null;
       this.account.email = "";
     },
-
-    // async check() {
-    //   try {
-    //     const res = await axios.get("/api/account/check", {
-    //       withCredentials: true,
-    //     });
-    //     const data = res.data;
-    //
-    //     if (data && data.id && data.email) {
-    //       this.account = { id: data.id, email: data.email };
-    //     } else {
-    //       this.clearAccount();
-    //     }
-    //   } catch (error) {
-    //     console.error("check() 호출 실패:", error);
-    //     this.clearAccount();
-    //   }
-    // },
   },
-
   // persist: true ❌ 제거!
 });

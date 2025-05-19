@@ -6,6 +6,11 @@
           <div class="col-sm-4 py-4">
             <h4 class="text-white">사이트맵</h4>
             <ul class="list-unstyled">
+              <li v-if="accountStore.account.role === 'ADMIN'">
+                <router-link to="/admin" class="text-white"
+                  >관리자 페이지로 이동</router-link
+                >
+              </li>
               <li>
                 <router-link to="/" class="text-white">메인 화면</router-link>
               </li>
@@ -23,8 +28,8 @@
               <!--              <li >-->
               <!--                <router-link to="/data" class="text-white">반고흐자료다운</router-link>-->
               <!--              </li>-->
+
               <li>
-                <!--                <router-link to="/login" class="text-white" v-if="!$store.state.account.id">로그인</router-link>-->
                 <router-link
                   to="/login"
                   class="text-white"

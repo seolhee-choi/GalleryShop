@@ -96,6 +96,7 @@ public class AccountController {
         Map<String, Object> response = new HashMap<>();
         response.put("id", member.getId());
         response.put("email", member.getEmail());
+        response.put("role", member.getRole());
         return ResponseFactory.success(response); // 메시지 생략
     }
 
