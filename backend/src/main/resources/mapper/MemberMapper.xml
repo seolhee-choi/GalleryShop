@@ -44,6 +44,7 @@
     <select id="findAllMember" resultType="com.example.gallery.backend.dto.Member">
         SELECT *
         FROM members
+        ORDER BY id DESC
     </select>
 
     <!-- 회원정보 변경 -->

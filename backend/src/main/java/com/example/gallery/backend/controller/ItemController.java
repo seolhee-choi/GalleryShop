@@ -10,13 +10,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.parameters.P;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class ItemController {
@@ -28,7 +28,6 @@ public class ItemController {
     public ResponseEntity<ApiResponse<List<Item>>> getItems() {
         List<Item> items = itemMapper.findAll();
 
-//        return items;
         return ResponseFactory.success(items);
     }
 
@@ -47,5 +46,34 @@ public class ItemController {
             e.printStackTrace();
             throw new BizException(ErrorCode.ERROR_007);
         }
+    }
+
+    // 관리자 - 상품 등록
+    @PostMapping("/api/admin/items/upload")
+    public ResponseEntity<ApiResponse<Void>> uploadItem(@RequestBody List<Item> items) {
+        if (items == null) {
+            throw new BizException(ErrorCode.ERROR_004);
+        }
+
+        itemMapper.saveAll(items);
+        return ResponseFactory.success(null);
+    }
+
+    // 관리자 - 상품 아이디로 상품 조회
+    @GetMapping("/api/admin/items/{itemId}")
+    public ResponseEntity<ApiResponse<List<Item>>> getItem(@PathVariable("itemId") int itemId) {
+        List<Item> items = itemMapper.findItemById(itemId);
+
+        return ResponseFactory.success(items);
+    }
+
+    // 관리자 - 아이템 업데이트
+    @PostMapping("/api/reviews/update")
+    public ResponseEntity<ApiResponse<Void>> updateItem(@RequestBody List<Item> items) {
+        for (Item i : items) {
+            itemMapper.updateItem(i);
+        }
+
+        return ResponseFactory.success(null);
     }
 }

@@ -30,6 +30,7 @@ html {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f5f6fa;
   height: 100%;
+  overflow: hidden;
 }
 
 .header {
@@ -61,7 +62,7 @@ html {
   padding: 20px 10px;
   box-sizing: border-box;
   height: calc(100vh - 60px - 40px); /* 전체 높이에서 헤더와 푸터 제외 */
-  overflow-y: auto; /* 스크롤이 필요할 경우 사이드바 내부에서만 스크롤 */
+  //overflow-y: auto; /* 스크롤이 필요할 경우 사이드바 내부에서만 스크롤 */
 }
 
 .sidebar ul {
@@ -90,9 +91,10 @@ html {
   margin-left: 220px; /* 사이드바 만큼 여백 */
   margin-top: 60px; /* 헤더 만큼 여백 */
   padding: 20px;
-  min-height: calc(100vh - 100px); /* 헤더와 푸터 제외한 공간 */
+  //min-height: calc(100vh - 100px); /* 헤더와 푸터 제외한 공간 */
+  height: calc(100vh - 100px);
   overflow-y: auto; /* 스크롤 가능 */
-  padding-bottom: 40px; /* 푸터와 겹치지 않도록 여백 추가 */
+  padding-bottom: 80px; /* 푸터와 겹치지 않도록 여백 추가 */
 }
 
 .main-content h1 {
@@ -105,6 +107,20 @@ html {
   padding: 8px 15px;
   font-size: 16px;
   margin-left: auto;
+}
+
+.cancel-btn {
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  line-height: 1;
+  display: inline-block;
+  height: auto;
+}
+
+td:first-child {
+  //text-align: center;
+  vertical-align: middle;
+  padding: 4px; /* 여백 줄이기 */
 }
 
 /* Footer 고정 */

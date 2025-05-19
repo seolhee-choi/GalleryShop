@@ -17,4 +17,10 @@ public interface ItemMapper {
 
     // 여러 아이템 저장
     void saveAll(@Param("items") List<Item> items);
+
+    // itemId로 조회
+    List<Item> findItemById(@Param("itemId") int itemId);
+
+    void updateItem(Item items);
+
 }

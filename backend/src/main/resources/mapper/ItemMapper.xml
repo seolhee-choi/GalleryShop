@@ -24,6 +24,7 @@
     <select id="findAll" resultType="com.example.gallery.backend.dto.Item">
         SELECT *
         FROM items
+        ORDER BY id DESC
     </select>
 
     <!-- 여러 아이템 저장 -->
@@ -34,5 +35,23 @@
             (#{item.name}, #{item.price}, #{item.imgPath} ,#{item.discountPer})
         </foreach>
     </insert>
+
+    <!-- 아이템 아이디를 받아 아이템 조회 -->
+    <select id="findItemById" resultType="com.example.gallery.backend.dto.Item">
+        SELECT *
+        FROM items
+        WHERE id = #{itemId}
+    </select>
+
+    <!-- 아이템 변경 -->
+    <update id="updateItem">
+        UPDATE items
+           SET
+             name = #{name}
+            ,img_path = #{imgPath}
+            ,price = #{price}
+            ,discount_per = #{discountPer}
+         WHERE id = #{id}
+    </update>
 
 </mapper>

@@ -47,7 +47,7 @@ const routes = [
       },
       // {
       //     path: 'data',
-      //     component: () => import("@/pages/user/Data.vue"),
+      //     component: () => import("@/pages/user/BulkDataModal.vue"),
       // },
     ],
   },

@@ -77,6 +77,7 @@
         ORDER BY o.id DESC
     </select>
 
+    <!-- orders 테이블의 items값을 order_items에 파싱 후 저장 -->
     <insert id="saveOrderItems">
         <foreach collection="items" item="item" separator=",">
             <!-- 중복 체크 후 삽입 -->
@@ -96,5 +97,22 @@
             )
         </foreach>
     </insert>
+
+    <!-- 상품별 TOP5 조회 -->
+    <select id="findTopProducts" resultType="map">
+        SELECT *
+        FROM (
+            SELECT
+                item_id,
+                item_name,
+                SUM(quantity) AS total_quantity,
+                SUM(price_at_order * (1 - discount_per / 100) * quantity) AS total_sales,
+                ROW_NUMBER() OVER (ORDER BY SUM(price_at_order * (1 - discount_per / 100) * quantity) DESC) AS row_num
+            FROM order_items
+            GROUP BY item_id, item_name
+        ) ranked
+        WHERE row_num &lt;= 5
+        ORDER BY total_sales DESC;
+    </select>
 
 </mapper>

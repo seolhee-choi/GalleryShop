@@ -1,9 +1,30 @@
 <template>
-  <div>
-    <button @click="fetchArtWorks">작품 데이터 다운로드</button>
-    <hr />
-    <input type="file" @change="handleFile" accept=".json" />
-    <button @click="uploadJson">데이터 db로 전송</button>
+  <div class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>상품 업로드(50개)</h2>
+      </div>
+      <div>
+        작가의 이름을 입력하세요(예:Van Gogh)
+        <input v-model="author" />
+        <button @click="fetchArtWorks">작품 데이터 다운로드</button>
+      </div>
+      <hr />
+      <input type="file" @change="handleFile" accept=".json" />
+      <button @click="uploadJson">데이터 db로 전송</button>
+      <div class="modal-btn">
+        <button
+          class="btn btn-outline-secondary"
+          type="button"
+          @click="$emit('close-modal')"
+        >
+          취소
+        </button>
+        <button class="btn btn-primary" type="button" @click="updateItem">
+          변경
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -11,10 +32,13 @@
 import { ref } from "vue";
 import axios from "@/axios.js";
 
+const emit = defineEmits(["close-modal"]);
+const author = ref("");
 const file = ref(null);
 const fetchArtWorks = async () => {
   try {
     //1. 전체 objectId 가져오기 - 이미지 있는것 만 필터
+    // const searchUrl = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=Van Gogh`;
     const searchUrl = `https://collectionapi.metmuseum.org/public/collection/v1/search?hasImages=true&q=Van Gogh`;
     const { data: searchData } = await axios.get(searchUrl);
 

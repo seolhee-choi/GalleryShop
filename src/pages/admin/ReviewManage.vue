@@ -21,13 +21,13 @@
         </thead>
         <tbody>
           <tr v-for="(r, idx) in state.reviews" :key="idx">
-            <td>{{ r.reviewId }}</td>
-            <td>{{ r.itemId }}</td>
+            <td class="number">{{ r.reviewId }}</td>
+            <td class="number">{{ r.itemId }}</td>
             <td>{{ r.content }}</td>
             <td>
               <span v-for="i in r.rating" :key="i">💛</span>
             </td>
-            <td>{{ r.authorId }}</td>
+            <td>{{ r.email }}</td>
             <td>{{ formatDate(r.updatedAt) }}</td>
             <td>
               <select v-model="r.status">

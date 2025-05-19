@@ -2,11 +2,13 @@ package com.example.gallery.backend.mapper;
 
 import com.example.gallery.backend.dto.Order;
 import com.example.gallery.backend.dto.OrderItem;
+import com.example.gallery.backend.dto.statistics.Statistics;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface OrderMapper{
@@ -17,5 +19,7 @@ public interface OrderMapper{
     List<Order> findAllOrder();
 
     void saveOrderItems(@Param("orderId") int orderId, @Param("items") List<OrderItem> items);
+
+    List<Map<String, Object>> findTopProducts();
 
 }

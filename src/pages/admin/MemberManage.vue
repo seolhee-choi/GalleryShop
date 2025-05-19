@@ -18,15 +18,15 @@
         </thead>
         <tbody>
           <tr v-for="(m, idx) in state.members" :key="idx">
-            <td>{{ m.id }}</td>
+            <td class="number">{{ m.id }}</td>
             <td>{{ m.email }}</td>
-            <td>
+            <td class="select-option">
               <select v-model="m.role">
                 <option value="USER">사용자</option>
                 <option value="ADMIN">관리자</option>
               </select>
             </td>
-            <td>
+            <td class="select-option">
               <select v-model="m.status">
                 <option value="0">활성화</option>
                 <option value="1">비활성화</option>

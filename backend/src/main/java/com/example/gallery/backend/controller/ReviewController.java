@@ -71,4 +71,25 @@ public class ReviewController {
         System.out.println("403에러테스트");
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "테스트 401");
     }
+
+    // 관리자 - 리뷰 조회
+    @GetMapping("/api/admin/reviews")
+    public ResponseEntity<ApiResponse<List<Review>>> reviewList(){
+
+        List<Review> review = reviewMapper.findAllReview();
+
+        if(review.isEmpty()) {
+            throw new BizException(ErrorCode.ERROR_003);
+        }
+        return ResponseFactory.success(review);
+    }
+
+    // 관리자 - 리뷰 업데이트
+    @PostMapping("/api/admin/reviews")
+    public ResponseEntity<ApiResponse<Void>> updateReviews(@RequestBody List<Review> reviews) {
+        for (Review r : reviews) {
+            reviewMapper.updateReview(r);
+        }
+        return ResponseFactory.success(null);
+    }
 }

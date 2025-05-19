@@ -23,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -99,7 +100,7 @@ public class AccountController {
     }
 
     @PostMapping("/api/account/join")
-    public ResponseEntity<ApiResponse<Void>> join(@RequestBody Map<String, String> params, HttpServletResponse res) {
+    public ResponseEntity<ApiResponse<Void>> join(@RequestBody Map<String, String> params) {
         //1. 기존 회원 아이디가 있는지 조회한다.
         Member existingMember = memberMapper.findByEmail(params.get("email"));
 
@@ -121,7 +122,6 @@ public class AccountController {
     public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkDuplicateEmail(@RequestParam String email) {
         boolean exists = memberMapper.existsMemberByEmail(email);
         return ResponseFactory.success(Map.of("exists", exists));
-
     }
 
 
@@ -149,6 +149,26 @@ public class AccountController {
         member.setPassword(encodePassword);
         memberMapper.changePassword(member);
 
+        return ResponseFactory.success(null);
+    }
+
+    // 관리자 - 회원 조회
+    @GetMapping("/api/admin/members")
+    public ResponseEntity<ApiResponse<List<Member>>> memberList() {
+        List<Member> members = memberMapper.findAllMember();
+
+        if(members.isEmpty()) {
+            throw new BizException(ErrorCode.ERROR_007);
+        }
+        return ResponseFactory.success(members);
+    }
+
+    // 관리자 - 회원 업데이트
+    @PostMapping("/api/admin/members")
+    public ResponseEntity<ApiResponse<Void>> updateMembers(@RequestBody List<Member> members) {
+        for (Member m : members) {
+            memberMapper.updateMember(m);
+        }
         return ResponseFactory.success(null);
     }
 }

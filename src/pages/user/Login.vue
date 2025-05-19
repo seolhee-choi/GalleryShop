@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { reactive, nextTick } from "vue";
+import { reactive, nextTick, watch, toRef } from "vue";
 import { useAlert } from "@/utils/alert.js";
 import { validate } from "@/utils/validation.js";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
@@ -56,6 +56,7 @@ import axios from "@/axios.js";
 import router from "@/scripts/router.js";
 
 const accountStore = useAccountStore();
+const isLoggedIn = toRef(accountStore, "isLoggedIn");
 
 const state = reactive({
   form: {
@@ -88,7 +89,7 @@ const submit = async () => {
 
     if (accountStore.isLoggedIn) {
       vSuccess("로그인하였습니다.");
-      await router.push("/"); // 인증 상태가 업데이트 된 후에 라우터 호출
+      // await router.push("/"); // 인증 상태가 업데이트 된 후에 라우터 호출
     } else {
       console.warn("상태 반영실패");
     }
@@ -96,6 +97,12 @@ const submit = async () => {
     vAlert(error);
   }
 };
+
+watch(isLoggedIn, (val) => {
+  if (val) {
+    router.push("/");
+  }
+});
 </script>
 
 <style scoped>

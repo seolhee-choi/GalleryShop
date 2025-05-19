@@ -87,4 +87,47 @@ public class OrderController {
 
         return ResponseFactory.success(null);
     }
+
+    // 관리자 - 주문 조회
+    @GetMapping("/api/admin/orders")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> orderList() {
+        List<Order> orders = orderMapper.findAllOrder();
+
+        if(orders.isEmpty()) {
+            throw new BizException(ErrorCode.ERROR_018);
+        }
+
+        List<Map<String, Object>> ordersWithItems = new ArrayList<>();
+
+        // orders 테이블 items값을 JSON으로 파싱
+        for (Order order : orders) {
+            String itemsJson = order.getItems();
+            List<OrderItem> itemList = orderService.parseItemJson(itemsJson);
+
+            // Map을 사용하여 order와 itemList 함께 묶기
+            Map<String, Object> orderData = new HashMap<>();
+            orderData.put("order", order);
+            orderData.put("items", itemList);
+
+            ordersWithItems.add(orderData);
+        }
+
+        // 전체 데이터를 Map으로 반환
+        Map<String, Object> response = new HashMap<>();
+        response.put("orders", ordersWithItems);
+
+        return ResponseFactory.success(response);
+    }
+
+    // 관리자 - 인기 상품 조회
+    @GetMapping("/api/admin/topOrderList")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> topOrderList() {
+        List<Map<String, Object>> items = orderMapper.findTopProducts();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("items", items);
+
+        return ResponseFactory.success(response);
+    }
+
 }

@@ -17,7 +17,7 @@
               </li>
               <li v-if="accountStore.account.id">
                 <router-link to="/mypage" class="text-white"
-                  >마이페이지</router-link
+                  >비밀번호 변경</router-link
                 >
               </li>
               <!--              <li >-->

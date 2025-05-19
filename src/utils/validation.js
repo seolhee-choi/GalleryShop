@@ -56,11 +56,18 @@ export function cardSerialNumberFormatter(value) {
   }
 
   const raw = value.replace(/[^0-9]/g, ""); // 숫자만 남김
+
   if (raw.length > 16) {
-    // 16자리 이상이면 16자리까지 자르고, 오류 메시지 반환
     return {
       formatted: raw.slice(0, 16),
       error: "카드 번호는 16자리를 초과할 수 없습니다.",
+    };
+  }
+
+  if (raw.length < 16) {
+    return {
+      formatted: raw,
+      error: "카드 번호는 16자리여야 합니다.",
     };
   }
 

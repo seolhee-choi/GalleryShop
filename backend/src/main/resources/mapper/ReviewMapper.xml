@@ -26,9 +26,13 @@
 
     <!-- 전체 리뷰 검색 -->
     <select id="findAllReview" resultType="com.example.gallery.backend.dto.Review">
-        SELECT *
-        FROM reviews
-        ORDER BY updated_at DESC
+        SELECT
+            r.*
+            ,m.email
+        FROM reviews AS r
+        JOIN members AS m
+          ON r.author_id = m.id
+        ORDER BY created_at DESC
     </select>
 
     <!-- 리뷰 활성화상태 변경 -->

@@ -18,29 +18,25 @@
 
     <canvas ref="chartRef" id="myChart" class="chart-canvas"></canvas>
 
-    <h2 class="section-title">최근 주문 상품</h2>
+    <h2 class="section-title">매출 TOP5 주문 상품</h2>
     <div class="table-container">
       <table class="custom-table">
         <thead>
           <tr>
+            <th>순위</th>
             <th>상품명</th>
             <th>상품 가격</th>
             <th>누적 판매수</th>
-            <th>순위</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>random</td>
-            <td>data</td>
-            <td>placeholder</td>
-            <td>text</td>
-          </tr>
-          <tr>
-            <td>random</td>
-            <td>data</td>
-            <td>placeholder</td>
-            <td>text</td>
+          <tr v-for="(i, idx) in state.items" :key="idx">
+            <td class="number">{{ i.row_num }}</td>
+            <td>{{ i.item_name }}</td>
+            <td class="number">
+              {{ Intl.NumberFormat().format(i.total_sales) }}
+            </td>
+            <td class="number">{{ i.total_quantity }}</td>
           </tr>
         </tbody>
       </table>
@@ -49,44 +45,95 @@
 </template>
 
 <script setup>
-import { Chart } from "chart.js/auto";
-import { onMounted, ref } from "vue";
+import {
+  Chart,
+  LineController,
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+Chart.register(
+  LineController,
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale,
+  Title,
+  Tooltip,
+  Legend,
+);
 
+import { onMounted, reactive, ref, watch } from "vue";
+import axios from "@/axios.js";
+
+const state = reactive({
+  items: [],
+});
 const chartRef = ref(null);
+let chartInstance = null;
 
-onMounted(() => {
-  const ctx = chartRef.value.getContext("2d"); // 이 시점에는 DOM이 존재함
+const loadtopOrderList = () => {
+  axios.get("/api/admin/topOrderList").then((res) => {
+    state.items = [];
+    const data = res.items;
+    for (let d of data) {
+      state.items.push(d);
+    }
+  });
+};
 
-  new Chart(ctx, {
-    type: "line",
+const renderChart = () => {
+  if (chartInstance) {
+    chartInstance.destroy(); // 기존 차트가 있으면 제거
+  }
+  const ctx = chartRef.value.getContext("2d");
+  chartInstance = new Chart(ctx, {
+    type: "line", // 여기만 바꿔주세요
     data: {
-      labels: [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ],
+      labels: state.items.map((item) => item.item_name),
       datasets: [
         {
-          data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
-          lineTension: 0,
-          backgroundColor: "transparent",
-          borderColor: "#007bff",
-          borderWidth: 4,
-          pointBackgroundColor: "#007bff",
+          label: "매출",
+          data: state.items.map((item) => item.total_sales),
+          borderColor: "rgba(75, 192, 192, 1)", // 선 색깔
+          backgroundColor: "rgba(75, 192, 192, 0.2)", // 선 아래 영역 색 (optional)
+          fill: true, // 선 아래 영역 채우기 여부
+          tension: 0.3, // 선 굴곡 정도 (0 = 직선, 0.3 정도가 자연스러움)
         },
       ],
     },
     options: {
+      responsive: true,
       plugins: {
-        legend: { display: false },
-        tooltip: { boxPadding: 3 },
+        legend: { display: true },
+        title: {
+          display: true,
+          text: "매출 Top 5 상품 (라인 차트)",
+        },
+      },
+      scales: {
+        y: { beginAtZero: true },
       },
     },
   });
+};
+
+// 데이터가 바뀔 때마다 차트 다시 그림
+watch(
+  () => state.items,
+  (newVal) => {
+    if (newVal.length > 0) {
+      renderChart();
+    }
+  },
+);
+
+onMounted(() => {
+  loadtopOrderList();
 });
 </script>
 

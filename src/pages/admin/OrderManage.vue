@@ -1,49 +1,47 @@
 <template>
   <main class="main-content">
-    <h1 class="h2">
-      주문 조회
-      <button class="btn btn-primary save-btn" @click="saveChanges">
-        저장
-      </button>
-    </h1>
+    <h1 class="h2">주문 조회</h1>
     <div class="table-container">
       <table class="custom-table">
         <thead>
           <tr>
             <th scope="col" style="width: 50px">주문ID</th>
             <th scope="col" style="width: 50px">회원ID</th>
-            <th scope="col" style="width: 80px">받는사람</th>
-            <th scope="col" style="width: 200px">받는주소</th>
-            <th scope="col" style="width: 50px">결제방식</th>
+            <th scope="col" style="width: 80px">받는 사람</th>
+            <th scope="col" style="width: 200px">받는 주소</th>
+            <th scope="col" style="width: 100px">주문 상품</th>
             <th scope="col" style="width: 50px">수량</th>
-            <th scope="col" style="width: 100px">주문상품</th>
-            <th scope="col" style="width: 50px">원가</th>
-            <th scope="col" style="width: 50px">최종구매가격(수량*할인가)</th>
+            <th scope="col" style="width: 50px">결제방식</th>
+            <th scope="col" style="width: 50px">
+              최종구매가격<br />(수량 * 할인가)
+            </th>
           </tr>
         </thead>
         <tbody>
           <template v-for="(o, idx) in state.orders" :key="idx">
             <!-- 첫 번째 tr에 주문 공통 정보 + 첫 번째 상품 -->
             <tr>
-              <td :rowspan="o.items.length">{{ o.id }}</td>
-              <td :rowspan="o.items.length">{{ o.memberId }}</td>
+              <td class="number" :rowspan="o.items.length">{{ o.id }}</td>
+              <td class="number" :rowspan="o.items.length">{{ o.memberId }}</td>
               <td :rowspan="o.items.length">{{ o.name }}</td>
               <td :rowspan="o.items.length">{{ o.address }}</td>
-              <td :rowspan="o.items.length">{{ o.payment }}</td>
 
               <!-- 첫 번째 상품 -->
-              <td>{{ o.items[0].quantity }}</td>
               <td>{{ o.items[0].name }}</td>
-              <td>{{ Intl.NumberFormat().format(o.items[0].price) }}</td>
-              <td>{{ orderItemPrices[idx][0] }}</td>
+              <td class="number">{{ o.items[0].quantity }}</td>
+              <td :rowspan="o.items.length">{{ o.payment }}</td>
+              <td class="number">{{ orderItemPrices[idx][0] }}</td>
             </tr>
 
             <!-- 두 번째 이후 상품 출력 -->
             <tr v-for="(i, iIdx) in o.items.slice(1)" :key="iIdx">
-              <td>{{ i.quantity }}</td>
+              <!-- 숫자 오른쪽 정렬 깨져서 추가로 넣음 -->
+              <td style="display: none" colspan="5"></td>
               <td>{{ i.name }}</td>
-              <td>{{ Intl.NumberFormat().format(i.price) }}</td>
-              <td>{{ orderItemPrices[idx][iIdx + 1] }}</td>
+              <td class="number">{{ i.quantity }}</td>
+              <td class="number">
+                {{ orderItemPrices[idx][iIdx + 1] }}
+              </td>
             </tr>
           </template>
         </tbody>
