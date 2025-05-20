@@ -137,7 +137,22 @@ const chartConfigMap = {
   },
   weekly: {
     getStats: (data) => data.weeklyStats,
-    getLabels: (s) => `${s.week}주차`,
+    // getLabels: (s) => `${s.week}주차`,
+    getLabels: (s) => {
+      const [year, weekStr] = s.week.split("-");
+      const week = parseInt(weekStr, 10);
+
+      // ISO 주차 기준으로 시작 날짜 계산 (월요일 기준)
+      const start = dayjs()
+        .year(parseInt(year))
+        .isoWeek(week)
+        .startOf("week")
+        .add(1, "day"); // 월요일
+      const end = start.add(6, "day"); // 일요일
+
+      const formatRange = `${start.format("MM.DD")} ~ ${end.format("MM.DD")}`;
+      return `${s.week}주차 (${formatRange})`;
+    },
   },
   monthly: {
     getStats: (data) => data.monthlyStats,
@@ -149,6 +164,14 @@ const chartConfigMap = {
 };
 
 /* 차트 그려주는 항목들 */
+const generateDateLabels = (baseDate, period) => {
+  const labels = [];
+  for (let i = period - 1; i >= 0; i--) {
+    labels.push(dayjs(baseDate).subtract(i, "day").format("YYYY-MM-DD"));
+  }
+  return labels;
+};
+
 const buildChartData = (type, stats) => {
   if (!stats || stats.length === 0) return;
 
@@ -159,8 +182,13 @@ const buildChartData = (type, stats) => {
   let dataPoints = [];
 
   if (type === "daily") {
-    labels = stats.map(config.getLabels);
-    dataPoints = stats.map((s) => s.totalPrice);
+    const labelList = generateDateLabels(selectedDate.value, period.value);
+    const dataMap = new Map(stats.map((s) => [s.day, s.totalPrice]));
+
+    // labels = stats.map(config.getLabels);
+    // dataPoints = stats.map((s) => s.totalPrice);
+    labels = labelList;
+    dataPoints = labelList.map((date) => dataMap.get(date) ?? 0);
   } else {
     // 주별/월별은 같은 라벨끼리 totalPrice 합산 후 표시
     const aggregateMap = new Map();

@@ -98,7 +98,7 @@ const accountStore = useAccountStore();
 const cartStore = useCartStore();
 const logout = () => {
   axios.post("/api/account/logout").then(() => {
-    accountStore.setAccount({ id: 0, email: "" });
+    accountStore.setAccount({ id: 0, email: "", role: "" });
     cartStore.$reset(); // Pinia 상태만 초기화 (localStorage는 유지 가능)
     router.push("/");
   });

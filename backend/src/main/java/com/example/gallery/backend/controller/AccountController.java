@@ -7,6 +7,7 @@ import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.MemberMapper;
 import com.example.gallery.backend.response.ApiResponse;
 import com.example.gallery.backend.response.ResponseFactory;
+import com.example.gallery.backend.service.AccountService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,61 +31,32 @@ import java.util.Map;
 @RestController
 public class AccountController {
 
-    @Autowired
-    JwtService jwtService;
+    private final JwtService jwtService;
 
-    @Autowired
-    MemberMapper memberMapper;
+    private final AccountService accountService;
 
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     private final AuthenticationManager authenticationManager;
 
     public AccountController(AuthenticationManager authenticationManager,
+                             BCryptPasswordEncoder bCryptPasswordEncoder,
                              JwtService jwtService,
-                             MemberMapper memberMapper) {
+                             AccountService accountService) {
         this.authenticationManager = authenticationManager;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.jwtService = jwtService;
-        this.memberMapper = memberMapper;
-    }
-
-    @PostMapping("/api/account/login")
-    public ResponseEntity<ApiResponse<Void>> login(@RequestBody Map<String, Object> request, HttpServletResponse response) {
-        String email = (String) request.get("email");
-        String password = (String) request.get("password");
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(email, password)
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            Member member = memberMapper.findByEmail(email);
-            String token = jwtService.getToken(member);
-
-            Cookie cookie = new Cookie("token", token);
-            cookie.setHttpOnly(true);
-            cookie.setPath("/");
-            cookie.setMaxAge(1800); // 30분
-            response.addCookie(cookie);
-
-            return ResponseFactory.success(null);
-        } catch (BadCredentialsException e) {
-            throw new BizException(ErrorCode.ERROR_014);
-        } catch (UsernameNotFoundException e) {
-            throw new BizException(ErrorCode.ERROR_015);
-        }
-
+        this.accountService = accountService;
     }
 
     @PostMapping("/api/account/logout")
-    public ResponseEntity<ApiResponse<Void>> logout(HttpServletResponse res) {
+    public ResponseEntity<ApiResponse<Boolean>> logout(HttpServletResponse res) {
         Cookie cookie = new Cookie("token", null);
         cookie.setPath("/");
         cookie.setMaxAge(0);
         res.addCookie(cookie);
 
-        return ResponseFactory.success(null);
+        return ResponseFactory.success(true);
     }
 
     @GetMapping("/api/account/check")
@@ -101,75 +73,30 @@ public class AccountController {
     }
 
     @PostMapping("/api/account/join")
-    public ResponseEntity<ApiResponse<Void>> join(@RequestBody Map<String, String> params) {
-        //1. 기존 회원 아이디가 있는지 조회한다.
-        Member existingMember = memberMapper.findByEmail(params.get("email"));
-
-        //2-1. 기존 회원 아이디가 있는 경우
-        if (existingMember != null) {
-            throw new BizException(ErrorCode.ERROR_016);
-        }
-
-        //2-2. 기존 회원 아이디가 없는 경우 - db저장
-        Member member = new Member();
-        member.setEmail(params.get("email"));
-        member.setPassword(bCryptPasswordEncoder.encode(params.get("password")));
-        memberMapper.insert(member);
-
-        return ResponseFactory.success(null);
+    public ResponseEntity<ApiResponse<Boolean>> join(@RequestBody Map<String, String> params) {
+        return ResponseFactory.success(accountService.join(params));
     }
 
     @GetMapping("/api/account/checkEmail")
     public ResponseEntity<ApiResponse<Map<String, Boolean>>> checkDuplicateEmail(@RequestParam String email) {
-        boolean exists = memberMapper.existsMemberByEmail(email);
-        return ResponseFactory.success(Map.of("exists", exists));
+        return ResponseFactory.success(Map.of("exists", accountService.existsMemberByEmail(email)));
     }
 
 
     @PostMapping("/api/account/changePassword")
-    public ResponseEntity<ApiResponse<Void>> changePassword(@RequestBody Map<String, String> params) {
-        String email = params.get("email");
-        String currentPassword = params.get("password");
-        String newPassword = params.get("newPassword");
-
-        //1. 회원의 email로 일치하는 회원을 먼저 조회한다.
-        Member member = memberMapper.findByEmail(email);
-
-        //1-2. 회원 찾기 불가
-        if (member == null ) {
-            throw new BizException(ErrorCode.ERROR_015);
-        }
-
-        //2-1. 입력한 패스워드 불일치
-        if (!bCryptPasswordEncoder.matches(currentPassword, member.getPassword())) {
-            throw new BizException(ErrorCode.ERROR_014);
-        }
-
-        //2-2. 입력한 패스워드 일치
-        String encodePassword = bCryptPasswordEncoder.encode(newPassword);
-        member.setPassword(encodePassword);
-        memberMapper.changePassword(member);
-
-        return ResponseFactory.success(null);
+    public ResponseEntity<ApiResponse<Boolean>> changePassword(@RequestBody Map<String, String> params) {
+        return ResponseFactory.success(accountService.changePassword(params));
     }
 
     // 관리자 - 회원 조회
     @GetMapping("/api/admin/members")
     public ResponseEntity<ApiResponse<List<Member>>> memberList() {
-        List<Member> members = memberMapper.findAllMember();
-
-        if(members.isEmpty()) {
-            throw new BizException(ErrorCode.ERROR_007);
-        }
-        return ResponseFactory.success(members);
+        return ResponseFactory.success(accountService.findAllMember());
     }
 
     // 관리자 - 회원 업데이트
     @PostMapping("/api/admin/members")
-    public ResponseEntity<ApiResponse<Void>> updateMembers(@RequestBody List<Member> members) {
-        for (Member m : members) {
-            memberMapper.updateMember(m);
-        }
-        return ResponseFactory.success(null);
+    public ResponseEntity<ApiResponse<Boolean>> updateMembers(@RequestBody List<Member> members) {
+        return ResponseFactory.success(accountService.updateMember(members));
     }
 }

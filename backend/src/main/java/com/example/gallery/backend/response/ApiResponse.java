@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ApiResponse<T> {
     private String code;
-    private String message;
+    private String msg;
     private T data;
 
     public static <T> ApiResponse<T> success(T data) {
@@ -22,7 +22,7 @@ public class ApiResponse<T> {
         return new ApiResponse<>("000", "요청이 성공적으로 처리되었습니다.", null);
     }
 
-    public static ApiResponse<Void> of(String code, String message) {
-        return new ApiResponse<>(code, message, null);
+    public static ApiResponse<Void> of(String code, String msg) {
+        return new ApiResponse<>(code, msg, null);
     }
 }

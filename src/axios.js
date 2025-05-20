@@ -22,6 +22,9 @@ instance.interceptors.response.use(
   (response) => {
     const res = response.data;
 
+    // boolean만 단독으로 오는 경우는 성공으로 간주
+    if (typeof res === "boolean") return res;
+
     // code가 200이 아닐 경우, 에러로 간주
     if (res.code !== "200") {
       // 필요한 경우 전역 alert 처리

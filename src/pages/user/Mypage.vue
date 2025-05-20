@@ -77,12 +77,13 @@ const submit = () => {
 
   axios
     .post("/api/account/changePassword", state.form)
-    .then(() => {
+    .then((res) => {
       vSuccess("비밀번호가 변경되었습니다.");
       router.push("/");
     })
     .catch((err) => {
-      vAlert(err);
+      const errMsg = err.response.data.msg;
+      vAlert(errMsg);
     });
 };
 </script>

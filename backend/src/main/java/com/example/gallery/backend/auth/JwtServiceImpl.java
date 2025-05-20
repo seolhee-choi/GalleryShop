@@ -1,6 +1,8 @@
 package com.example.gallery.backend.auth;
 
 import com.example.gallery.backend.dto.Member;
+import com.example.gallery.backend.exception.BizException;
+import com.example.gallery.backend.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +25,14 @@ public class JwtServiceImpl implements JwtService {
     private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Override
-//    public String getToken(String key, Object value) {
     public String getToken(Member member) {
+
+        if (member == null) {
+            throw new BizException(ErrorCode.ERROR_004);
+        }
 
         Date expTime = new Date();
         expTime.setTime(expTime.getTime() + 1000 * 60 * 30);
-//        byte[] secretByteKey = Base64.getDecoder().decode(secretKey);
         byte[] secretByteKey = secretKey.getBytes(StandardCharsets.UTF_8);
         Key signKey = new SecretKeySpec(secretByteKey, SignatureAlgorithm.HS256.getJcaName());
 
@@ -37,7 +41,6 @@ public class JwtServiceImpl implements JwtService {
         headerMap.put("alg", "HS256");
 
         Map<String, Object> map = new HashMap<>();
-//        map.put(key, value);
         map.put("id", member.getId());
         map.put("email" , member.getEmail());
         map.put("role", member.getRole());
@@ -61,6 +64,8 @@ public class JwtServiceImpl implements JwtService {
                 return Jwts.parserBuilder().setSigningKey(signKey).build().parseClaimsJws(token).getBody();
             } catch (JwtException e) {
                 // 유효하지 않음
+                logger.warn("Invalid JWT token: {}", e.getMessage());
+                throw new BizException(ErrorCode.ERROR_009);
             }
         }
         return null;
@@ -75,9 +80,16 @@ public class JwtServiceImpl implements JwtService {
     public int getId(String token) {
         Claims claims = this.getClaims(token);
 
-        if(claims != null) {
-            return Integer.parseInt(claims.get("id").toString());
+        if (claims == null) {
+            throw new BizException(ErrorCode.ERROR_009);
         }
-        return 0;
+
+        try {
+            return Integer.parseInt(claims.get("id").toString());
+        } catch (NumberFormatException e) {
+            logger.warn("Invalid JWT token: {}", claims.get("id"));
+            throw new BizException(ErrorCode.ERROR_004);
+        }
+
     }
 }

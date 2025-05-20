@@ -13,7 +13,7 @@ public class ResponseFactory {
     }
 
     // 필요 시 커스텀 메시지를 쓰고 싶을 경우
-    public static <T> ResponseEntity<ApiResponse<T>> success(String message, T data) {
-        return ResponseEntity.ok(new ApiResponse<>(DEFAULT_SUCCESS_CODE, message, data));
+    public static <T> ResponseEntity<ApiResponse<T>> success(String msg, T data) {
+        return ResponseEntity.ok(new ApiResponse<>(DEFAULT_SUCCESS_CODE, msg, data));
     }
 }

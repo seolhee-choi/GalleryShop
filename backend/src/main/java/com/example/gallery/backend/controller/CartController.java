@@ -10,6 +10,7 @@ import com.example.gallery.backend.mapper.ItemMapper;
 import com.example.gallery.backend.auth.JwtService;
 import com.example.gallery.backend.response.ApiResponse;
 import com.example.gallery.backend.response.ResponseFactory;
+import com.example.gallery.backend.service.CartService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,10 +28,11 @@ public class CartController {
     JwtService jwtService;
 
     @Autowired
-    CartMapper cartMapper;
+    CartService cartService;
 
     @Autowired
     ItemMapper itemMapper;
+
 
     @GetMapping("/api/cart/items")
     public ResponseEntity<ApiResponse<List<Item>>> getCartItems(HttpServletRequest request) {
@@ -38,22 +40,7 @@ public class CartController {
 
         if (authentication != null && authentication.getPrincipal() instanceof Member member) {
             int userId = member.getId(); // 여기서 바로 ID 꺼내기
-            // 장바구니 서비스로부터 해당 유저의 카트 아이템 조회
-            List<Cart> cartItems = cartMapper.findByMemberId(userId);
-
-            if (cartItems.isEmpty()) {
-                throw new BizException(ErrorCode.ERROR_013);
-            }
-
-            List<Integer> itemIds = cartItems.stream().map(Cart::getItemId).toList();
-            List<Item> items = itemMapper.findByIdIn(itemIds, userId);
-
-            // 아이템이 없을 경우 에러 발생
-            if (items.isEmpty()) {
-                throw new BizException(ErrorCode.ERROR_013);
-            }
-
-            return ResponseFactory.success(items);
+            return ResponseFactory.success(cartService.getCartItems(userId));
 
         }
         throw new BizException(ErrorCode.ERROR_001);
@@ -62,29 +49,12 @@ public class CartController {
 
     @PostMapping("/api/cart/items/{itemId}")
     public ResponseEntity<ApiResponse<Cart>> pushCartItem(@PathVariable("itemId") int itemId, @CookieValue(value = "token", required = false) String token) {
-
-        int memberId = jwtService.getId(token);
-        Cart cart = cartMapper.findByMemberIdAndItemId(memberId, itemId);
-
-        if (cart == null) {
-            Cart newCart = new Cart();
-            newCart.setMemberId(memberId);
-            newCart.setItemId(itemId);
-            newCart.setQuantity(1);
-            cartMapper.insertCart(newCart);
-        }
-
-        return ResponseFactory.success(cart);
+        return ResponseFactory.success(cartService.pushCartItem(itemId, token));
     }
 
 
     @DeleteMapping("/api/cart/items/{itemId}")
-    public ResponseEntity<ApiResponse<Void>> removeCartItem(@PathVariable("itemId") int itemId, @CookieValue(value = "token", required = false) String token) {
-
-        int memberId = jwtService.getId(token);
-//        Cart cart = cartMapper.findByMemberIdAndItemId(memberId, itemId);
-
-        cartMapper.deleteByMemberIdAndItemId(memberId, itemId);
-        return ResponseFactory.success(null);
+    public ResponseEntity<ApiResponse<Boolean>> removeCartItem(@PathVariable("itemId") int itemId, @CookieValue(value = "token", required = false) String token) {
+        return ResponseFactory.success(cartService.removeCartItem(itemId, token));
     }
 }

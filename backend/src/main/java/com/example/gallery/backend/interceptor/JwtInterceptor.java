@@ -26,7 +26,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         String token = getTokenFromRequest(request);  // 요청에서 토큰을 추출하는 메서드
 
         // 토큰이 없으면 그냥 넘어가게 처리
-        if (token == null || token.isEmpty()) {
+        if (token == null) {
             return true;  // 인증이 필요없는 요청이므로 인터셉터를 건너뜁니다.
         }
 

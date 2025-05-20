@@ -2,6 +2,7 @@ package com.example.gallery.backend.auth;
 
 import com.example.gallery.backend.dto.Member;
 import com.example.gallery.backend.mapper.MemberMapper;
+import com.example.gallery.backend.response.ResponseFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

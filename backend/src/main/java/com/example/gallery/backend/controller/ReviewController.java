@@ -9,6 +9,7 @@ import com.example.gallery.backend.mapper.MemberMapper;
 import com.example.gallery.backend.mapper.ReviewMapper;
 import com.example.gallery.backend.response.ApiResponse;
 import com.example.gallery.backend.response.ResponseFactory;
+import com.example.gallery.backend.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,72 +25,30 @@ import java.util.List;
 public class ReviewController {
 
     @Autowired
-    ReviewMapper reviewMapper;
-
-    @Autowired
-    ItemMapper itemMapper;
-
-    @Autowired
-    MemberMapper memberMapper;
-
-    @Autowired
-    JwtService jwtService;
+    ReviewService reviewService;
 
 
     @GetMapping("/api/reviews/{itemId}")
     public ResponseEntity<ApiResponse<List<Review>>> getReview(@PathVariable("itemId") int itemId){
-
-        List<Review> review = reviewMapper.findByItemIdOrderByUpdatedDateDesc(itemId);
-
-        if(review != null) {
-            return ResponseFactory.success(review);
-        } else {
-            throw new BizException(ErrorCode.ERROR_003);
-        }
+        return ResponseFactory.success(reviewService.getReviewsByItemId(itemId));
     }
 
     @Transactional
     @PostMapping("/api/reviews/register/{itemId}")
-    public ResponseEntity<ApiResponse<Void>> registerReview(@PathVariable("itemId") int itemId, @RequestBody Review dto, @CookieValue(value = "token", required = false) String token) {
-
-        int memberId = jwtService.getId(token);
-        Review newReview = new Review();
-        newReview.setAuthorId(memberId);
-        newReview.setContent(dto.getContent());
-        newReview.setRating(dto.getRating());
-        newReview.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        newReview.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        newReview.setItemId(itemId);
-
-        reviewMapper.save(newReview);
-
-        return ResponseFactory.success(null);
+    public ResponseEntity<ApiResponse<Boolean>> registerReview(@PathVariable("itemId") int itemId, @RequestBody Review dto, @CookieValue(value = "token", required = false) String token) {
+        return ResponseFactory.success(reviewService.registerReview(itemId, dto, token));
     }
 
-    @GetMapping("/test-error")
-    public void testError() {
-        System.out.println("403에러테스트");
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "테스트 401");
-    }
 
     // 관리자 - 리뷰 조회
     @GetMapping("/api/admin/reviews")
     public ResponseEntity<ApiResponse<List<Review>>> reviewList(){
-
-        List<Review> review = reviewMapper.findAllReview();
-
-        if(review.isEmpty()) {
-            throw new BizException(ErrorCode.ERROR_003);
-        }
-        return ResponseFactory.success(review);
+        return ResponseFactory.success(reviewService.getAllReviews());
     }
 
     // 관리자 - 리뷰 업데이트
     @PostMapping("/api/admin/reviews")
-    public ResponseEntity<ApiResponse<Void>> updateReviews(@RequestBody List<Review> reviews) {
-        for (Review r : reviews) {
-            reviewMapper.updateReview(r);
-        }
-        return ResponseFactory.success(null);
+    public ResponseEntity<ApiResponse<Boolean>> updateReviews(@RequestBody List<Review> reviews) {
+        return ResponseFactory.success(reviewService.updateReviews(reviews));
     }
 }

@@ -1,6 +1,5 @@
 package com.example.gallery.backend.auth;
 
-import com.example.gallery.backend.dto.Member;
 import com.example.gallery.backend.mapper.MemberMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -10,8 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -29,6 +26,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private AuthenticationManager authenticationManager;
 
+    // 쿠키에서 토큰 추출
+    private String extractTokenFromCookies(HttpServletRequest request) {
+        if (request.getCookies() == null) return null;
+
+        for (Cookie cookie : request.getCookies()) {
+            if ("token".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
+    }
 
     @Autowired
     public JwtAuthenticationFilter(JwtService jwtService, CustomUserDetailsService userDetailsService, MemberMapper memberMapper) {
@@ -43,16 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        String token = null;
-
-        // 쿠키에서 토큰 추출
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("token".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                }
-            }
-        }
+        String token = extractTokenFromCookies(request);
 
         if (token != null && jwtService.isValid(token)) {
             int memberId = jwtService.getId(token); // token에서 id 꺼냄

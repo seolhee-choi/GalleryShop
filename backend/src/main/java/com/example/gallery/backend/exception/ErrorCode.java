@@ -23,11 +23,12 @@ public enum ErrorCode {
     ERROR_012("012", "데이터베이스 처리 중 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     ERROR_013("013", "장바구니에 상품이 없습니다.", HttpStatus.NOT_FOUND),
 
-    ERROR_014("014", "비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED),
+    ERROR_014("014", "비밀번호가 틀렸습니다.", HttpStatus.BAD_REQUEST),
     ERROR_015("015", "존재하지 않는 사용자입니다.", HttpStatus.UNAUTHORIZED),
     ERROR_016("016", "이미 존재하는 이메일입니다.", HttpStatus.BAD_REQUEST),
     ERROR_017("017", "json으로 변환하는데 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
-    ERROR_018("01", "주문한 내역이 없습니다.", HttpStatus.NOT_FOUND);
+    ERROR_018("018", "주문한 내역이 없습니다.", HttpStatus.NOT_FOUND),
+    ERROR_019("019", "이메일 또는 비밀번호가 틀렸습니다.", HttpStatus.UNAUTHORIZED);
 
 
     @Schema(description = "코드값")

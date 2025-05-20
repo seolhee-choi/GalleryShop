@@ -24,19 +24,19 @@
       <label for="floatingPassword">Password</label>
     </div>
     <div class="form-check text-start my-3">
-      <input
-        class="form-check-input"
-        type="checkbox"
-        value="remember-me"
-        id="checkDefault"
-      />
-      <label
-        class="form-check-label"
-        for="checkDefault"
-        @keyup.enter="submit()"
-      >
-        Remember me
-      </label>
+      <!--      <input-->
+      <!--        class="form-check-input"-->
+      <!--        type="checkbox"-->
+      <!--        value="remember-me"-->
+      <!--        id="checkDefault"-->
+      <!--      />-->
+      <!--      <label-->
+      <!--        class="form-check-label"-->
+      <!--        for="checkDefault"-->
+      <!--        @keyup.enter="submit()"-->
+      <!--      >-->
+      <!--        Remember me-->
+      <!--      </label>-->
       <router-link to="/join" class="join">회원가입</router-link>
     </div>
     <button class="btn btn-primary w-100 py-2" @click="submit()">
@@ -83,7 +83,10 @@ const submit = async () => {
   }
 
   try {
-    await axios.post("/api/account/login", state.form);
+    await axios.post("/api/account/login", state.form, {
+      withCredentials: true,
+    });
+
     await accountStore.check();
     await nextTick();
 

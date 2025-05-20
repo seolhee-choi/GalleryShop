@@ -6,7 +6,7 @@
     ></span>
     <div class="card-body">
       <p class="card-text">
-        <span class="item-name">{{ item.name }}</span>
+        <span class="item-name" :title="item.name">{{ item.name }}</span>
         <button class="btn btn-link py-1 review-btn" @click="isOpen = true">
           리뷰
         </button>
@@ -49,7 +49,7 @@ import lib from "@/scripts/lib.js";
 import axios from "@/axios.js";
 import ReviewListModal from "@/pages/user/ReviewListModal.vue";
 
-const { vAlert } = useAlert();
+const { vAlert, vSuccess } = useAlert();
 
 const props = defineProps({
   item: Object,
@@ -63,7 +63,9 @@ const addToCart = (itemId) => {
     vAlert("로그인 후 가능합니다");
     return;
   }
-  axios.post(`/api/cart/items/${itemId}`).then(() => {});
+  axios.post(`/api/cart/items/${itemId}`).then(() => {
+    vSuccess("장바구니에 상품이 담겼습니다.");
+  });
 };
 </script>
 
