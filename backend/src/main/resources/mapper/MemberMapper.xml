@@ -7,7 +7,12 @@
 
     <!-- 이메일로 회원 찾기 -->
     <select id="findByEmail" resultType="com.example.gallery.backend.dto.Member">
-        SELECT *
+        SELECT
+            id
+            ,email
+            ,password
+            ,role
+            ,status
         FROM members
         WHERE email = #{email}
           AND status = 0
@@ -42,7 +47,12 @@
 
     <!-- 전체 회원 검색 -->
     <select id="findAllMember" resultType="com.example.gallery.backend.dto.Member">
-        SELECT *
+        SELECT
+            id
+            ,email
+            ,password
+            ,role
+            ,status
         FROM members
         ORDER BY id DESC
     </select>

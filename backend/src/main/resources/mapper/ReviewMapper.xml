@@ -8,7 +8,14 @@
     <!-- 상품 ID로 리뷰 리스트 가져오기 (최종수정일자 내림차순 정렬) -->
     <select id="findByItemIdOrderByUpdatedDateDesc" resultType="com.example.gallery.backend.dto.Review">
         SELECT
-            r.*
+            r.review_id
+            ,r.author_id
+            ,r.content
+            ,r.rating
+            ,r.created_at
+            ,r.updated_at
+            ,r.item_id
+            ,r.status
             ,m.email
         FROM reviews as r
         JOIN members as m
@@ -27,7 +34,14 @@
     <!-- 전체 리뷰 검색 -->
     <select id="findAllReview" resultType="com.example.gallery.backend.dto.Review">
         SELECT
-            r.*
+            r.review_id
+            ,r.author_id
+            ,r.content
+            ,r.rating
+            ,r.created_at
+            ,r.updated_at
+            ,r.item_id
+            ,r.status
             ,m.email
         FROM reviews AS r
         JOIN members AS m

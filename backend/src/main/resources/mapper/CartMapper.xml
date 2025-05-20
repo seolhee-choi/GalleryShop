@@ -6,12 +6,22 @@
 <mapper namespace="com.example.gallery.backend.mapper.CartMapper">
 
     <select id="findByMemberId" resultType="com.example.gallery.backend.dto.Cart">
-        SELECT * FROM carts
+        SELECT
+            id
+            ,member_id
+            ,item_id
+            ,quantity
+        FROM carts
         WHERE member_id = #{memberId}
     </select>
 
     <select id="findByMemberIdAndItemId" resultType="com.example.gallery.backend.dto.Cart">
-        SELECT * FROM carts
+        SELECT
+            id
+            ,member_id
+            ,item_id
+            ,quantity
+        FROM carts
         WHERE member_id = #{memberId}
           AND item_id = #{itemId}
     </select>
