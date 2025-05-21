@@ -35,7 +35,7 @@ public class OrderController {
     }
 
 
-    @Transactional
+
     @PostMapping("/api/orders")
     public ResponseEntity<ApiResponse<Boolean>> pushOrder(@RequestBody Order dto, @CookieValue(value = "token", required = false) String token) {
         return ResponseFactory.success(orderService.createOrder(dto, token));

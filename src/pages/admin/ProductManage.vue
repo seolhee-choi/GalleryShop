@@ -3,10 +3,16 @@
     <h1 class="h2">
       상품 조회
       <div class="action-buttons">
-        <button class="btn btn-outline-danger save-btn" @click="">
+        <button
+          class="btn btn-outline-danger save-btn"
+          @click="isBulkModalOpen = true"
+        >
           대용량 업로드
-          <BulkDataModal v-if="isOpen = true" @close-modal="isOpen = false" />
         </button>
+        <BulkDataModal
+          v-if="isBulkModalOpen"
+          @close-modal="isBulkModalOpen = false"
+        />
         <button class="btn btn-outline-danger save-btn" @click="addRow">
           행 추가
         </button>
@@ -81,6 +87,7 @@ const state = reactive({
   items: [],
   newRow: null,
 });
+const isBulkModalOpen = ref(false);
 const isOpen = ref(false);
 const selectedItemId = ref(null);
 

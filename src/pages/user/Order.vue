@@ -195,67 +195,33 @@ const submit = () => {
   }
 
   // 카드번호 유효성 검사
-  const { error: cardError } = cardSerialNumberFormatter(state.form.cardNumber);
-  if (cardError) {
-    vAlert(cardError, "error");
-    return;
+  if (state.form.payment === "card") {
+    const { error: cardError } = cardSerialNumberFormatter(
+      state.form.cardNumber,
+    );
+    if (cardError) {
+      vAlert(cardError, "error");
+      return;
+    }
   }
 
   axios
     .post("/api/orders", args)
     .then((res) => {
-      if (res.status === 200 && res.code === 200) {
-        console.log(res.status);
-        console.log(res.code);
+      console.log(res);
+      console.log(res.code);
+      if (res === true) {
         vSuccess("결제되었습니다.");
         cartStore.setItems([]);
-        router.push("/orders");
+        router.push("/orders").catch((err) => {
+          console.error("라우터 이동 중 오류:", err);
+        });
       } else {
         vAlert("결제 실패");
       }
     })
     .catch(() => vAlert("서버 오류"));
 };
-
-/*
-*
-*
-* const submit = () => {
-  const formCopy = JSON.parse(JSON.stringify(state.form));
-
-  // 유효성 검사
-  const nameError = validateNameFormat(formCopy.name);
-  if (nameError) return vAlert(nameError, "error");
-
-  const { error: cardError } = cardSerialNumberFormatter(formCopy.cardNumber);
-  if (cardError) return vAlert(cardError, "error");
-
-  const addrError = validateAddressFormat(formCopy.address);
-  if (addrError) return vAlert(addrError, "error");
-
-  // 서버 전송용 데이터 정리
-  const args = {
-    ...formCopy,
-    items: cartStore.items, // 배열 그대로 전송
-  };
-
-  axios
-    .post("/api/orders", args)
-    .then((res) => {
-      if (res.status === 200) {
-        vSuccess("결제되었습니다.");
-        cartStore.setItems([]);
-        router.push("/orders");
-      } else {
-        vAlert("결제 실패");
-      }
-    })
-    .catch((err) => {
-      console.error("서버 오류:", err);
-      vAlert("서버 오류");
-    });
-};
-* */
 </script>
 
 <style scoped></style>

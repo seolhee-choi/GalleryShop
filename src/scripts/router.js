@@ -90,6 +90,8 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
+  console.log("Navigating to:", to.fullPath);
+  console.log("Requires auth:", to.meta.requiresAuth);
   const accountStore = useAccountStore();
 
   await accountStore.check();

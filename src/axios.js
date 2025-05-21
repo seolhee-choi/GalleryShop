@@ -38,6 +38,7 @@ instance.interceptors.response.use(
   (error) => {
     const errorMsg =
       error.response?.data?.msg || "서버에서 에러가 발생했습니다.";
+    console.log(error);
 
     // if (error.response?.status === 401) {
     //   alert("로그인 세션이 만료되었습니다. 다시 로그인해주세요.");

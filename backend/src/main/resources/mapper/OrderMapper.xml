@@ -79,22 +79,12 @@
 
     <!-- orders 테이블의 items값을 order_items에 파싱 후 저장 -->
     <insert id="saveOrderItems">
+        INSERT INTO order_items (
+        order_id, item_id, item_name, price_at_order, quantity, discount_per, created_at
+        )
+        VALUES
         <foreach collection="items" item="item" separator=",">
-            <!-- 중복 체크 후 삽입 -->
-            INSERT INTO order_items (
-                order_id, item_id, item_name, price_at_order, quantity, discount_per, created_at
-            )
-            SELECT
-                #{orderId},
-                #{item.itemId},
-                #{item.itemName},
-                #{item.priceAtOrder},
-                #{item.quantity},
-                #{item.discountPer},
-                NOW()
-            WHERE NOT EXISTS (
-                SELECT 1 FROM order_items WHERE order_id = #{orderId} AND item_id = #{item.itemId}
-            )
+            (#{orderId}, #{item.itemId}, #{item.itemName}, #{item.priceAtOrder}, #{item.quantity}, #{item.discountPer}, NOW())
         </foreach>
     </insert>
 

@@ -18,7 +18,7 @@
 
     <canvas ref="chartRef" id="myChart" class="chart-canvas"></canvas>
 
-    <h2 class="section-title">매출 TOP5 주문 상품</h2>
+    <h2 class="section-title">누적매출 TOP5 주문 상품</h2>
     <div class="table-container">
       <table class="custom-table">
         <thead>
@@ -47,19 +47,18 @@
 <script setup>
 import {
   Chart,
-  LineController,
-  LineElement,
-  PointElement,
+  BarController,
+  BarElement,
   CategoryScale,
   LinearScale,
   Title,
   Tooltip,
   Legend,
 } from "chart.js";
+
 Chart.register(
-  LineController,
-  LineElement,
-  PointElement,
+  BarController,
+  BarElement,
   CategoryScale,
   LinearScale,
   Title,
@@ -88,21 +87,20 @@ const loadtopOrderList = () => {
 
 const renderChart = () => {
   if (chartInstance) {
-    chartInstance.destroy(); // 기존 차트가 있으면 제거
+    chartInstance.destroy();
   }
   const ctx = chartRef.value.getContext("2d");
   chartInstance = new Chart(ctx, {
-    type: "line", // 여기만 바꿔주세요
+    type: "bar",
     data: {
       labels: state.items.map((item) => item.item_name),
       datasets: [
         {
           label: "매출",
           data: state.items.map((item) => item.total_sales),
-          borderColor: "rgba(75, 192, 192, 1)", // 선 색깔
-          backgroundColor: "rgba(75, 192, 192, 0.2)", // 선 아래 영역 색 (optional)
-          fill: true, // 선 아래 영역 채우기 여부
-          tension: 0.3, // 선 굴곡 정도 (0 = 직선, 0.3 정도가 자연스러움)
+          backgroundColor: "#70a1ff", // 메인 블루 계열
+          borderColor: "#3742fa", // 강조 컬러
+          hoverBackgroundColor: "#5352ed",
         },
       ],
     },
@@ -112,11 +110,27 @@ const renderChart = () => {
         legend: { display: true },
         title: {
           display: true,
-          text: "매출 Top 5 상품 (라인 차트)",
+          text: "누적매출 Top 5 상품",
+          font: {
+            size: 20, // 숫자로 지정 (px 단위)
+          },
         },
       },
       scales: {
-        y: { beginAtZero: true },
+        x: {
+          ticks: {
+            font: {
+              size: 16, // x축 숫자 크기 조절
+            },
+          },
+        },
+        y: {
+          ticks: {
+            font: {
+              size: 16, // y축 라벨(상품명) 크기 조절
+            },
+          },
+        },
       },
     },
   });
