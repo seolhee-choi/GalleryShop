@@ -51,13 +51,14 @@ import { reactive, nextTick, watch, toRef } from "vue";
 import { useAlert } from "@/utils/alert.js";
 import { validate } from "@/utils/validation.js";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
+import { useCartStore } from "@/scripts/useCartStore.js";
 const { vAlert, vSuccess } = useAlert();
 import axios from "@/axios.js";
 import router from "@/scripts/router.js";
 
 const accountStore = useAccountStore();
 const isLoggedIn = toRef(accountStore, "isLoggedIn");
-
+const cartStore = useCartStore();
 const state = reactive({
   form: {
     email: "",
@@ -83,16 +84,17 @@ const submit = async () => {
   }
 
   try {
-    await axios.post("/api/account/login", state.form, {
+    const res = await axios.post("/api/account/login", state.form, {
       withCredentials: true,
     });
-
-    await accountStore.check();
+    await accountStore.setAccount(res);
     await nextTick();
 
     if (accountStore.isLoggedIn) {
       vSuccess("로그인하였습니다.");
-      // await router.push("/"); // 인증 상태가 업데이트 된 후에 라우터 호출
+      const userId = res.id; // 또는 res.data.id 등 응답 형식에 맞게
+      cartStore.userId = userId;
+      await router.push("/"); // 인증 상태가 업데이트 된 후에 라우터 호출
     } else {
       console.warn("상태 반영실패");
     }

@@ -86,6 +86,7 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("id", member.getId());
         responseBody.put("email", member.getEmail());
+        responseBody.put("role", member.getRole());
 
         // ApiResponse 생성 (성공 코드, 메시지, 데이터 포함)
         ApiResponse<Map<String, Object>> apiResponse = new ApiResponse<>("200", "로그인 성공", responseBody);

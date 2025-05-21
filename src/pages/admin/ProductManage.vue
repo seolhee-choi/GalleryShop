@@ -5,7 +5,7 @@
       <div class="action-buttons">
         <button class="btn btn-outline-danger save-btn" @click="">
           대용량 업로드
-          <BulkDataModal v-if="isOpen" @close-modal="isOpen = false" />
+          <BulkDataModal v-if="isOpen = true" @close-modal="isOpen = false" />
         </button>
         <button class="btn btn-outline-danger save-btn" @click="addRow">
           행 추가

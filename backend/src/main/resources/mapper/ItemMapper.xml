@@ -12,7 +12,7 @@
             ,A.name
             ,A.img_path
             ,A.price
-            ,A.disount_per
+            ,A.discount_per
             ,B.quantity
         FROM items as A
         JOIN carts as B
@@ -31,7 +31,7 @@
             ,name
             ,img_path
             ,price
-            ,disount_per
+            ,discount_per
         FROM items
         ORDER BY id DESC
     </select>
@@ -52,7 +52,7 @@
             ,name
             ,img_path
             ,price
-            ,disount_per
+            ,discount_per
         FROM items
         WHERE id = #{itemId}
     </select>

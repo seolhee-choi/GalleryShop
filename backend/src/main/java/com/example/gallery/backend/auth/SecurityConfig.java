@@ -63,7 +63,7 @@ public class SecurityConfig {
             "/api/login",
             "/api/join",
             "/api/items",
-//            "/api/account/check",
+            "/api/account/check",
     };
     // SecurityFilterChain 설정
     @Bean

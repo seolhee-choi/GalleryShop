@@ -39,7 +39,7 @@ import lib from "@/scripts/lib.js";
 const { vAlert } = useAlert();
 const cartStore = useCartStore();
 
-const checkCartItems = (items = [], cartStore) => {
+const localCartItems = (items = [], cartStore) => {
   return items.map((item) => {
     const existing = cartStore.items.find((i) => i.id === item.id);
     return {
@@ -53,8 +53,19 @@ const checkCartItems = (items = [], cartStore) => {
 const load = async () => {
   try {
     const res = await axios.get("/api/cart/items");
-    cartStore.setItems(checkCartItems(res, cartStore));
+    const localData = JSON.parse(
+      localStorage.getItem(`cart_${cartStore.userId}`) || "[]",
+    );
+
+    const mergedItems = localCartItems(res, {
+      items: localData, // 우선 localStorage에서 수량 반영
+    });
+
+    cartStore.setItems(mergedItems); // 최종 세팅
+
+    cartStore.setItems(localCartItems(res, cartStore));
   } catch (err) {
+    console.log(err);
     const errMsg = err.response?.data?.msg;
     if (errMsg) {
       cartStore.setItems([]);

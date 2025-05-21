@@ -27,8 +27,8 @@
 
     <!-- 회원 가입 -->
     <insert id="insert" parameterType="com.example.gallery.backend.dto.Member">
-        INSERT INTO members (email, password)
-        VALUES (#{email}, #{password})
+        INSERT INTO members (email, password, role, status)
+        VALUES (#{email}, #{password}, 'USER', 0)
     </insert>
 
     <!-- 비밀번호 변경 -->

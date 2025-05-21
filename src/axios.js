@@ -39,10 +39,11 @@ instance.interceptors.response.use(
     const errorMsg =
       error.response?.data?.msg || "서버에서 에러가 발생했습니다.";
 
-    if (error.response?.status === 401) {
-      router.push("/login");
-      return Promise.reject(new Error(errorMsg));
-    }
+    // if (error.response?.status === 401) {
+    //   alert("로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+    //   router.push("/login");
+    //   return Promise.reject(new Error(errorMsg));
+    // }
 
     return Promise.reject(error);
   },

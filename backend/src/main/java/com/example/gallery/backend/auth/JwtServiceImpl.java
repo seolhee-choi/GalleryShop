@@ -65,7 +65,6 @@ public class JwtServiceImpl implements JwtService {
             } catch (JwtException e) {
                 // 유효하지 않음
                 logger.warn("Invalid JWT token: {}", e.getMessage());
-                throw new BizException(ErrorCode.ERROR_009);
             }
         }
         return null;

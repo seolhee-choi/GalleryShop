@@ -27,8 +27,8 @@
 
     <!-- 리뷰를 저장하는 insert 쿼리 -->
     <insert id="save" parameterType="com.example.gallery.backend.dto.Review">
-        INSERT INTO reviews (author_id, content, rating, created_at, updated_at, item_id)
-        VALUES (#{authorId}, #{content}, #{rating}, #{createdAt}, #{updatedAt}, #{itemId})
+        INSERT INTO reviews (author_id, content, rating, created_at, updated_at, item_id, status)
+        VALUES (#{authorId}, #{content}, #{rating}, #{createdAt}, #{updatedAt}, #{itemId}, 0)
     </insert>
 
     <!-- 전체 리뷰 검색 -->

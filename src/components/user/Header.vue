@@ -93,15 +93,22 @@ import { useAccountStore } from "@/scripts/useAccountStore.js";
 import { useCartStore } from "@/scripts/useCartStore.js";
 import router from "@/scripts/router.js";
 import axios from "@/axios.js";
+import { nextTick } from "vue";
 
 const accountStore = useAccountStore();
 const cartStore = useCartStore();
-const logout = () => {
-  axios.post("/api/account/logout").then(() => {
+const logout = async () => {
+  try {
+    await axios.post("/api/account/logout");
+
     accountStore.setAccount({ id: 0, email: "", role: "" });
-    cartStore.$reset(); // Pinia 상태만 초기화 (localStorage는 유지 가능)
+    cartStore.$reset();
+
+    await nextTick(); // 상태 반영 기다림
     router.push("/");
-  });
+  } catch (err) {
+    console.error("Logout failed", err);
+  }
 };
 </script>
 

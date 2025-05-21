@@ -28,12 +28,15 @@ export const useAccountStore = defineStore("account", {
             email: response.email,
             role: response.role,
           };
+          return true;
         } else {
           this.account = { id: null, email: "", role: "" };
+          return false;
         }
       } catch (error) {
         console.error("check() 호출 실패:", error);
         this.account = { id: null, email: "", role: "" }; // 로그인 안된 상태
+        return false;
       }
     },
 
