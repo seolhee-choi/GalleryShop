@@ -97,50 +97,110 @@ const register = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* 어두운 배경 */
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999;
+  z-index: 1050;
 }
 
 .modal-content {
-  background-color: white;
+  background-color: #ffffff;
   padding: 2rem;
-  border-radius: 8px;
+  border-radius: 12px;
   width: 400px;
   max-width: 90%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease;
 }
 
-.modal-btn {
-  margin-top: 1rem;
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-content h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.mt-4 {
+  margin-top: 1.5rem;
 }
 
 textarea {
   width: 100%;
-  height: 100px;
+  height: 80px;
   margin-top: 0.5rem;
-  padding: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
   resize: none;
+  font-size: 0.95rem;
+  transition: border 0.2s ease;
+}
+
+textarea:focus {
+  border-color: #ffa500;
+  outline: none;
+}
+
+.modal-btn {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.btn {
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: #ffa500;
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #ff8c00;
+}
+
+.btn-outline-secondary {
+  background-color: transparent;
+  border: 1px solid #ccc;
+  color: #555;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f5f5f5;
 }
 
 .star-rating {
   display: flex;
-  flex-direction: row;
-  gap: 5px;
+  gap: 0.5rem;
   font-size: 2rem;
-  cursor: pointer;
+  user-select: none;
 }
 
-.star {
+.star span {
   transition: transform 0.2s ease;
 }
 
-.star:hover {
-  transform: scale(1.2);
+.star span:hover {
+  transform: scale(1.3);
 }
 </style>

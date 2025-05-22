@@ -1,42 +1,42 @@
 <template>
-  <header data-bs-theme="dark">
-    <div class="collapse text-bg-dark" id="navbarHeader">
+  <!--  <header data-bs-theme="dark">-->
+  <header>
+    <div
+      class="collapse"
+      id="navbarHeader"
+      style="background-color: #fff0f0; color: #ee422d"
+    >
       <div class="container">
         <div class="row">
           <div class="col-sm-4 py-4">
-            <h4 class="text-white">사이트맵</h4>
+            <h4 style="color: #ee422d">사이트맵</h4>
             <ul class="list-unstyled">
               <li v-if="accountStore.account.role === 'ADMIN'">
-                <router-link to="/admin" class="text-white"
-                  >관리자 페이지로 이동</router-link
+                <router-link to="/admin" style="color: #ee422d"
+                  >관리자 페이지</router-link
                 >
               </li>
               <li>
-                <router-link to="/" class="text-white">메인 화면</router-link>
+                <router-link to="/" style="color: #ee422d">홈</router-link>
               </li>
-              <!--              <li v-if="$store.state.account.id">-->
               <li v-if="accountStore.account.id">
-                <router-link to="/orders" class="text-white"
+                <router-link to="/orders" style="color: #ee422d"
                   >주문 내역</router-link
                 >
               </li>
               <li v-if="accountStore.account.id">
-                <router-link to="/mypage" class="text-white"
+                <router-link to="/mypage" style="color: #ee422d"
                   >비밀번호 변경</router-link
                 >
               </li>
-              <!--              <li >-->
-              <!--                <router-link to="/data" class="text-white">반고흐자료다운</router-link>-->
-              <!--              </li>-->
-
               <li>
                 <router-link
                   to="/login"
-                  class="text-white"
+                  style="color: #ee422d"
                   v-if="!accountStore.account.id"
                   >로그인</router-link
                 >
-                <a to="/login" class="text-white" @click="logout()" v-else
+                <a href="#" style="color: #ee422d" @click="logout()" v-else
                   >로그아웃</a
                 >
               </li>
@@ -45,15 +45,20 @@
         </div>
       </div>
     </div>
-    <div class="navbar navbar-dark bg-dark shadow-sm">
+
+    <div class="navbar navbar-light" style="background-color: #ffffff">
       <div class="container">
-        <router-link to="/" class="navbar-brand d-flex align-items-center">
+        <router-link
+          to="/"
+          class="navbar-brand d-flex align-items-center"
+          style="color: #ee422d"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
             height="20"
             fill="none"
-            stroke="currentColor"
+            stroke="#ee422d"
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
@@ -66,12 +71,18 @@
             />
             <circle cx="12" cy="13" r="4" />
           </svg>
-          <strong>Gallery Shop</strong>
+          <strong style="color: #ee422d">Gallery Shop</strong>
         </router-link>
-        <!--        <router-link to="/cart" class="cart btn" v-if="$store.state.account.id">-->
-        <router-link to="/cart" class="cart btn" v-if="accountStore.account.id">
+
+        <router-link
+          to="/cart"
+          class="cart btn"
+          v-if="accountStore.account.id"
+          style="color: #ee422d"
+        >
           <i class="fa fa-shopping-cart" aria-hidden="true"></i>
         </router-link>
+
         <button
           class="navbar-toggler"
           type="button"
@@ -81,7 +92,13 @@
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span class="navbar-toggler-icon"></span>
+          <span
+            class="navbar-toggler-icon"
+            style="
+              filter: brightness(0) saturate(100%) invert(29%) sepia(83%)
+                saturate(628%) hue-rotate(341deg) brightness(96%) contrast(97%);
+            "
+          ></span>
         </button>
       </div>
     </div>
@@ -100,11 +117,8 @@ const cartStore = useCartStore();
 const logout = async () => {
   try {
     await axios.post("/api/account/logout");
-
     accountStore.setAccount({ id: 0, email: "", role: "" });
     cartStore.$reset();
-
-    await nextTick(); // 상태 반영 기다림
     router.push("/");
   } catch (err) {
     console.error("Logout failed", err);
@@ -113,11 +127,20 @@ const logout = async () => {
 </script>
 
 <style>
+header {
+  position: relative; /* 위치 기준 만들기 */
+  z-index: 1100; /* Bootstrap 네비바나 모달보다 높게 */
+}
 header ul li a {
   cursor: pointer;
 }
 header .navbar .cart {
   margin-left: auto;
   color: white;
+}
+
+#navbarHeader {
+  position: relative; /* or fixed, absolute 필요에 따라 */
+  z-index: 1050; /* Bootstrap 모달, 네비바가 보통 1000~1050 사이임 */
 }
 </style>

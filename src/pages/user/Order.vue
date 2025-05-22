@@ -7,10 +7,10 @@
           <p class="lead">배송받으실 정보를 입력해주세요</p>
         </div>
         <div class="row g-5">
-          <div class="col-md-5 col-lg-4 order-md-last">
+          <div class="col-md-5 col-lg-4">
             <h4 class="d-flex justify-content-between align-items-center mb-3">
-              <span class="text-primary">구입 목록</span
-              ><span class="badge bg-primary rounded-pill">{{
+              <span>구입 목록</span
+              ><span class="badge badge-custom rounded-pill">{{
                 totalQuantity
               }}</span>
             </h4>
@@ -23,12 +23,12 @@
                 <div>
                   <h6 class="my-0">
                     {{ i.name }}
-                    <span class="badge bg-primary rounded-pill">{{
+                    <span class="badge badge-custom rounded-pill">{{
                       i.quantity
                     }}</span>
                   </h6>
                 </div>
-                <span class="text-body-secondary">
+                <span class="purchase-amount">
                   {{
                     lib.getNumberFormatted(
                       (i.price - (i.price * i.discountPer) / 100) * i.quantity,
@@ -224,4 +224,88 @@ const submit = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.order main {
+  background: #fff;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(238, 66, 45, 0.1);
+  /* flex 레이아웃 무시, 부트스트랩 그리드에 맡김 */
+}
+
+.order .col-md-5.col-lg-4.order-md-last {
+  /* border-left 제거 or 주석 처리 (이게 넓이 차지해서 밀림 원인일 수 있음) */
+  /* border-left: 3px solid #ee422d; */
+  padding-left: 0; /* padding-left도 일단 없애기 */
+  margin-top: 30px; /* 모바일 뷰에서 위쪽 간격만 조금 띄움 */
+}
+
+/* 상단 제목 정렬 및 색상 등은 유지 */
+.order h4 {
+  font-weight: 600;
+  color: #c23523;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #ee422d;
+  padding-bottom: 8px;
+}
+
+/* 리스트 스타일과 버튼 스타일 등 기존 스타일 유지 */
+.order .list-group-item {
+  border: none;
+  padding: 12px 0;
+  font-weight: 500;
+  color: #6e2e2d;
+  font-size: 15px;
+  border-bottom: 1px solid #f5c6cb;
+}
+
+.order .total-price {
+  margin-top: 30px;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: #ee422d;
+  text-align: center;
+}
+
+/* 주문자 정보, 폼, 버튼 등 스타일 유지 */
+.order .form-control {
+  border: 1.5px solid #f5c6cb;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.order .form-control:focus {
+  border-color: #ee422d;
+  box-shadow: 0 0 8px rgba(238, 66, 45, 0.25);
+  outline: none;
+}
+
+.order button.btn-primary {
+  background-color: #ee422d;
+  border-color: #ee422d;
+  font-weight: 700;
+  font-size: 1.2rem;
+  padding: 14px 0;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.order button.btn-primary:hover {
+  background-color: #c23523;
+  border-color: #c23523;
+  cursor: pointer;
+}
+
+.badge-custom {
+  background-color: #ee422d; /* 기존 주황/빨강 계열 컬러 */
+  color: white;
+}
+
+.purchase-amount {
+  white-space: nowrap;
+  font-weight: 600;
+  color: #9b2c2c;
+}
+</style>

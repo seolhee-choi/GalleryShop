@@ -4,28 +4,45 @@
       <ul>
         <li v-for="(i, idx) in cartStore.items" :key="idx">
           <img :src="i.imgPath" />
-          <span class="name">{{ i.name }}</span>
-          <span class="price"
-            >{{
-              lib.getNumberFormatted(i.price - (i.price * i.discountPer) / 100)
-            }}원</span
-          >
-          <div>
-            <i
-              class="fa fa-arrow-down"
-              :class="{ disabled: i.quantity <= 1 }"
-              @click="cartStore.updateQuantity(i.id, i.quantity - 1)"
-            ></i>
-            <input type="number" class="number" :value="i.quantity" disabled />
-            <i
-              class="fa fa-arrow-up"
-              @click="cartStore.updateQuantity(i.id, i.quantity + 1)"
-            ></i>
+          <div class="info">
+            <span class="name">{{ i.name }}</span>
+            <span class="price"
+              >{{
+                lib.getNumberFormatted(
+                  i.price - (i.price * i.discountPer) / 100,
+                )
+              }}원</span
+            >
           </div>
-          <i class="fa fa-trash" @click="remove(i.id)"></i>
+          <!-- 오른쪽 영역을 하나의 wrapper로 -->
+          <div class="action-box">
+            <div class="quantity">
+              <i
+                class="fa fa-arrow-down"
+                :class="{ disabled: i.quantity <= 1 }"
+                @click="cartStore.updateQuantity(i.id, i.quantity - 1)"
+              ></i>
+              <input
+                type="number"
+                class="number"
+                :value="i.quantity"
+                disabled
+              />
+              <i
+                class="fa fa-arrow-up"
+                @click="cartStore.updateQuantity(i.id, i.quantity + 1)"
+              ></i>
+            </div>
+            <i class="fa fa-trash" @click="remove(i.id)"></i>
+          </div>
         </li>
       </ul>
-      <router-link to="/order" class="btn btn-primary">구매하기</router-link>
+      <router-link
+        to="/order"
+        v-if="cartStore.items.length > 0"
+        class="btn btn-primary"
+        >구매하기</router-link
+      >
     </div>
   </div>
 </template>
@@ -83,6 +100,10 @@ load();
 </script>
 
 <style scoped>
+.cart {
+  padding: 80px 0 40px;
+}
+
 .cart ul {
   list-style: none;
   margin: 0;
@@ -92,65 +113,105 @@ load();
 .cart ul li {
   display: flex;
   align-items: center;
-  position: relative;
-  border: 1px solid #eee;
-  margin: 25px 0;
-  padding: 15px 20px;
+  border: 1.5px solid #f5c6cb;
+  background-color: #fff0f6;
+  border-radius: 10px;
+  margin: 20px 0;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(238, 66, 45, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.cart ul li:hover {
+  box-shadow: 0 8px 16px rgba(238, 66, 45, 0.2);
 }
 
 .cart ul li img {
   width: 100px;
   height: 100px;
   object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #eee;
 }
 
-.cart ul li .name,
-.cart ul li .price {
+.cart ul li .info {
+  display: flex;
+  flex-direction: column;
   margin-left: 20px;
+}
+
+.cart ul li .info .name {
   font-size: 16px;
+  color: #5a2a27;
+  margin-bottom: 5px;
 }
 
-.cart ul li .price {
-  color: #888;
+.cart ul li .info .price {
+  font-size: 16px;
+  color: #9b2c2c;
+  font-weight: 600;
 }
 
-.cart ul li > div {
+.cart ul li .action-box {
   display: flex;
   align-items: center;
   margin-left: auto;
-  margin-right: 50px;
+  gap: 20px;
+}
+
+.cart ul li .quantity {
+  display: flex;
+  align-items: center;
   gap: 10px;
   font-size: 18px;
 }
 
 .cart ul li .fa {
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
-.cart ul li .fa-trash {
-  position: absolute;
-  right: 20px;
-  font-size: 20px;
-  color: #888;
-  //cursor: pointer;
+.cart ul li .fa:hover {
+  color: #ee422d;
 }
 
 .cart ul li .fa.disabled {
   color: #ccc;
   pointer-events: none;
-  cursor: none;
+}
+
+.cart ul li .fa-trash {
+  font-size: 20px;
+  color: #c23523;
+}
+
+.cart ul li .fa-trash:hover {
+  color: #ee422d;
 }
 
 .cart .btn {
   width: 300px;
   display: block;
-  margin: 0 auto;
-  padding: 30px 50px;
-  font-size: 20px;
+  margin: 40px auto 0;
+  padding: 14px;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: #ee422d;
+  border-color: #ee422d;
+}
+
+.cart .btn:hover {
+  background-color: #c23523;
+  border-color: #c23523;
 }
 
 .number {
   width: 60px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-size: 16px;
 }
 </style>
 

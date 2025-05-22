@@ -1,6 +1,6 @@
 <template>
   <div class="form-signin w-100 m-auto">
-    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+    <h1 class="h2">로그인</h1>
     <div class="form-floating">
       <input
         type="email"
@@ -24,20 +24,9 @@
       <label for="floatingPassword">Password</label>
     </div>
     <div class="form-check text-start my-3">
-      <!--      <input-->
-      <!--        class="form-check-input"-->
-      <!--        type="checkbox"-->
-      <!--        value="remember-me"-->
-      <!--        id="checkDefault"-->
-      <!--      />-->
-      <!--      <label-->
-      <!--        class="form-check-label"-->
-      <!--        for="checkDefault"-->
-      <!--        @keyup.enter="submit()"-->
-      <!--      >-->
-      <!--        Remember me-->
-      <!--      </label>-->
-      <router-link to="/join" class="join">회원가입</router-link>
+      <router-link to="/join" class="join" style="color: #ee422d"
+        >회원가입</router-link
+      >
     </div>
     <button class="btn btn-primary w-100 py-2" @click="submit()">
       Sign in
@@ -114,6 +103,9 @@ watch(isLoggedIn, (val) => {
 .form-signin {
   max-width: 330px;
   padding: 1rem;
+  margin-top: 120px; /* 네비바 펼쳤을 때 가려지지 않도록 충분한 여백 */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .form-signin .form-floating:focus-within {
@@ -134,5 +126,17 @@ watch(isLoggedIn, (val) => {
 
 .join {
   float: right;
+}
+
+.btn-primary {
+  background-color: #ee422d;
+  border-color: #ee422d;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.btn-primary:hover {
+  background-color: #c23523;
+  border-color: #c23523;
 }
 </style>

@@ -7,7 +7,6 @@
       </div>
       <div class="row justify-content-center">
         <div class="col-md-7 col-lg-6">
-          <!-- 중앙 정렬을 위해 너비 좁힘 -->
           <h4 class="mb-3 text-center">회원 정보</h4>
           <div class="row g-3 w-100">
             <div class="col-12">
@@ -109,6 +108,8 @@ const join = async () => {
     vAlert(errors.email);
   } else if (errors.password) {
     vAlert(errors.password);
+  } else if (errors.checkbox) {
+    vAlert(errors.checkbox);
   } else {
     await axios
       .post("/api/account/join", state.form)

@@ -92,6 +92,9 @@ const submit = () => {
 .form-signin {
   max-width: 330px;
   padding: 1rem;
+  margin-top: 120px; /* 네비바 펼쳤을 때 가려지지 않도록 충분한 여백 */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .form-signin .form-floating:focus-within {
@@ -114,5 +117,17 @@ const submit = () => {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+.btn-primary {
+  background-color: #ee422d;
+  border-color: #ee422d;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+.btn-primary:hover {
+  background-color: #c23523;
+  border-color: #c23523;
 }
 </style>

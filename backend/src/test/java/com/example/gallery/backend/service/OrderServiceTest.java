@@ -3,8 +3,14 @@ package com.example.gallery.backend.service;
 import com.example.gallery.backend.auth.JwtService;
 import com.example.gallery.backend.dto.Member;
 import com.example.gallery.backend.dto.Order;
+import com.example.gallery.backend.dto.OrderItem;
+import com.example.gallery.backend.exception.BizException;
+import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.MemberMapper;
 import com.example.gallery.backend.mapper.OrderMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,6 +42,16 @@ class OrderServiceTest {
     @Autowired
     private JwtService jwtService;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public String toItemJson(List<OrderItem> items) {
+        try {
+            return objectMapper.writeValueAsString(items);
+        } catch (JsonProcessingException e) {
+            throw new BizException(ErrorCode.ERROR_017);
+        }
+    }
+
     @DisplayName("주문이 성공적으로 수행되야함")
     @Test
     void 주문생성성공() {
@@ -48,17 +64,30 @@ class OrderServiceTest {
         String token = jwtService.getToken(member);
 
         // 주문 아이템 JSON 문자열
-        String itemsJson =
-                "[{\"itemId\":1,\"itemName\":\"상품 A\",\"priceAtOrder\":10000,\"quantity\":2,\"discountPer\":0}," +
-                "{\"itemId\":2,\"itemName\":\"상품 B\",\"priceAtOrder\":15000,\"quantity\":1,\"discountPer\":10}]";
+        OrderItem item1 = new OrderItem();
+        item1.setItemId(1);
+        item1.setItemName("상품 A");
+        item1.setPriceAtOrder(10000);
+        item1.setQuantity(2);
+        item1.setDiscountPer(30);
 
+        OrderItem item2 = new OrderItem();
+        item2.setItemId(2);
+        item2.setItemName("상품 B");
+        item2.setPriceAtOrder(15000);
+        item2.setQuantity(1);
+        item2.setDiscountPer(10);
+
+        List<OrderItem> itemList = List.of(item1, item2);
 
         // 주문 DTO 생성
         Order dto = new Order();
         dto.setName("홍길동");
         dto.setAddress("서울시 노원구");
         dto.setPayment("bank");
-        dto.setItems(itemsJson);
+//        dto.setItems(itemsJson);
+        dto.setItems(toItemJson(itemList)); // JSON 문자열로 변환해서 세팅
+
 
         // when: 주문 생성
         boolean result = orderService.createOrder(dto, token);
