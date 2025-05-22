@@ -12,9 +12,9 @@
         </button>
       </div>
 
-      <div v-if="state.reviews.length > 0" class="review-list">
+      <div v-if="state.reviewsList.length > 0" class="review-list">
         <div
-          v-for="review in state.reviews"
+          v-for="review in state.reviewsList"
           :key="review.reviewId"
           class="review-card"
           @click="toggleExpanded(review.reviewId)"
@@ -51,13 +51,18 @@ import axios from "@/axios.js";
 import { ref, reactive } from "vue";
 import ReviewModal from "@/pages/user/ReviewModal.vue";
 
-const isOpen = ref(false);
+// const isOpen = ref(false);
 const props = defineProps({
   item: Object,
+  reviews: {
+    type: Array,
+    default: null,
+  },
 });
 const state = reactive({
-  reviews: [],
+  reviewsList: props.reviews || [],
 });
+
 const expandedRows = ref(new Set());
 
 //리뷰내용 클릭시 리뷰아이디별로 내용이 확장되는 함수
@@ -72,23 +77,19 @@ const toggleExpanded = (id) => {
 const isExpanded = (id) => expandedRows.value.has(id);
 const loadReview = () => {
   const itemId = props.item.id;
-
-  axios
-    .get(`/api/reviews/${itemId}`)
-    .then((data) => {
-      state.reviews = data;
-    })
-    .catch((err) => console.log(err));
-};
-
-const handleCloseReview = () => {
-  isOpen.value = fasle; //리뷰작성 모달 닫기
-  loadReview();
+  if (!props.reviews) {
+    axios
+      .get(`/api/reviews/${itemId}`)
+      .then((data) => {
+        state.reviewsList = data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 };
 
 loadReview();
-
-// test403();
 </script>
 
 <style scoped>

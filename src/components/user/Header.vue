@@ -106,14 +106,15 @@
 </template>
 
 <script setup>
+import { onMounted } from "vue";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
 import { useCartStore } from "@/scripts/useCartStore.js";
 import router from "@/scripts/router.js";
 import axios from "@/axios.js";
-import { nextTick } from "vue";
 
 const accountStore = useAccountStore();
 const cartStore = useCartStore();
+let bsCollapse = null;
 const logout = async () => {
   try {
     await axios.post("/api/account/logout");
@@ -124,6 +125,20 @@ const logout = async () => {
     console.error("Logout failed", err);
   }
 };
+
+onMounted(() => {
+  const collapseElement = document.getElementById("navbarHeader");
+  // 이미 초기화된 Collapse 인스턴스가 있으면 가져오고, 없으면 새로 생성
+  bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseElement, {
+    toggle: false,
+  });
+
+  router.afterEach(() => {
+    if (bsCollapse) {
+      bsCollapse.hide(); // 페이지 이동 시 네비바 자동 닫기
+    }
+  });
+});
 </script>
 
 <style>

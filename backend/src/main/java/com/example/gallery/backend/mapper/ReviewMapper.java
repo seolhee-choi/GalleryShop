@@ -13,6 +13,8 @@ public interface ReviewMapper {
 
     List<Review> findByItemIdOrderByUpdatedDateDesc(@Param("itemId") int itemId);
 
+    List<Review> findByAuthorIdOrderByUpdatedDateDesc(@Param("authorId") int authorId, @Param("itemId") int itemId);
+
     void save(Review review);
 
     List<Review> findAllReview();

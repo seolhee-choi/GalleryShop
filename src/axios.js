@@ -27,8 +27,9 @@ instance.interceptors.response.use(
 
     // code가 200이 아닐 경우, 에러로 간주
     if (res.code !== "200") {
+      if (res.code === "404") return null; // 리뷰 없음은 정상으로 간주
       // 필요한 경우 전역 alert 처리
-      console.log(res.msg || "오류가 발생했습니다.");
+      // console.log(res.msg || "오류가 발생했습니다.");
       return Promise.reject(new Error(res.msg || "오류가 발생했습니다."));
     }
 

@@ -33,6 +33,11 @@ public class ReviewController {
         return ResponseFactory.success(reviewService.getReviewsByItemId(itemId));
     }
 
+    @GetMapping("/api/reviews/{authorId}/{itemId}")
+    public ResponseEntity<ApiResponse<List<Review>>> getReviewById(@PathVariable("authorId") int authorId, @PathVariable("itemId") int itemId){
+        return ResponseFactory.success(reviewService.getReviewsByAuthorId(authorId,itemId));
+    }
+
     @Transactional
     @PostMapping("/api/reviews/register/{itemId}")
     public ResponseEntity<ApiResponse<Boolean>> registerReview(@PathVariable("itemId") int itemId, @RequestBody Review dto, @CookieValue(value = "token", required = false) String token) {

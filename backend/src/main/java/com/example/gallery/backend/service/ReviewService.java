@@ -47,6 +47,16 @@ public class ReviewService {
         return reviews;
     }
 
+    public List<Review> getReviewsByAuthorId(int authorId, int itemId) {
+        List<Review> reviews = reviewMapper.findByAuthorIdOrderByUpdatedDateDesc(authorId, itemId);
+
+        if (reviews == null || reviews.isEmpty()) {
+            throw new BizException(ErrorCode.ERROR_003);
+        }
+
+        return reviews;
+    }
+
     @Transactional
     public boolean registerReview(int itemId, Review dto, String token) {
         int memberId = jwtService.getId(token);

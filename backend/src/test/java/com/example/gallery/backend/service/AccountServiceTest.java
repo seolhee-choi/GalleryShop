@@ -106,7 +106,7 @@ class AccountServiceTest {
         params.put("password", "wrong111111");
         params.put("newPassword", "test123456");
 
-        BizException ex = assertThrows(BizException.class, () -> accountService.findAllMember());
+        BizException ex = assertThrows(BizException.class, () -> accountService.changePassword(params));
         assertEquals("비밀번호가 틀렸습니다.", ex.getMsg());
     }
 

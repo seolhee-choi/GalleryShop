@@ -1,6 +1,9 @@
 <template>
   <aside class="sidebar">
     <ul>
+      <li class="sidebar-item user-page-link">
+        <router-link to="/">사용자 페이지</router-link>
+      </li>
       <li>
         <router-link to="/admin">대시보드</router-link>
       </li>
@@ -25,38 +28,4 @@
 
 <script setup></script>
 
-<style scoped>
-.bi {
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-}
-
-/*
- * Sidebar
- */
-
-@media (min-width: 768px) {
-  .sidebar .offcanvas-lg {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 48px;
-  }
-  .navbar-search {
-    display: block;
-  }
-}
-
-.sidebar .nav-link {
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.sidebar .nav-link.active {
-  color: #2470dc;
-}
-
-.sidebar-heading {
-  font-size: 0.75rem;
-}
-</style>
+<style scoped></style>

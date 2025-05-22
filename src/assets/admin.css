@@ -17,13 +17,19 @@ html {
 }
 
 .header .title a {
-    text-decoration-line: none;
-    color: #a399f7; /* 은은한 라벤더 */
+    font-size: 18px;
+    font-weight: 700;
+    color: #a399f7;
+    text-decoration: none;
 }
 
 .header .welcome {
     color: #ffad86; /* 부드러운 살구색 */
+    font-weight: 600;
+    font-size: 16px;
+    align-self: center;
 }
+
 
 /* Sidebar */
 .sidebar {
@@ -53,6 +59,24 @@ html {
     transition: background-color 0.2s ease;
 }
 
+.sidebar .user-page-link {
+    margin-bottom: 1rem;
+    /* border-bottom 제거하거나 아래처럼 변경 */
+    border-bottom: none;
+}
+
+.sidebar .user-page-link a {
+    color: #ddd; /* 사이드바 배경과 구분되는 밝은 회색 계열 */
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 600;
+}
+
+.sidebar .user-page-link a:hover {
+    color: #3b2f1a; /* 진한 갈색 계열 (대비되는 색) */
+    text-decoration: underline;
+}
+
 .sidebar li a {
     color: white;
     text-decoration-line: none;
@@ -62,6 +86,7 @@ html {
 .sidebar li:hover {
     background-color: #ffad86; /* 부드러운 살구색 호버 */
 }
+
 
 .sidebar li a.router-link-exact-active {
     color: #a399f7; /* 은은한 라벤더 액티브 */
@@ -181,7 +206,7 @@ html {
 }
 
 .btn-outline-danger {
-    border: 1.5px solid #dc3545 !important; /* !important 붙여서 우선순위 높임 */
+    border: 1.5px solid #dc3545; /* !important 붙여서 우선순위 높임 */
     background-color: transparent;
     color: #dc3545;
 }

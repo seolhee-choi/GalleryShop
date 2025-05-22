@@ -22,17 +22,33 @@
             <td data-label="구입 항목">{{ o.item.name }}</td>
             <td data-label="구매일">{{ formatDate(o.item.createdAt) }}</td>
             <td data-label="리뷰 작성">
-              <button
-                class="btn btn-outline-danger py-1 review-btn"
-                @click="openReviewModal(o.item.id)"
-              >
-                리뷰 작성
-              </button>
-              <ReviewModal
-                v-if="isOpen && selectedItemId === o.item.id"
-                :itemId="o.item.id"
-                @close-review="isOpen = false"
-              />
+              <div v-if="state.reviews.some((r) => r.itemId === o.item.id)">
+                <button
+                  class="review-view-btn"
+                  @click="openReviewModal('list', o.item.id)"
+                >
+                  리뷰 보기
+                </button>
+                <ReviewListModal
+                  v-if="isOpenReview && selectedItemId === o.item.id"
+                  :reviews="state.reviews"
+                  :item="o.item"
+                  @close-review="isOpenReview = false"
+                />
+              </div>
+              <div v-else>
+                <button
+                  class="btn btn-outline-danger py-1 review-btn"
+                  @click="openReviewModal('write', o.item.id)"
+                >
+                  리뷰 작성
+                </button>
+                <ReviewModal
+                  v-if="isOpen && selectedItemId === o.item.id"
+                  :itemId="o.item.id"
+                  @close-review="isOpen = false"
+                />
+              </div>
             </td>
           </tr>
         </tbody>
@@ -43,21 +59,32 @@
 
 <script setup>
 import { ref, reactive } from "vue";
+import { formatDate } from "@/utils/date.js";
+import { useAccountStore } from "@/scripts/useAccountStore.js";
 import axios from "@/axios.js";
 import ReviewModal from "@/pages/user/ReviewModal.vue";
-import { formatDate } from "@/utils/date.js";
+import ReviewListModal from "@/pages/user/ReviewListModal.vue";
 
+const accountStore = useAccountStore();
 const state = reactive({
   orders: [],
+  reviews: [],
 });
 
 const isOpen = ref(false);
+const isOpenReview = ref(false);
 const selectedItemId = ref(null);
 
-const openReviewModal = (itemId) => {
-  console.log(itemId);
+const openReviewModal = (type, itemId) => {
   selectedItemId.value = itemId;
-  isOpen.value = true;
+
+  if (type === "list") {
+    isOpenReview.value = true;
+    isOpen.value = false;
+  } else {
+    isOpenReview.value = false;
+    isOpen.value = true;
+  }
 };
 
 const load = () => {
@@ -74,7 +101,26 @@ const load = () => {
       }
     }
     state.orders = itemsList;
+
+    for (let o of state.orders) {
+      getReview(accountStore.account.id, o.item.id);
+    }
   });
+};
+
+const getReview = (authorId, itemId) => {
+  axios
+    .get(`/api/reviews/${authorId}/${itemId}`)
+    .then((res) => {
+      const reviewList = res;
+      if (!Array.isArray(reviewList)) return;
+
+      // 누적해서 넣기
+      state.reviews.push(...reviewList);
+    })
+    .catch((err) => {
+      console.warn("리뷰 없음", err.message);
+    });
 };
 
 load();
@@ -130,6 +176,23 @@ load();
 .orders tbody td:first-child {
   font-weight: 700;
   color: #c23523;
+}
+
+.review-view-btn {
+  background-color: #ee422d; /* 기존 review-btn의 테마 컬러 */
+  color: white; /* 흰색 글씨 */
+  font-size: 14px; /* 동일한 폰트 크기 */
+  padding: 6px 12px; /* 동일한 패딩 */
+  border: 1px solid #ee422d; /* 테두리도 동일하게 */
+  border-radius: 4px; /* 둥글게 */
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.review-view-btn:hover {
+  background-color: #c83521; /* 호버 시 좀 더 진한 색상 */
 }
 
 .review-btn {
