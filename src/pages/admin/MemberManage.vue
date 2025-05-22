@@ -1,11 +1,11 @@
 <template>
   <main class="main-content">
-    <h1 class="h2">
-      회원 조회
+    <div class="page-header">
+      <h1 class="section-title">회원 조회</h1>
       <button class="btn btn-primary save-btn" @click="saveChanges">
         저장
       </button>
-    </h1>
+    </div>
     <div class="table-container">
       <table class="custom-table">
         <thead>
@@ -79,4 +79,10 @@ const saveChanges = async () => {
 loadMember();
 </script>
 
-<style scoped></style>
+<style scoped>
+/* 저장 버튼 별도 여유 주기 */
+.save-btn {
+  min-width: 80px;
+  padding: 6px 12px;
+}
+</style>

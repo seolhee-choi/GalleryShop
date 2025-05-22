@@ -92,9 +92,15 @@ loadItem();
   z-index: 9999;
 }
 
+.modal-header h2 {
+  margin: 0 0 1rem;
+  font-size: 20px;
+  font-weight: bold;
+}
+
 .modal-content {
   background-color: white;
-  padding: 2rem;
+  padding: 1.5rem 2rem;
   border-radius: 8px;
   width: 800px;
   max-width: 90%;
@@ -118,6 +124,11 @@ loadItem();
   width: 30%;
   padding: 0.5rem;
   background-color: #f8f8f8;
+  vertical-align: top;
+}
+
+.edit-table tr:not(:last-child) td {
+  padding-bottom: 12px;
 }
 
 .edit-table td {
@@ -126,7 +137,10 @@ loadItem();
 
 .edit-table input {
   width: 100%;
-  padding: 0.4rem;
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
   box-sizing: border-box;
 }
 </style>

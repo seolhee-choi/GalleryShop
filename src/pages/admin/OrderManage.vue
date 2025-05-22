@@ -1,6 +1,6 @@
 <template>
   <main class="main-content">
-    <h1 class="h2">주문 조회</h1>
+    <h1 class="section-title">주문 조회</h1>
     <div class="table-container">
       <table class="custom-table">
         <thead>
@@ -86,4 +86,4 @@ const loadOrderList = () => {
 loadOrderList();
 </script>
 
-<stlye scoped></stlye>
+<style scoped></style>

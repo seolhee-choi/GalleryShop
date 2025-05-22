@@ -1,7 +1,7 @@
 <template>
   <main class="main-content">
-    <h1 class="h2">
-      상품 조회
+    <div class="page-header">
+      <h1 class="section-title">상품 조회</h1>
       <div class="action-buttons">
         <button
           class="btn btn-outline-danger save-btn"
@@ -20,7 +20,7 @@
           저장
         </button>
       </div>
-    </h1>
+    </div>
     <div class="table-container">
       <table class="custom-table">
         <thead>
@@ -42,10 +42,24 @@
                 취소
               </button>
             </td>
-            <td><input v-model="state.newRow.name" /></td>
-            <td><input v-model="state.newRow.imgPath" /></td>
-            <td><input type="number" v-model="state.newRow.price" /></td>
-            <td><input type="number" v-model="state.newRow.discountPer" /></td>
+            <td><input class="table-input" v-model="state.newRow.name" /></td>
+            <td>
+              <input class="table-input" v-model="state.newRow.imgPath" />
+            </td>
+            <td>
+              <input
+                class="table-input"
+                type="number"
+                v-model="state.newRow.price"
+              />
+            </td>
+            <td>
+              <input
+                class="table-input"
+                type="number"
+                v-model="state.newRow.discountPer"
+              />
+            </td>
             <td></td>
           </tr>
           <tr v-for="(i, idx) in state.items" :key="idx">
@@ -149,4 +163,23 @@ const cancelAddRow = () => {
 loadItems();
 </script>
 
-<style scoped></style>
+<style scoped>
+.table-input {
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  transition:
+    border-color 0.3s,
+    box-shadow 0.3s;
+}
+
+.table-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  outline: none;
+  background-color: #fff;
+}
+</style>

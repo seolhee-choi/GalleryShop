@@ -1,9 +1,7 @@
 <template>
   <main class="main-content">
-    <div class="stats-header">
-      <h1 class="h2">
-        <span>통계 조회</span>
-      </h1>
+    <div class="page-header">
+      <h1 class="section-title">통계 조회</h1>
       <div class="stats-controls">
         <select v-model="filterType">
           <option value="daily">일별</option>
@@ -273,6 +271,15 @@ loadStatistics();
 </script>
 
 <style scoped>
+.stats-controls select,
+.datepicker-wrapper ::v-deep input {
+  height: 32px;
+  font-size: 14px;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
 .chart-container {
   height: 300px;
   margin-top: 20px;

@@ -18,9 +18,9 @@
 
     <canvas ref="chartRef" id="myChart" class="chart-canvas"></canvas>
 
-    <h2 class="section-title">누적매출 TOP5 주문 상품</h2>
+    <h1 class="section-title">누적매출 TOP5 주문 상품</h1>
     <div class="table-container">
-      <table class="custom-table">
+      <table class="top5-table">
         <thead>
           <tr>
             <th>순위</th>
@@ -178,7 +178,7 @@ onMounted(() => {
   gap: 8px;
 }
 
-.btn {
+.btn-dashboard {
   background-color: #f1f3f5;
   border: 1px solid #ccc;
   padding: 6px 12px;
@@ -188,7 +188,7 @@ onMounted(() => {
   transition: background-color 0.2s;
 }
 
-.btn:hover {
+.btn-dashboard:hover {
   background-color: #e0e0e0;
 }
 
@@ -210,5 +210,59 @@ onMounted(() => {
   display: block;
   margin: 0 auto;
   padding-bottom: 60px;
+}
+
+/* 대시보드 TOP5 테이블 스타일 */
+.top5-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.top5-table thead th {
+  background-color: #2f405a; /* 사이드바 네이비톤과 맞춤 */
+  color: #fff;
+  font-weight: 700;
+  padding: 12px 20px;
+  text-align: left;
+  border-radius: 10px 10px 0 0;
+  user-select: none;
+}
+
+.top5-table tbody tr {
+  background-color: #fdfdfd;
+  box-shadow: 0 4px 6px rgb(0 0 0 / 0.1);
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+  cursor: default;
+}
+
+.top5-table tbody tr:hover {
+  background-color: #f0f4ff;
+}
+
+.top5-table tbody td {
+  padding: 14px 20px;
+  color: #333;
+  vertical-align: middle;
+}
+
+.top5-table tbody td.number {
+  text-align: right;
+  font-weight: 600;
+  color: #2f405a;
+}
+
+.top5-table tbody td.rank-badge {
+  text-align: center;
+  font-weight: 700;
+  color: white;
+  background: #a399f7; /* 라벤더 컬러 */
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  border-radius: 50%;
+  user-select: none;
 }
 </style>

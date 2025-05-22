@@ -1,4 +1,104 @@
 /* admin.css */
+body,
+html {
+    overflow: hidden;
+}
+/* Header */
+.header {
+    height: 60px;
+    background-color: #3b4a67; /* 중간 톤 네이비 */
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-size: 18px;
+    font-weight: bold;
+    justify-content: space-between;
+}
+
+.header .title a {
+    text-decoration-line: none;
+    color: #a399f7; /* 은은한 라벤더 */
+}
+
+.header .welcome {
+    color: #ffad86; /* 부드러운 살구색 */
+}
+
+/* Sidebar */
+.sidebar {
+    width: 220px;
+    background-color: #2f405a; /* 중간 톤 네이비보다 좀 더 어두운 */
+    color: white;
+    position: fixed;
+    top: 60px; /* 헤더 높이 */
+    bottom: 40px; /* 푸터 높이 */
+    left: 0;
+    padding: 20px 10px;
+    box-sizing: border-box;
+    height: calc(100vh - 60px - 40px);
+    overflow-y: auto;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.sidebar li a {
+    color: white;
+    text-decoration-line: none;
+    display: block;
+}
+
+.sidebar li:hover {
+    background-color: #ffad86; /* 부드러운 살구색 호버 */
+}
+
+.sidebar li a.router-link-exact-active {
+    color: #a399f7; /* 은은한 라벤더 액티브 */
+    font-weight: 600;
+}
+
+/* Footer */
+.footer {
+    height: 40px;
+    background-color: #3b4a67; /* 헤더와 동일 */
+    color: white;
+    text-align: center;
+    line-height: 40px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+
+/* Main Content */
+.main-content {
+    margin-left: 220px; /* 사이드바 너비만큼 */
+    margin-top: 60px; /* 헤더 높이만큼 */
+    padding: 20px;
+    height: calc(100vh - 100px); /* 헤더 + 푸터 높이 제외 */
+    overflow-y: auto;
+    padding-bottom: 80px; /* 푸터와 겹치지 않도록 */
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+
 .section-title {
     font-size: 20px;
     margin-bottom: 16px;
@@ -11,24 +111,44 @@
 }
 
 .custom-table {
-    font-size: 14px;
-    border-collapse: collapse;
     width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+    font-size: 14px;
+    color: #333;
+    min-width: 600px;
 }
 
 .custom-table th,
 .custom-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
+    padding: 12px 16px;
+    background-color: #fff;
+    vertical-align: middle;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 1px 0 #fff inset;
 }
 
 .custom-table th {
-    background-color: #f4f4f4;
+    background-color: #f9fafb;
+    color: #555;
+    font-weight: 600;
     text-align: center;
+    border-bottom: 2px solid #ccc;
+}
+
+.custom-table tbody tr {
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: background-color 0.2s ease;
+}
+
+.custom-table tbody tr:hover {
+    background-color: #f0f7ff;
 }
 
 .custom-table .number {
     text-align: right;
+    font-feature-settings: "tnum";
 }
 
 .custom-table .select-option {
@@ -37,7 +157,7 @@
 
 .action-buttons {
     display: flex;
-    gap: 8px; /* 버튼 사이 간격 */
+    gap: 8px;
 }
 
 .btn {
@@ -45,6 +165,9 @@
     font-size: 14px;
     border-radius: 4px;
     cursor: pointer;
+    border: none;
+    background-color: transparent;
+    transition: background-color 0.2s;
 }
 
 .btn-primary {
@@ -57,13 +180,41 @@
     background-color: #0069d9;
 }
 
+.btn-outline-danger {
+    border: 1.5px solid #dc3545 !important; /* !important 붙여서 우선순위 높임 */
+    background-color: transparent;
+    color: #dc3545;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
 .clickable-id {
-    color: blue;
+    color: #007bff;
     cursor: pointer;
     text-decoration: underline;
 }
 
-/* 통계 쪽 css */
+.select-option select {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.select-option select:hover,
+.select-option select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+
+/* Statistics */
 .stats-header {
     display: flex;
     align-items: center;
@@ -71,12 +222,6 @@
     flex-wrap: wrap;
     gap: 1rem;
     margin-bottom: 1rem;
-}
-
-.stats-header h1 {
-    margin: 0;
-    font-size: 1.5rem;
-    white-space: nowrap;
 }
 
 .stats-controls {
@@ -132,3 +277,4 @@
     width: 60px;
     text-align: right;
 }
+
