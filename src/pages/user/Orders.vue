@@ -31,7 +31,7 @@
                 </button>
                 <ReviewListModal
                   v-if="isOpenReview && selectedItemId === o.item.id"
-                  :reviews="state.reviews"
+                  :reviews="state.reviews.filter((r) => r.itemId === o.item.id)"
                   :item="o.item"
                   @close-review="isOpenReview = false"
                 />
@@ -117,6 +117,7 @@ const getReview = (authorId, itemId) => {
 
       // 누적해서 넣기
       state.reviews.push(...reviewList);
+      console.log(state.reviews);
     })
     .catch((err) => {
       console.warn("리뷰 없음", err.message);

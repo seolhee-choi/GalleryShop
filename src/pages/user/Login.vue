@@ -88,7 +88,8 @@ const submit = async () => {
       console.warn("상태 반영실패");
     }
   } catch (error) {
-    vAlert(error);
+    const errMsg = error.response.data.msg;
+    vAlert(errMsg);
   }
 };
 

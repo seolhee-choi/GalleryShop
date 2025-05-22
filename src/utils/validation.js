@@ -31,13 +31,10 @@ export function validate({
     errors.password = "비밀번호는 9자리 이상의 영문+숫자 조합이어야 합니다.";
   }
 
-  if (newPassword !== "") {
-    if (!newPassword.trim()) {
-      errors.newPassword = "새로 변경할 비밀번호를 입력해주세요.";
-    } else if (!newPasswordRegex.test(newPassword)) {
-      errors.newPassword =
-        "비밀번호는 9자리 이상의 영문+숫자 조합이어야 합니다.";
-    }
+  if (!newPassword.trim()) {
+    errors.newPassword = "새로 변경할 비밀번호를 입력해주세요.";
+  } else if (!newPasswordRegex.test(newPassword)) {
+    errors.newPassword = "비밀번호는 9자리 이상의 영문+숫자 조합이어야 합니다.";
   }
 
   // 개인정보 수집 동의 체크 여부 검사
