@@ -61,10 +61,12 @@
 import { ref, reactive } from "vue";
 import { formatDate } from "@/utils/date.js";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
+import { useAlert } from "@/utils/alert.js";
 import axios from "@/axios.js";
 import ReviewModal from "@/pages/user/ReviewModal.vue";
 import ReviewListModal from "@/pages/user/ReviewListModal.vue";
 
+const { vAlert } = useAlert();
 const accountStore = useAccountStore();
 const state = reactive({
   orders: [],
@@ -88,24 +90,30 @@ const openReviewModal = (type, itemId) => {
 };
 
 const load = () => {
-  axios.get("/api/orders").then((res) => {
-    const orders = res.orders;
-    const itemsList = [];
+  axios
+    .get("/api/orders")
+    .then((res) => {
+      const orders = res.orders;
+      const itemsList = [];
 
-    for (let o of orders) {
-      for (let item of o.items) {
-        itemsList.push({
-          orderInfo: o.order,
-          item: item,
-        });
+      for (let o of orders) {
+        for (let item of o.items) {
+          itemsList.push({
+            orderInfo: o.order,
+            item: item,
+          });
+        }
       }
-    }
-    state.orders = itemsList;
+      state.orders = itemsList;
 
-    for (let o of state.orders) {
-      getReview(accountStore.account.id, o.item.id);
-    }
-  });
+      for (let o of state.orders) {
+        getReview(accountStore.account.id, o.item.id);
+      }
+    })
+    .catch((err) => {
+      const errMsg = err.response?.data?.msg;
+      vAlert(errMsg);
+    });
 };
 
 const getReview = (authorId, itemId) => {

@@ -117,8 +117,9 @@ const cartStore = useCartStore();
 let bsCollapse = null;
 const logout = async () => {
   try {
-    await axios.post("/api/account/logout");
-    accountStore.setAccount({ id: 0, email: "", role: "" });
+    // await axios.post("/api/account/logout");
+    // accountStore.setAccount({ id: 0, email: "", role: "" });
+    await accountStore.logout();
     cartStore.$reset();
     router.push("/");
   } catch (err) {
@@ -127,6 +128,7 @@ const logout = async () => {
 };
 
 onMounted(() => {
+  // 페이지 이동시 navbar 닫힘
   const collapseElement = document.getElementById("navbarHeader");
   // 이미 초기화된 Collapse 인스턴스가 있으면 가져오고, 없으면 새로 생성
   bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseElement, {

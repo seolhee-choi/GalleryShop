@@ -72,48 +72,6 @@ const addToCart = (itemId) => {
 </script>
 
 <style>
-/*
-.card .img {
-  display: inline-block;
-  width: 100%;
-  height: 250px;
-  background-size: cover;
-  background-position: center;
-}
-
-.card .card-body .price {
-  text-decoration: line-through;
-}
-
-.price-box {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  line-height: 1.2;
-}
-
-.card-text {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.item-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex-grow: 1;
-  margin-right: 0.5rem;
-}
-
-.review-btn {
-  white-space: nowrap;
-  flex-shrink: 0;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.875rem;
-}
-*/
 .card-container {
   display: grid;
   grid-template-columns: repeat(
@@ -121,6 +79,7 @@ const addToCart = (itemId) => {
     minmax(300px, 1fr)
   ); /* 카드 크기 통일 */
   gap: 1rem;
+  height: 100%;
 }
 
 .card {

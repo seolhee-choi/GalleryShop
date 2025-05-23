@@ -2,18 +2,7 @@
   <main class="main-content">
     <div class="dashboard-header">
       <h1 class="dashboard-title">Dashboard</h1>
-      <div class="dashboard-actions">
-        <!--        <div class="button-group">-->
-        <!--          <button class="btn">Share</button>-->
-        <!--          <button class="btn">Export</button>-->
-        <!--        </div>-->
-        <!--        <button class="btn dropdown">-->
-        <!--          <svg class="icon" aria-hidden="true">-->
-        <!--            <use xlink:href="#calendar3"></use>-->
-        <!--          </svg>-->
-        <!--          This week-->
-        <!--        </button>-->
-      </div>
+      <div class="dashboard-actions"></div>
     </div>
 
     <canvas ref="chartRef" id="myChart" class="chart-canvas"></canvas>

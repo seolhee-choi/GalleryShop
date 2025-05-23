@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
+//@Component
 public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     private final JwtService jwtService;
@@ -36,6 +36,8 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         super(new AntPathRequestMatcher("/api/account/login"));
         setAuthenticationManager(authenticationManager);
         this.jwtService = jwtService;
+
+        System.out.println("LoginFilter실행됨");
     }
 
     @Override

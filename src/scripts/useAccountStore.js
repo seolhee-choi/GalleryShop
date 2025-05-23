@@ -3,6 +3,7 @@ import axios from "@/axios.js";
 
 export const useAccountStore = defineStore("account", {
   state: () => ({
+    isLoggingOut: false,
     account: {
       id: null,
       email: "",
@@ -40,6 +41,15 @@ export const useAccountStore = defineStore("account", {
       }
     },
 
+    async logout() {
+      this.isLoggingOut = true;
+      try {
+        await axios.post("/api/account/logout");
+        this.account = { id: 0, email: "", role: "" };
+      } finally {
+        this.isLoggingOut = false;
+      }
+    },
     // 사용자의 정보 업데이트
     setAccount(account) {
       this.account = account;

@@ -29,7 +29,7 @@
             </td>
             <td>{{ r.email }}</td>
             <td>{{ formatDate(r.updatedAt) }}</td>
-            <td>
+            <td class="select-option">
               <select v-model="r.status">
                 <option value="0">활성화</option>
                 <option value="1">비활성화</option>

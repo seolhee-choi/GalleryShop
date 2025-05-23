@@ -12,20 +12,12 @@
       <p class="float-end mb-1">
         <a href="#" @click="scrollToTop" style="color: #ee422d">Back to top</a>
       </p>
-      <p class="mb-1">
-        Album example is &copy; Bootstrap, but please download and customize it
-        for yourself!
-      </p>
+      <p class="mb-1">Gallery Artshop</p>
+      <p class="mb-1">서울시 성동구 성수동 | 010-1111-2222</p>
     </div>
   </footer>
 </template>
 <script setup>
-defineProps({
-  msg: {
-    type: String,
-    required: true,
-  },
-});
 const scrollToTop = () => {
   const content = document.querySelector(".content");
   if (content) {

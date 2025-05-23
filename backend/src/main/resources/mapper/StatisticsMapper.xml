@@ -5,65 +5,24 @@
 
 <mapper namespace="com.example.gallery.backend.mapper.StatisticsMapper">
 
-    <resultMap id="StatisticsResultMap" type="com.example.gallery.backend.dto.statistics.Statistics">
-        <result property="totalPrice" column="total_price"/>
-        <result property="totalOrders" column="total_orders"/>
-        <result property="totalItems" column="total_items"/>
-    </resultMap>
-
-    <resultMap id="MonthlyStatResultMap" type="com.example.gallery.backend.dto.statistics.ChartStat">
-        <result property="month" column="month" />
-        <result property="totalPrice" column="total_price" />
-    </resultMap>
-
     <!-- 카드용 통계 쿼리 -->
     <select id="getMonthlyTotalStats" resultType="com.example.gallery.backend.dto.statistics.Statistics">
         SELECT
             IFNULL(SUM(quantity * (price_at_order * (1 - discount_per / 100))),0) AS totalPrice,
             COUNT(DISTINCT id) AS totalOrders,
             SUM(quantity) AS totalItems
-        FROM order_items
+         FROM order_items
         WHERE DATE_FORMAT(created_at, '%Y-%m') = #{yearMonth}
     </select>
-
-    <!-- 일별/주별/월별 조회 쿼리 -->
-<!--    <select id="getSalesStats" parameterType="map" resultType="Statistics">-->
-<!--        SELECT-->
-<!--            SUM(quantity * (price_at_order * (1 - discount_per / 100))) AS total_price-->
-<!--            ,COUNT(id) AS total_orders-->
-<!--            ,SUM(quantity) AS total_items-->
-<!--        FROM order_items-->
-<!--        <where>-->
-<!--            <choose>-->
-<!--                <when test="type == 'daily'">-->
-<!--                    <![CDATA[-->
-<!--                    DATE(created_at) BETWEEN DATE_SUB(STR_TO_DATE(#{date}, '%Y-%m-%d'), INTERVAL #{period} DAY)-->
-<!--                    AND STR_TO_DATE(#{date}, '%Y-%m-%d')-->
-<!--                ]]>-->
-<!--                </when>-->
-<!--                <when test="type == 'weekly'">-->
-<!--                    <![CDATA[-->
-<!--                    YEARWEEK(DATE(created_at), 1) BETWEEN YEARWEEK(DATE_SUB(STR_TO_DATE(#{date}, '%Y-%m-%d'), INTERVAL #{period} WEEK), 1)-->
-<!--                    AND YEARWEEK(STR_TO_DATE(#{date}, '%Y-%m-%d'), 1)-->
-<!--                ]]>-->
-<!--                </when>-->
-<!--                <when test="type == 'monthly'">-->
-<!--                    <![CDATA[-->
-<!--                    DATE_FORMAT(created_at, '%Y-%m') = #{date}-->
-<!--                ]]>-->
-<!--                </when>-->
-<!--            </choose>-->
-<!--        </where>-->
-<!--    </select>-->
 
     <!-- 일별 -->
     <select id="getDailyStats" parameterType="map" resultType="com.example.gallery.backend.dto.statistics.DailyStat">
         SELECT
             DATE(created_at) AS day,
             SUM(quantity * (price_at_order * (1 - discount_per / 100))) AS total_price
-        FROM order_items
+         FROM order_items
         WHERE created_at &gt;= DATE_SUB(STR_TO_DATE(#{date}, '%Y-%m-%d'), INTERVAL #{period} DAY)
-        AND created_at &lt; DATE_ADD(STR_TO_DATE(#{date}, '%Y-%m-%d'), INTERVAL 1 DAY)
+          AND created_at &lt; DATE_ADD(STR_TO_DATE(#{date}, '%Y-%m-%d'), INTERVAL 1 DAY)
         GROUP BY DATE(created_at)
         ORDER BY DATE(created_at)
     </select>
@@ -72,11 +31,11 @@
     <select id="getWeeklyStats" parameterType="map" resultType="com.example.gallery.backend.dto.statistics.WeeklyStat">
         SELECT
             DATE(created_at) AS day,
-            DATE_FORMAT(created_at, '%x-%v') AS week,
+            CONCAT(YEAR(created_at), '-', LPAD(WEEK(created_at, 1), 2, '0')) AS week,
             SUM(quantity * (price_at_order * (1 - discount_per / 100))) AS totalPrice
-        FROM order_items
-        WHERE created_at &gt;= STR_TO_DATE(DATE_FORMAT(#{date} - INTERVAL (DAYOFWEEK(#{date}) + 5) % 7 DAY, '%Y-%m-%d'), '%Y-%m-%d') -- 주 시작일
-        AND created_at &lt;  STR_TO_DATE(DATE_FORMAT(#{date} - INTERVAL (DAYOFWEEK(#{date}) + 5) % 7 - 6 DAY, '%Y-%m-%d'), '%Y-%m-%d') + INTERVAL 1 DAY -- 주 종료일 +1
+         FROM order_items
+        WHERE WEEK(created_at, 1) = WEEK(#{date}, 1)
+          AND YEAR(created_at) = YEAR(#{date})
         GROUP BY day, week
         ORDER BY day;
     </select>
@@ -86,11 +45,11 @@
         SELECT
             DATE_FORMAT(created_at, '%Y-%m') AS month,
             SUM(quantity * (price_at_order * (1 - discount_per / 100))) AS total_price
-        FROM order_items
-        WHERE created_at &gt;= DATE_SUB(STR_TO_DATE(CONCAT(#{date}, '-01'), '%Y-%m-%d'), INTERVAL #{period} MONTH)
-          AND created_at &lt; DATE_ADD(STR_TO_DATE(CONCAT(#{date}, '-01'), '%Y-%m-%d'), INTERVAL 1 MONTH)
-        GROUP BY DATE_FORMAT(created_at, '%Y-%m')
-        ORDER BY DATE_FORMAT(created_at, '%Y-%m')
+         FROM order_items
+        WHERE created_at &gt;= STR_TO_DATE(CONCAT(LEFT(#{date}, 4), '-01-01'), '%Y-%m-%d')
+          AND created_at &lt; STR_TO_DATE(CONCAT(CAST(LEFT(#{date}, 4) AS UNSIGNED) + 1, '-01-01'), '%Y-%m-%d')
+        GROUP BY month
+        ORDER BY month;
     </select>
 
 

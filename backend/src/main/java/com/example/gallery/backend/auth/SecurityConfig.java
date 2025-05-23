@@ -54,10 +54,10 @@ public class SecurityConfig {
     }
 
     // LoginFilter를 Bean으로 등록
-//    @Bean
-//    public LoginFilter loginFilter() throws Exception {
-//        return new LoginFilter(authenticationManager(), jwtService); // authenticationManager()가 호출되면 Bean이 주입됩니다.
-//    }
+    @Bean
+    public LoginFilter loginFilter() throws Exception {
+        return new LoginFilter(authenticationManager(), jwtService); // authenticationManager()가 호출되면 Bean이 주입됩니다.
+    }
 
     private static final String[] PUBLIC_URLS = {
             "/api/login",
@@ -65,6 +65,7 @@ public class SecurityConfig {
             "/api/items",
             "/api/account/check",
     };
+
     // SecurityFilterChain 설정
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -83,7 +84,7 @@ public class SecurityConfig {
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         // LoginFilter 추가
-//        http.addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

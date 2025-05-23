@@ -60,7 +60,6 @@
                 v-model="state.newRow.discountPer"
               />
             </td>
-            <td></td>
           </tr>
           <tr v-for="(i, idx) in state.items" :key="idx">
             <td>{{ i.id }}</td>

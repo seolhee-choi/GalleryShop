@@ -3,14 +3,14 @@
     <div class="page-header">
       <h1 class="section-title">통계 조회</h1>
       <div class="stats-controls">
+        <div class="datepicker-wrapper">
+          <DatePicker v-model="selectedDate" />
+        </div>
         <select v-model="filterType">
           <option value="daily">일별</option>
           <option value="weekly">주간별</option>
           <option value="monthly">월별</option>
         </select>
-        <div class="datepicker-wrapper">
-          <DatePicker v-model="selectedDate" />
-        </div>
         <button class="btn btn-primary" @click="onClickSearch">조회</button>
       </div>
     </div>
@@ -25,8 +25,7 @@
 
     <!-- 통계 차트 -->
     <div v-if="hasChartData" class="chart-container">
-      <!--      <Line :data="chartData" :options="chartOptions" :key="filterType" />-->
-      <Bar :data="chartData" :options="chartOptions" :key="filterType" />
+      <Bar ref="chartRef" :data="chartData" :options="chartOptions" />
     </div>
     <div v-else class="text-center text-gray-500 py-8">매출이 없습니다.</div>
   </main>
@@ -47,6 +46,7 @@ const state = reactive({
   statistics: [],
 });
 
+const chartRef = ref(null);
 const filterType = ref("daily");
 const selectedDate = ref(new Date());
 const hasChartData = ref(true);
@@ -79,13 +79,34 @@ const defaultColor = "rgba(54, 162, 235, 0.6)";
 const highlightBorder = "rgba(255, 99, 132, 1)";
 const defaultBorder = "rgba(54, 162, 235, 1)";
 
-const dateLabelMap = {
-  daily: dayjs(selectedDate.value).format("YYYY-MM-DD"),
-  weekly: dayjs(selectedDate.value).format("GGGG-ww"), // 예: "2025-20"
-  monthly: dayjs(selectedDate.value).format("YYYY-MM"), // 예: "2025-05"
-};
+// 검색한 일자 기준 차트 색상 다르게 하기 위해 computed 계산
+const targetLabel = computed(() => {
+  const type = filterType.value;
+  const date = selectedDate.value;
 
-const targetLabel = dateLabelMap[filterType.value];
+  if (type === "daily") {
+    return dayjs(date).format("YYYY-MM-DD");
+  }
+  if (type === "weekly") {
+    const week = dayjs(date).isoWeek();
+    const year = dayjs(date).isoWeekYear();
+
+    const start = dayjs()
+      .year(year)
+      .isoWeek(week)
+      .startOf("week")
+      .add(1, "day");
+    const end = start.add(6, "day");
+
+    return `${year}-${String(week).padStart(2, "0")}주차 (${start.format("MM.DD")} ~ ${end.format("MM.DD")})`;
+  }
+  if (type === "monthly") {
+    const month = dayjs(date).format("YYYY-MM");
+    const [year, m] = month.split("-");
+    return `${parseInt(m, 10)}월`;
+  }
+  return "";
+});
 
 const chartData = ref({
   labels: [],
@@ -122,7 +143,7 @@ const updateYAxisOptions = (maxValue) => {
   }
 
   chartOptions.scales.y.min = 0;
-  chartOptions.scales.y.max = Math.ceil(maxValue * 1.1);
+  chartOptions.scales.y.max = Math.ceil(maxValue * 1.2);
   chartOptions.scales.y.ticks.stepSize = Math.ceil(
     chartOptions.scales.y.max / 5,
   );
@@ -135,7 +156,6 @@ const chartConfigMap = {
   },
   weekly: {
     getStats: (data) => data.weeklyStats,
-    // getLabels: (s) => `${s.week}주차`,
     getLabels: (s) => {
       const [year, weekStr] = s.week.split("-");
       const week = parseInt(weekStr, 10);
@@ -183,8 +203,6 @@ const buildChartData = (type, stats) => {
     const labelList = generateDateLabels(selectedDate.value, period.value);
     const dataMap = new Map(stats.map((s) => [s.day, s.totalPrice]));
 
-    // labels = stats.map(config.getLabels);
-    // dataPoints = stats.map((s) => s.totalPrice);
     labels = labelList;
     dataPoints = labelList.map((date) => dataMap.get(date) ?? 0);
   } else {
@@ -200,10 +218,10 @@ const buildChartData = (type, stats) => {
   }
 
   const backgroundColor = labels.map((label) =>
-    label === targetLabel ? highlightColor : defaultColor,
+    label === targetLabel.value ? highlightColor : defaultColor,
   );
   const borderColor = labels.map((label) =>
-    label === targetLabel ? highlightBorder : defaultBorder,
+    label === targetLabel.value ? highlightBorder : defaultBorder,
   );
 
   chartData.value = {
@@ -218,11 +236,15 @@ const buildChartData = (type, stats) => {
       },
     ],
   };
-  // console.log(chartData.value.labels);
-  // console.log(chartData.value.datasets[0].data);
 
   const maxValue = Math.max(...dataPoints);
-  updateYAxisOptions(maxValue);
+  updateYAxisOptions(maxValue * 1.2);
+
+  nextTick(() => {
+    if (chartRef.value?.chart) {
+      chartRef.value.chart.update(); // 여기서 chart.js 인스턴스를 직접 업데이트
+    }
+  });
 };
 
 const onClickSearch = () => {

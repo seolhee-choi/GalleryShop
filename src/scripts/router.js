@@ -45,10 +45,6 @@ const routes = [
         component: () => import("@/pages/user/Mypage.vue"),
         meta: { requiresAuth: true },
       },
-      // {
-      //     path: 'data',
-      //     component: () => import("@/pages/user/BulkDataModal.vue"),
-      // },
     ],
   },
   {
@@ -91,10 +87,13 @@ const router = createRouter({
 
 router.beforeEach(async (to, from, next) => {
   console.log("Navigating to:", to.fullPath);
-  console.log("Requires auth:", to.meta.requiresAuth);
   const accountStore = useAccountStore();
 
-  await accountStore.check();
+  // await accountStore.check();
+
+  if (!accountStore.isLoggingOut) {
+    await accountStore.check();
+  }
 
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const guestOnly = to.matched.some((record) => record.meta.guestOnly);
