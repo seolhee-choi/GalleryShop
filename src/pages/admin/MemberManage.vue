@@ -36,12 +36,24 @@
         </tbody>
       </table>
     </div>
+
+    <!-- 페이징 UI 시작 -->
+    <div class="pagination">
+      <button :disabled="page === 1" @click="changePage(page - 1)">이전</button>
+
+      <span>페이지 {{ page }} / {{ totalPage }}</span>
+
+      <button :disabled="page === totalPage" @click="changePage(page + 1)">
+        다음
+      </button>
+    </div>
+    <!-- 페이징 UI 끝 -->
   </main>
 </template>
 
 <script setup>
 import axios from "@/axios.js";
-import { reactive } from "vue";
+import { ref, reactive } from "vue";
 import { useAlert, confirmAndSaveChanges } from "@/utils/alert.js";
 
 const { vAlert, vSuccess } = useAlert();
@@ -50,19 +62,38 @@ const state = reactive({
   members: [],
 });
 
+const params = {
+  page: 1,
+  recordSize: 10,
+  pageSize: 10,
+  keyword: "",
+  searchType: "",
+};
+
+const totalPage = ref(1);
+
 const loadMember = () => {
-  axios.get("/api/admin/members").then((res) => {
+  axios.get("/api/admin/members", { params }).then((res) => {
+    const data = res.items;
     state.members = [];
 
-    for (let d of res) {
+    for (let d of data) {
       if (d.items) {
         d.items = JSON.parse(d.items);
       }
       state.members.push(d);
     }
+
+    totalPage.value = res.totalPage;
   });
 };
 
+const changePage = (newPage) => {
+  if (newPage >= 1 && newPage <= totalPage.value) {
+    params.page = newPage;
+    loadMember();
+  }
+};
 const saveChanges = async () => {
   const isConfirmed = await confirmAndSaveChanges();
   if (isConfirmed) {

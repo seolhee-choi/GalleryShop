@@ -8,6 +8,7 @@
 
 <script setup>
 import "@/assets/admin.css";
+import "@/assets/pagination.css";
 import AdminHeader from "@/components/admin/AdminHeader.vue";
 import AdminSidebar from "@/components/admin/AdminSidebar.vue";
 import AdminFooter from "@/components/admin/AdminFooter.vue";

@@ -2,10 +2,12 @@ package com.example.gallery.backend.controller;
 
 import com.example.gallery.backend.auth.JwtService;
 import com.example.gallery.backend.dto.Member;
+import com.example.gallery.backend.dto.Search;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.MemberMapper;
 import com.example.gallery.backend.response.ApiResponse;
+import com.example.gallery.backend.response.PageResponse;
 import com.example.gallery.backend.response.ResponseFactory;
 import com.example.gallery.backend.service.AccountService;
 import jakarta.servlet.http.Cookie;
@@ -90,8 +92,8 @@ public class AccountController {
 
     // 관리자 - 회원 조회
     @GetMapping("/api/admin/members")
-    public ResponseEntity<ApiResponse<List<Member>>> memberList() {
-        return ResponseFactory.success(accountService.findAllMember());
+    public ResponseEntity<ApiResponse<PageResponse<Member>>> memberList(@ModelAttribute Search search) {
+        return ResponseFactory.success(accountService.findAllMember(search));
     }
 
     // 관리자 - 회원 업데이트

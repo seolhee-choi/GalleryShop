@@ -2,9 +2,11 @@ package com.example.gallery.backend.service;
 
 import com.example.gallery.backend.auth.JwtService;
 import com.example.gallery.backend.dto.Member;
+import com.example.gallery.backend.dto.Search;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.MemberMapper;
+import com.example.gallery.backend.response.PageResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -97,12 +99,18 @@ public class AccountService {
         return true;
     }
 
-    public List<Member> findAllMember() {
-        List<Member> members = memberMapper.findAllMember();
+    public PageResponse<Member> findAllMember(Search search) {
+        int totalCount = memberMapper.countMember(search);
+        List<Member> members = memberMapper.findAllMember(search);
+
         if(members.isEmpty()) {
             throw new BizException(ErrorCode.ERROR_007);
         }
-        return members;
+
+        int totalPage = (int)Math.ceil((double) totalCount / search.getRecordSize());
+
+        return new PageResponse<>(members, totalCount, search.getPage(), totalPage);
+//        return members;
     }
 
     public boolean updateMember(List<Member> members) {

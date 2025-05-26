@@ -1,6 +1,7 @@
 package com.example.gallery.backend.mapper;
 
 import com.example.gallery.backend.dto.Member;
+import com.example.gallery.backend.dto.Search;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -19,8 +20,9 @@ public interface MemberMapper {
 
     String findEmailById(@Param("id") int id);
 
-    List<Member> findAllMember();
+    List<Member> findAllMember(@Param("search")Search search);
 
+    int countMember(Search params);
 //    void updateMembers(@Param("members") List<Member> members);
     void updateMember(Member member);
 }

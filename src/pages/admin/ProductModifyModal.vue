@@ -5,22 +5,24 @@
         <h2>상품 수정</h2>
       </div>
       <table class="edit-table" v-for="item in state.items" :key="item.id">
-        <tr>
-          <th>상품명</th>
-          <td><input v-model="item.name" /></td>
-        </tr>
-        <tr>
-          <th>상품 이미지 경로</th>
-          <td><input v-model="item.imgPath" /></td>
-        </tr>
-        <tr>
-          <th>상품원가</th>
-          <td><input v-model="item.price" type="number" /></td>
-        </tr>
-        <tr>
-          <th>할인율</th>
-          <td><input v-model="item.discountPer" type="number" /></td>
-        </tr>
+        <tbody>
+          <tr>
+            <th>상품명</th>
+            <td><input v-model="item.name" /></td>
+          </tr>
+          <tr>
+            <th>상품 이미지 경로</th>
+            <td><input v-model="item.imgPath" /></td>
+          </tr>
+          <tr>
+            <th>상품원가</th>
+            <td><input v-model="item.price" type="number" /></td>
+          </tr>
+          <tr>
+            <th>할인율</th>
+            <td><input v-model="item.discountPer" type="number" /></td>
+          </tr>
+        </tbody>
       </table>
       <div class="modal-btn">
         <button

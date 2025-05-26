@@ -37,7 +37,6 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         setAuthenticationManager(authenticationManager);
         this.jwtService = jwtService;
 
-        System.out.println("LoginFilter실행됨");
     }
 
     @Override
