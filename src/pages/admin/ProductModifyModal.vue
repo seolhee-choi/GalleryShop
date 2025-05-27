@@ -22,6 +22,15 @@
             <th>할인율</th>
             <td><input v-model="item.discountPer" type="number" /></td>
           </tr>
+          <tr>
+            <th>상태</th>
+            <td class="select-option status">
+              <select v-model="item.status">
+                <option value="0">활성화</option>
+                <option value="1">비활성화</option>
+              </select>
+            </td>
+          </tr>
         </tbody>
       </table>
       <div class="modal-btn">
@@ -144,5 +153,9 @@ loadItem();
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+}
+
+.status {
+  text-align: left !important;
 }
 </style>

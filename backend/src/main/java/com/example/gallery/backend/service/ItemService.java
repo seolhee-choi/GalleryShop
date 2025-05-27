@@ -12,6 +12,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +29,20 @@ public class ItemService {
 
 
     public List<Item> getItems() {
-        return itemMapper.findAll();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String role = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .findFirst()
+                .orElse("ROLE_USER");
+
+        String status = "";
+        if ("ADMIN".equals(role)) {
+            status = "ADMIN";
+        }
+
+        System.out.println("mybatis에 넘길 status: " + status);
+        return itemMapper.findAll(status);
+
     }
 
     public boolean uploadJson(MultipartFile file) {

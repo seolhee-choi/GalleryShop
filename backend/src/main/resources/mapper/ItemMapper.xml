@@ -22,6 +22,7 @@
             #{id}
         </foreach>
           AND B.member_id = #{memberId}
+          AND A.status = 0
     </select>
 
     <!-- 모든 아이템 조회 -->
@@ -32,16 +33,17 @@
             ,img_path
             ,price
             ,discount_per
+            ,status
         FROM items
         ORDER BY id DESC
     </select>
 
     <!-- 여러 아이템 저장 -->
     <insert id="saveAll" parameterType="java.util.List">
-        INSERT INTO items (name, price, img_path, discount_per)
+        INSERT INTO items (name, price, img_path, discount_per, status)
         VALUES
         <foreach collection="items" item="item" separator=",">
-            (#{item.name}, #{item.price}, #{item.imgPath} ,#{item.discountPer})
+            (#{item.name}, #{item.price}, #{item.imgPath} ,#{item.discountPer}, 0)
         </foreach>
     </insert>
 
@@ -53,6 +55,7 @@
             ,img_path
             ,price
             ,discount_per
+            ,status
         FROM items
         WHERE id = #{itemId}
     </select>
@@ -65,6 +68,7 @@
             ,img_path = #{imgPath}
             ,price = #{price}
             ,discount_per = #{discountPer}
+            ,status = #{status}
          WHERE id = #{id}
     </update>
 

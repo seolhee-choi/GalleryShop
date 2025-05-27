@@ -18,4 +18,6 @@ public class Item {
     private int discountPer;
 
     private int quantity;
+
+    private int status;
 }

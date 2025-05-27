@@ -87,8 +87,8 @@ const renderChart = () => {
         {
           label: "매출",
           data: state.items.map((item) => item.total_sales),
-          backgroundColor: "#70a1ff", // 메인 블루 계열
-          borderColor: "#3742fa", // 강조 컬러
+          backgroundColor: "rgba(54, 162, 235, 0.6)", // 메인 블루 계열
+          borderColor: "rgba(54, 162, 235, 1)", // 강조 컬러
           hoverBackgroundColor: "#5352ed",
         },
       ],

@@ -1,14 +1,21 @@
 <template>
-  <div class="card-container">
-    <div class="card shadow-sm">
+  <div class="card-container" :class="statusClass">
+    <!--    <div class="card shadow-sm">-->
+    <div :class="['card shadow-sm', { 'sold-out': item.status === 1 }]">
       <span
         class="img"
         :style="{ backgroundImage: `url(${item.imgPath}` }"
       ></span>
+      <span v-if="item.status === 1" class="soldout-label">품절</span>
+
       <div class="card-body">
         <p class="card-text">
           <span class="item-name" :title="item.name">{{ item.name }}</span>
-          <button class="btn btn-link py-1 review-btn" @click="isOpen = true">
+          <button
+            class="btn btn-link py-1 review-btn"
+            @click="isOpen = true"
+            :disabled="item.status === 1"
+          >
             리뷰
           </button>
           <ReviewListModal
@@ -19,7 +26,11 @@
         </p>
 
         <div class="d-flex justify-content-between align-items-center">
-          <button class="btn btn-primary" @click="addToCart(item.id)">
+          <button
+            class="btn btn-primary"
+            @click="addToCart(item.id)"
+            :disabled="item.status === 1"
+          >
             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
           </button>
           <div class="price-box">
@@ -44,7 +55,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useAlert } from "@/utils/alert.js";
 import { useAccountStore } from "@/scripts/useAccountStore.js";
 import lib from "@/scripts/lib.js";
@@ -57,6 +68,7 @@ const props = defineProps({
   item: Object,
 });
 
+const statusClass = computed(() => (props.item.status === 1 ? "sold-out" : ""));
 const accountStore = useAccountStore();
 
 const isOpen = ref(false);
@@ -102,6 +114,7 @@ const addToCart = (itemId) => {
   background-position: center;
   border-bottom: 1px solid #f5c6cb;
   border-radius: 8px 8px 0 0;
+  position: relative;
 }
 
 .card .card-body {
@@ -110,6 +123,45 @@ const addToCart = (itemId) => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.card.sold-out {
+  opacity: 0.5;
+  pointer-events: none; /* 클릭도 막기 */
+  user-select: none; /* 텍스트 선택도 안되게 */
+}
+
+.card.sold-out:hover {
+  box-shadow: none;
+}
+
+.soldout-label {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.7); /* 반투명 검정 배경 */
+  color: #fff;
+  padding: 4px 8px;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.card.sold-out .btn {
+  cursor: not-allowed;
+}
+
+.card.sold-out .review-btn {
+  color: #999;
+  text-decoration: none;
+  pointer-events: none;
+}
+
+.card.sold-out .real,
+.card.sold-out .price,
+.card.sold-out .discount {
+  color: #aaa !important;
 }
 
 .price-box .discount {

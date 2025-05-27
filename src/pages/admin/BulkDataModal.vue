@@ -16,7 +16,7 @@
             <input v-model="author" class="form-control" />
           </div>
           <div class="mb-3 d-flex gap-2">
-            <button class="btn btn-success" @click="fetchArtWorks">
+            <button class="btn btn-primary" @click="fetchArtWorks">
               작품 데이터 다운로드
             </button>
           </div>
@@ -92,6 +92,7 @@ const fetchArtWorks = async () => {
             imgPath: artwork.primaryImageSmall,
             price: 0,
             discountPer: 0,
+            status: 0,
           });
         }
       } catch (error) {

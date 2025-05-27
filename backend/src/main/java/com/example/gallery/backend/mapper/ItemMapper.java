@@ -13,7 +13,7 @@ public interface ItemMapper {
     List<Item> findByIdIn(@Param("ids") List<Integer> ids, @Param("memberId") int memberId);
 
     // 모든 아이템 조회
-    List<Item> findAll();
+    List<Item> findAll(@Param("status") String status);
 
     // 여러 아이템 저장
     void saveAll(@Param("items") List<Item> items);
