@@ -105,10 +105,11 @@ const load = () => {
         }
       }
       state.orders = itemsList;
-
-      for (let o of state.orders) {
-        getReview(accountStore.account.id, o.item.id);
-      }
+      getReview(accountStore.account.id);
+      console.log("ggg", state.orders);
+      // for (let o of state.orders) {
+      //   getReview(accountStore.account.id);
+      // }
     })
     .catch((err) => {
       const errMsg = err.response?.data?.msg;
@@ -116,16 +117,17 @@ const load = () => {
     });
 };
 
-const getReview = (authorId, itemId) => {
+const getReview = (authorId) => {
   axios
-    .get(`/api/reviews/${authorId}/${itemId}`)
+    // .get(`/api/reviews/${authorId}/${itemId}`)
+    .get(`/api/reviews/find/${authorId}`)
     .then((res) => {
       const reviewList = res;
       if (!Array.isArray(reviewList)) return;
 
       // 누적해서 넣기
       state.reviews.push(...reviewList);
-      console.log(state.reviews);
+      // console.log(state.reviews);
     })
     .catch((err) => {
       console.warn("리뷰 없음", err.message);

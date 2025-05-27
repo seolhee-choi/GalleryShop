@@ -41,7 +41,6 @@
         JOIN members as m
           ON r.author_id = m.id
         WHERE r.author_id = #{authorId}
-          AND r.item_id = #{itemId}
           AND r.status = 0
         ORDER BY updated_at DESC
     </select>

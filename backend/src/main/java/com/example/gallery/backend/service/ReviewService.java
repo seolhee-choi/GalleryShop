@@ -47,8 +47,8 @@ public class ReviewService {
         return reviews;
     }
 
-    public List<Review> getReviewsByAuthorId(int authorId, int itemId) {
-        List<Review> reviews = reviewMapper.findByAuthorIdOrderByUpdatedDateDesc(authorId, itemId);
+    public List<Review> getReviewsByAuthorId(int authorId) {
+        List<Review> reviews = reviewMapper.findByAuthorIdOrderByUpdatedDateDesc(authorId);
 
         if (reviews == null || reviews.isEmpty()) {
             throw new BizException(ErrorCode.ERROR_003);

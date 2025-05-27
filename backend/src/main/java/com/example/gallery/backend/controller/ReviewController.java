@@ -33,9 +33,9 @@ public class ReviewController {
         return ResponseFactory.success(reviewService.getReviewsByItemId(itemId));
     }
 
-    @GetMapping("/api/reviews/{authorId}/{itemId}")
-    public ResponseEntity<ApiResponse<List<Review>>> getReviewById(@PathVariable("authorId") int authorId, @PathVariable("itemId") int itemId){
-        return ResponseFactory.success(reviewService.getReviewsByAuthorId(authorId,itemId));
+    @GetMapping("/api/reviews/find/{authorId}")
+    public ResponseEntity<ApiResponse<List<Review>>> getReviewById(@PathVariable("authorId") int authorId){
+        return ResponseFactory.success(reviewService.getReviewsByAuthorId(authorId));
     }
 
     @Transactional
