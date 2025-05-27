@@ -3,10 +3,12 @@ package com.example.gallery.backend.service;
 import com.example.gallery.backend.auth.JwtService;
 import com.example.gallery.backend.dto.Cart;
 import com.example.gallery.backend.dto.Item;
+import com.example.gallery.backend.dto.Search;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.CartMapper;
 import com.example.gallery.backend.mapper.ItemMapper;
+import com.example.gallery.backend.response.PageResponse;
 import com.example.gallery.backend.response.ResponseFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,20 +30,15 @@ public class ItemService {
     ItemMapper itemMapper;
 
 
-    public List<Item> getItems() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String role = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .findFirst()
-                .orElse("ROLE_USER");
+//    public PageResponse<List<Item>> getItems(Search search) {
+    public PageResponse<Item> getItems(Search search) {
+        int totalCount = itemMapper.countItem(search);
+        int totalPage = (int)Math.ceil((double) totalCount / search.getRecordSize());
 
-        String status = "";
-        if ("ADMIN".equals(role)) {
-            status = "ADMIN";
-        }
+        List<Item> items = itemMapper.findAll(search);
 
-        System.out.println("mybatis에 넘길 status: " + status);
-        return itemMapper.findAll(status);
+//        return itemMapper.findAll(status, search);
+        return new PageResponse<>(items, totalCount, search.getPage(), totalPage);
 
     }
 

@@ -36,6 +36,8 @@
             ,status
         FROM items
         ORDER BY id DESC
+        LIMIT #{search.recordSize}
+        OFFSET #{search.offset}
     </select>
 
     <!-- 여러 아이템 저장 -->
@@ -72,4 +74,11 @@
          WHERE id = #{id}
     </update>
 
+    <!-- 상품 수 카운팅 -->
+    <select id="countItem" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            items
+    </select>
 </mapper>

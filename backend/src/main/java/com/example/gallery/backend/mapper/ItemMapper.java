@@ -1,6 +1,7 @@
 package com.example.gallery.backend.mapper;
 
 import com.example.gallery.backend.dto.Item;
+import com.example.gallery.backend.dto.Search;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -13,7 +14,9 @@ public interface ItemMapper {
     List<Item> findByIdIn(@Param("ids") List<Integer> ids, @Param("memberId") int memberId);
 
     // 모든 아이템 조회
-    List<Item> findAll(@Param("status") String status);
+    List<Item> findAll(@Param("search") Search search);
+
+    int countItem(Search params);
 
     // 여러 아이템 저장
     void saveAll(@Param("items") List<Item> items);

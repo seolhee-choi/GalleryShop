@@ -1,10 +1,12 @@
 package com.example.gallery.backend.controller;
 
 import com.example.gallery.backend.dto.Item;
+import com.example.gallery.backend.dto.Search;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.ItemMapper;
 import com.example.gallery.backend.response.ApiResponse;
+import com.example.gallery.backend.response.PageResponse;
 import com.example.gallery.backend.response.ResponseFactory;
 import com.example.gallery.backend.service.ItemService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -26,8 +28,9 @@ public class ItemController {
     ItemService itemService;
 
     @GetMapping("/api/items")
-    public ResponseEntity<ApiResponse<List<Item>>> getItems() {
-        return ResponseFactory.success(itemService.getItems());
+//    public ResponseEntity<ApiResponse<PageResponse<List<Item>>>> getItems(@ModelAttribute Search search) {
+    public ResponseEntity<ApiResponse<PageResponse<Item>>> getItems(@ModelAttribute Search search) {
+        return ResponseFactory.success(itemService.getItems(search));
     }
 
     @PostMapping("/api/items/upload")

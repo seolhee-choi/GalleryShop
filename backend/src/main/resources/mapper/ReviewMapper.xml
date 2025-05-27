@@ -67,6 +67,8 @@
         JOIN members AS m
           ON r.author_id = m.id
         ORDER BY created_at DESC
+        LIMIT #{search.recordSize}
+        OFFSET #{search.offset}
     </select>
 
     <!-- 리뷰 활성화상태 변경 -->
@@ -77,4 +79,11 @@
         WHERE review_id = #{reviewId}
     </update>
 
+    <!-- 리뷰 수 카운팅 -->
+    <select id="countReview" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            reviews
+    </select>
 </mapper>

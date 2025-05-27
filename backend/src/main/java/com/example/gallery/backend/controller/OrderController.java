@@ -2,12 +2,14 @@ package com.example.gallery.backend.controller;
 
 import com.example.gallery.backend.dto.Order;
 import com.example.gallery.backend.dto.OrderItem;
+import com.example.gallery.backend.dto.Search;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.CartMapper;
 import com.example.gallery.backend.mapper.OrderMapper;
 import com.example.gallery.backend.auth.JwtService;
 import com.example.gallery.backend.response.ApiResponse;
+import com.example.gallery.backend.response.PageResponse;
 import com.example.gallery.backend.response.ResponseFactory;
 import com.example.gallery.backend.service.OrderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -43,8 +45,8 @@ public class OrderController {
 
     // 관리자 - 주문 조회
     @GetMapping("/api/admin/orders")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> orderList() {
-        return ResponseFactory.success(orderService.getAllOrdersWithItems());
+    public ResponseEntity<ApiResponse<PageResponse<Map<String, Object>>>> orderList(@ModelAttribute Search search) {
+        return ResponseFactory.success(orderService.getAllOrdersWithItems(search));
     }
 
     // 관리자 - 인기 상품 조회

@@ -3,15 +3,18 @@ package com.example.gallery.backend.service;
 import com.example.gallery.backend.auth.JwtService;
 import com.example.gallery.backend.dto.Item;
 import com.example.gallery.backend.dto.Review;
+import com.example.gallery.backend.dto.Search;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.ItemMapper;
 import com.example.gallery.backend.mapper.MemberMapper;
 import com.example.gallery.backend.mapper.ReviewMapper;
+import com.example.gallery.backend.response.PageResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,14 +76,20 @@ public class ReviewService {
         return true;
     }
 
-    public List<Review> getAllReviews() {
-        List<Review> reviews = reviewMapper.findAllReview();
+//    public PageResponse<List<Review>> getAllReviews(Search search) {
+    public PageResponse<Review> getAllReviews(Search search) {
+        List<Review> reviews = reviewMapper.findAllReview(search);
+        int totalCount = reviewMapper.countReview(search);
+        int totalPage = (int)Math.ceil((double) totalCount / search.getRecordSize());
+
 
         if (reviews.isEmpty()) {
             throw new BizException(ErrorCode.ERROR_003);
         }
 
-        return reviews;
+//        return reviews;
+        return new PageResponse<>(reviews, totalCount, search.getPage(), totalPage);
+
     }
 
     public boolean updateReviews(List<Review> reviews) {

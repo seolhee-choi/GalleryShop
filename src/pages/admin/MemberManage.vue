@@ -53,27 +53,29 @@
 
 <script setup>
 import axios from "@/axios.js";
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import { useAlert, confirmAndSaveChanges } from "@/utils/alert.js";
+import { usePaginationStore } from "@/scripts/usePaginationStore.js";
+import { useInitPagination } from "@/scripts/useInitPagination.js";
 
 const { vAlert, vSuccess } = useAlert();
 
 const state = reactive({
   members: [],
 });
+const pagination = usePaginationStore();
+const page = computed(() => pagination.params.page);
+const totalPage = computed(() => pagination.totalPage);
 
-const params = {
-  page: 1,
-  recordSize: 10,
-  pageSize: 10,
-  keyword: "",
-  searchType: "",
+const changePage = (newPage) => {
+  if (newPage >= 1 && newPage <= pagination.totalPage) {
+    pagination.changePage(newPage);
+    loadMember(); // 부수 효과 처리
+  }
 };
 
-const totalPage = ref(1);
-
 const loadMember = () => {
-  axios.get("/api/admin/members", { params }).then((res) => {
+  axios.get("/api/admin/members", { params: pagination.params }).then((res) => {
     const data = res.items;
     state.members = [];
 
@@ -84,15 +86,12 @@ const loadMember = () => {
       state.members.push(d);
     }
 
-    totalPage.value = res.totalPage;
+    pagination.setPaginationInfo({
+      page: res.currentPage,
+      totalPage: res.totalPage,
+      totalCount: res.totalCount,
+    });
   });
-};
-
-const changePage = (newPage) => {
-  if (newPage >= 1 && newPage <= totalPage.value) {
-    params.page = newPage;
-    loadMember();
-  }
 };
 const saveChanges = async () => {
   const isConfirmed = await confirmAndSaveChanges();
@@ -108,6 +107,8 @@ const saveChanges = async () => {
 };
 
 loadMember();
+
+useInitPagination(loadMember);
 </script>
 
 <style scoped>

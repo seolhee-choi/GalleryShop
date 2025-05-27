@@ -3,10 +3,12 @@ package com.example.gallery.backend.service;
 import com.example.gallery.backend.auth.JwtService;
 import com.example.gallery.backend.dto.Order;
 import com.example.gallery.backend.dto.OrderItem;
+import com.example.gallery.backend.dto.Search;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.CartMapper;
 import com.example.gallery.backend.mapper.OrderMapper;
+import com.example.gallery.backend.response.PageResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -88,8 +90,9 @@ public class OrderService {
         return true;
     }
 
-    public Map<String, Object> getAllOrdersWithItems() {
-        List<Order> orders = orderMapper.findAllOrder();
+    public PageResponse<Map<String, Object>> getAllOrdersWithItems(Search search) {
+        int totalCount = orderMapper.countOrder(search);
+        List<Order> orders = orderMapper.findAllOrder(search);
 
         if (orders.isEmpty()) {
             throw new BizException(ErrorCode.ERROR_018);
@@ -111,7 +114,10 @@ public class OrderService {
         Map<String, Object> response = new HashMap<>();
         response.put("orders", ordersWithItems);
 
-        return response;
+        int totalPage = (int)Math.ceil((double) totalCount / search.getRecordSize());
+
+        //        return response;
+        return new PageResponse<>(ordersWithItems, totalCount, search.getPage(), totalPage);
     }
 
     public Map<String, Object> getTopProducts() {

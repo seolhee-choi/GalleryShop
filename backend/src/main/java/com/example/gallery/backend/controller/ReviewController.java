@@ -2,12 +2,14 @@ package com.example.gallery.backend.controller;
 
 import com.example.gallery.backend.auth.JwtService;
 import com.example.gallery.backend.dto.Review;
+import com.example.gallery.backend.dto.Search;
 import com.example.gallery.backend.exception.BizException;
 import com.example.gallery.backend.exception.ErrorCode;
 import com.example.gallery.backend.mapper.ItemMapper;
 import com.example.gallery.backend.mapper.MemberMapper;
 import com.example.gallery.backend.mapper.ReviewMapper;
 import com.example.gallery.backend.response.ApiResponse;
+import com.example.gallery.backend.response.PageResponse;
 import com.example.gallery.backend.response.ResponseFactory;
 import com.example.gallery.backend.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +49,9 @@ public class ReviewController {
 
     // 관리자 - 리뷰 조회
     @GetMapping("/api/admin/reviews")
-    public ResponseEntity<ApiResponse<List<Review>>> reviewList(){
-        return ResponseFactory.success(reviewService.getAllReviews());
+//    public ResponseEntity<ApiResponse<<List<Review>>> reviewList(@ModelAttribute Search search){
+    public ResponseEntity<ApiResponse<PageResponse<Review>>> reviewList(@ModelAttribute Search search){
+        return ResponseFactory.success(reviewService.getAllReviews(search));
     }
 
     // 관리자 - 리뷰 업데이트

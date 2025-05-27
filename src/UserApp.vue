@@ -11,6 +11,7 @@
 
 <script setup>
 import "@/assets/user.css";
+import "@/assets/pagination.css";
 import Header from "@/components/user/Header.vue";
 import Footer from "@/components/user/Footer.vue";
 import { useAccountStore } from "@/scripts/useAccountStore.js";

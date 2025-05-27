@@ -3,6 +3,7 @@ package com.example.gallery.backend.mapper;
 import com.example.gallery.backend.dto.Member;
 import com.example.gallery.backend.dto.Order;
 import com.example.gallery.backend.dto.Review;
+import com.example.gallery.backend.dto.Search;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,9 +16,10 @@ public interface ReviewMapper {
 
     List<Review> findByAuthorIdOrderByUpdatedDateDesc(@Param("authorId") int authorId);
 
+    int countReview(Search params);
     void save(Review review);
 
-    List<Review> findAllReview();
+    List<Review> findAllReview(@Param("search") Search search);
 
     void updateReview(Review reviews);
 }

@@ -85,13 +85,25 @@
         </tbody>
       </table>
     </div>
+
+    <!-- 페이징 UI 시작 -->
+    <div class="pagination">
+      <button :disabled="page === 1" @click="changePage(page - 1)">이전</button>
+      <span>페이지 {{ page }} / {{ totalPage }}</span>
+      <button :disabled="page === totalPage" @click="changePage(page + 1)">
+        다음
+      </button>
+    </div>
+    <!-- 페이징 UI 끝 -->
   </main>
 </template>
 
 <script setup>
 import axios from "@/axios.js";
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import { useAlert } from "@/utils/alert.js";
+import { usePaginationStore } from "@/scripts/usePaginationStore.js";
+import { useInitPagination } from "@/scripts/useInitPagination.js";
 import ProductModifyModal from "@/pages/admin/ProductModifyModal.vue";
 import BulkDataModal from "@/pages/admin/BulkDataModal.vue";
 
@@ -104,6 +116,17 @@ const isBulkModalOpen = ref(false);
 const isOpen = ref(false);
 const selectedItemId = ref(null);
 
+const pagination = usePaginationStore();
+const page = computed(() => pagination.params.page);
+const totalPage = computed(() => pagination.totalPage);
+
+const changePage = (newPage) => {
+  if (newPage >= 1 && newPage <= pagination.totalPage) {
+    pagination.changePage(newPage);
+    loadItems(); // 부수 효과 처리
+  }
+};
+
 const openItemModal = (itemId) => {
   console.log(itemId);
   selectedItemId.value = itemId;
@@ -111,11 +134,17 @@ const openItemModal = (itemId) => {
 };
 
 const loadItems = () => {
-  axios.get("/api/items").then((data) => {
+  axios.get("/api/items", { params: pagination.params }).then((data) => {
     // for (let d of data) {
     //   state.items.push(d);
     // }
-    state.items = data;
+    state.items = data.items;
+
+    pagination.setPaginationInfo({
+      page: data.currentPage,
+      totalPage: data.totalPage,
+      totalCount: data.totalCount,
+    });
   });
 };
 
@@ -144,7 +173,6 @@ const saveChanges = async () => {
     return;
   }
 
-  console.log("try시작");
   try {
     await axios.post("/api/admin/items/upload", [state.newRow]);
     vSuccess("상품 등록이 정상적으로 처리되었습니다.");
@@ -160,6 +188,7 @@ const cancelAddRow = () => {
 };
 
 loadItems();
+useInitPagination(loadItems);
 </script>
 
 <style scoped>

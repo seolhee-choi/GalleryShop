@@ -47,16 +47,38 @@
         </tbody>
       </table>
     </div>
+
+    <!-- 페이징 UI 시작 -->
+    <div class="pagination">
+      <button :disabled="page === 1" @click="changePage(page - 1)">이전</button>
+      <span>페이지 {{ page }} / {{ totalPage }}</span>
+      <button :disabled="page === totalPage" @click="changePage(page + 1)">
+        다음
+      </button>
+    </div>
+    <!-- 페이징 UI 끝 -->
   </main>
 </template>
 
 <script setup>
 import axios from "@/axios.js";
-import { computed, reactive } from "vue";
+import { computed, reactive, ref } from "vue";
+import { usePaginationStore } from "@/scripts/usePaginationStore.js";
+import { useInitPagination } from "@/scripts/useInitPagination.js";
 
 const state = reactive({
   orders: [],
 });
+const pagination = usePaginationStore();
+const page = computed(() => pagination.params.page);
+const totalPage = computed(() => pagination.totalPage);
+
+const changePage = (newPage) => {
+  if (newPage >= 1 && newPage <= pagination.totalPage) {
+    pagination.changePage(newPage);
+    loadOrderList(); // 부수 효과 처리
+  }
+};
 
 // 수량 * 구매금액의 합 계산 함수
 const orderItemPrices = computed(() =>
@@ -68,22 +90,29 @@ const orderItemPrices = computed(() =>
   ),
 );
 const loadOrderList = () => {
-  axios.get("/api/admin/orders").then((res) => {
-    const data = res.orders;
+  axios.get("/api/admin/orders", { params: pagination.params }).then((res) => {
     state.orders = [];
 
-    for (let d of data) {
-      if (d.order && d.items) {
+    for (let i of res.items) {
+      if (i.order && i.items) {
         state.orders.push({
-          ...d.order,
-          items: d.items,
+          ...i.order,
+          items: i.items,
         });
       }
     }
+
+    pagination.setPaginationInfo({
+      page: res.currentPage,
+      totalPage: res.totalPage,
+      totalCount: res.totalCount,
+    });
   });
 };
 
 loadOrderList();
+
+useInitPagination(loadOrderList);
 </script>
 
 <style scoped></style>
